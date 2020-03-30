@@ -73,6 +73,10 @@ wss.on("connection", (ws): void => {
       world.requestTakeoff(player, packet.data);
     }
 
+    if (packet.type == PacketType.UserGameInput) {
+      world.userGameInput(player,packet.data.key);
+    }
+
     if (packet.type == PacketType.RequestJoinTeam) {
       // Ignore this if we've already assigned them a player.
       if (player !== undefined) {

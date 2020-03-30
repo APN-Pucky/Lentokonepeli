@@ -12,6 +12,7 @@ import { GameObject, GameObjectType } from "./object";
 import { Team, FacingDirection, ROTATION_DIRECTIONS } from "./constants";
 import { TakeoffRequest, TakeoffEntry } from "./takeoff";
 import { teamPlanes, Plane } from "./objects/plane";
+import { InputKey } from "./constants";
 
 /**
  * The Game World contains all entites,
@@ -72,11 +73,11 @@ export class GameWorld {
   public tick(deltaTime: number): Cache {
     this.processTakeoffs();
     this.planes.forEach((p): void => {
-      p.rotate(this.cache);
+      //p.rotate(this.cache);
       p.move(this.cache, deltaTime);
       if (Math.random() > 0.99) {
         // flip plane
-        p.setFlipped(this.cache, !p.flipped);
+        //p.setFlipped(this.cache, !p.flipped);
       }
     });
     return this.cache;
@@ -89,6 +90,8 @@ export class GameWorld {
     }
     this.takeoffQueue = [];
   }
+
+
 
   private doTakeoff(takeoff: TakeoffEntry): void {
     console.log(takeoff);
@@ -211,6 +214,19 @@ export class GameWorld {
 
   public nextID(): number {
     return this.idCounter++;
+  }
+
+  public userGameInput(player : Player, key : InputKey) : void {
+	  const p : Plane = this.planes[this.getObjectIndex(this.planes,player.controlID)];
+	  if(key == InputKey.Up) {
+		p.setFlipped(this.cache, !p.flipped);
+	  }
+	  if(key == InputKey.Left) {
+      		p.rotate(this.cache,1);
+	  }
+	  if(key == InputKey.Right) {
+      		p.rotate(this.cache,-1);
+	  }
   }
 
   public requestTakeoff(player: Player, takeoffRequest: TakeoffRequest): void {

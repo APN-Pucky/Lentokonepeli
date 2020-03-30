@@ -81,8 +81,9 @@ export class Plane extends GameObject {
     });
   }
 
-  public rotate(cache: Cache): void {
-    const direction = (this.direction + 1) % ROTATION_DIRECTIONS;
+  public rotate(cache: Cache,speed : number = 1): void {
+    // avoid negative directions
+    const direction = (this.direction + speed + ROTATION_DIRECTIONS) % ROTATION_DIRECTIONS;
     this.setDirection(cache, direction);
   }
 

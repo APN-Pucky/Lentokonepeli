@@ -3,6 +3,7 @@ import { GameRenderer } from "./render/renderer";
 import { CanvasEventHandler } from "./render/event";
 import { Localizer } from "./localization/localizer";
 import { Packet, PacketType } from "../../dogfight/src/network/types";
+import { InputKey } from "../../dogfight/src/constants";
 import { pack, unpack } from "../../dogfight/src/network/packer";
 import { GameInput } from "./input";
 import { ClientMode } from "./types";
@@ -130,6 +131,19 @@ export class GameClient {
         this.takeoffSelector.updateRunways(runways, this.renderer);
         this.takeoffSelector.processInput(key, this.renderer, this.ws);
         break;
+      }
+      case ClientMode.Playing: {
+	if(key == InputKey.Up || key == InputKey.Left || key == InputKey.Right) {
+		const packet: Packet = {
+        	type: PacketType.UserGameInput,
+        	data: {
+        	  id: this.playerInfo.id,
+		  key: key
+        	}
+      		};
+      		this.ws.send(pack(packet));
+      		break;
+	      }
       }
     }
   }
