@@ -10,7 +10,7 @@ import { Player } from "../dogfight/src/objects/player";
 import { TeamOption } from "../client/src/teamSelector";
 import { Team } from "../dogfight/src/constants";
 
-const PORT = 3259;
+const PORT = process.env.PORT || 3259;
 
 const app = express();
 const filepath = path.join(__dirname, "../dist");
