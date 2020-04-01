@@ -1,0 +1,9 @@
+{
+  "name": "Lentokonepeli",
+  "description": "Lentokonepeli Revived",
+  "repository": "https://github.com/APN-Pucky/Lentokonepeli",
+  "logo": "https://cdn.rawgit.com/heroku/node-js-getting-started/master/public/node.svg",
+  "keywords": ["lentokonepeli","node", "express", "heroku"],
+  "image": "heroku/nodejs"
+}
+
