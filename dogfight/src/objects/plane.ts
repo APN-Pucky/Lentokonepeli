@@ -35,6 +35,7 @@ export class Plane extends GameObject {
 
   public planeType: PlaneType;
   public direction: number;
+  public rotation: number;
   public flipped: boolean;
   public health: number;
   public fuel: number;
@@ -50,6 +51,7 @@ export class Plane extends GameObject {
       y: 0,
       flipped: false,
       direction: 0,
+      rotation: 0,
       planeType: kind,
       team: side,
       health: 255,
@@ -68,6 +70,7 @@ export class Plane extends GameObject {
     paramInt2 += (int)(100 * paramInt4 / 25.0D * Math.sin(d));
   */
   public move(cache: Cache, deltaTime: number): void {
+    this.rotate(cache,this.rotation);
     const multiplier = deltaTime / 1000;
     const scaleSpeed = 300 * SCALE_FACTOR;
     const radians = directionToRadians(this.direction);

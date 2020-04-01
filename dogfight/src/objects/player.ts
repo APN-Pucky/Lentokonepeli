@@ -15,6 +15,7 @@ export class Player extends GameObject {
   public controlType: GameObjectType;
   public controlID: number;
   public status: PlayerStatus;
+  public pressedKeys = {};
 
   public constructor(id: number, cache: Cache) {
     super(id);

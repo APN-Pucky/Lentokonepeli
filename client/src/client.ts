@@ -35,6 +35,7 @@ export class GameClient {
   private takeoffSelector: TakeoffSelector;
 
   private gameObjects = {};
+  private previousKeyDown = {};
 
   private playerInfo = {
     id: undefined,
@@ -62,6 +63,9 @@ export class GameClient {
     this.input = new GameInput();
     document.addEventListener("keydown", (event): void => {
       this.keyDown(event);
+    });
+    document.addEventListener("keyup", (event): void => {
+      this.keyUp(event);
     });
 
     // center camera
@@ -115,6 +119,42 @@ export class GameClient {
     }
   }
 
+  private keyUp(event: KeyboardEvent, press: boolean): void {
+    if (!this.input.isGameKey(event)) {
+      return;
+    }
+    const key = this.input.getGameKey(event);
+    switch (this.mode) {
+      case ClientMode.SelectTeam: {
+        //this.teamSelector.processInput(key, this.renderer, this.ws);
+        break;
+      }
+      case ClientMode.PreFlight: {
+        //const runways = this.gameObjects[GameObjectType.Runway];
+        //this.takeoffSelector.updateRunways(runways, this.renderer);
+        //this.takeoffSelector.processInput(key, this.renderer, this.ws);
+        break;
+      }
+      case ClientMode.Playing: {
+	if(key == InputKey.Up || key == InputKey.Left || key == InputKey.Right) {
+		const packet: Packet = {
+        	type: PacketType.UserGameInput,
+        	data: {
+        	  id: this.playerInfo.id,
+		  key: key,
+		  state : false,
+        	}
+      		};
+		this.previousKeyDown[event.which] = false;
+      		this.ws.send(pack(packet));
+      		break;
+	      }
+      }
+    }
+
+  }
+
+
   private keyDown(event: KeyboardEvent): void {
     if (!this.input.isGameKey(event)) {
       return;
@@ -133,14 +173,16 @@ export class GameClient {
         break;
       }
       case ClientMode.Playing: {
-	if(key == InputKey.Up || key == InputKey.Left || key == InputKey.Right) {
+	if((key == InputKey.Up || key == InputKey.Left || key == InputKey.Right  ) && this.previousKeyDown[event.which] == false) {
 		const packet: Packet = {
         	type: PacketType.UserGameInput,
         	data: {
         	  id: this.playerInfo.id,
-		  key: key
+		  key: key,
+		  state : true,
         	}
       		};
+		this.previousKeyDown[event.which] = true;
       		this.ws.send(pack(packet));
       		break;
 	      }

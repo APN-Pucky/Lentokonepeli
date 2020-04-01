@@ -216,16 +216,26 @@ export class GameWorld {
     return this.idCounter++;
   }
 
-  public userGameInput(player : Player, key : InputKey) : void {
+  public userGameInput(player : Player, key : InputKey, state : boolean) : void {
 	  const p : Plane = this.planes[this.getObjectIndex(this.planes,player.controlID)];
-	  if(key == InputKey.Up) {
-		p.setFlipped(this.cache, !p.flipped);
+  	  player.pressedKeys[key] = state;
+	  if(!player.pressedKeys[InputKey.Left] && !player.pressedKeys[InputKey.Right])
+		  p.rotation = 0;
+	  if(player.pressedKeys[InputKey.Left] && player.pressedKeys[InputKey.Right])
+		  p.rotation = 0;
+	  if(player.pressedKeys[InputKey.Left] && !player.pressedKeys[InputKey.Right])
+		  p.rotation = 1;
+	  if(!player.pressedKeys[InputKey.Left] && player.pressedKeys[InputKey.Right])
+		  p.rotation = -1;
+	  if(state) {
+	    if(key == InputKey.Up) {
+	          p.setFlipped(this.cache, !p.flipped);
+	    }
 	  }
-	  if(key == InputKey.Left) {
-      		p.rotate(this.cache,1);
-	  }
-	  if(key == InputKey.Right) {
-      		p.rotate(this.cache,-1);
+	  else {
+            if(key == InputKey.Up) {
+	          //p.setFlipped(this.cache, !p.flipped);
+	    }
 	  }
   }
 
