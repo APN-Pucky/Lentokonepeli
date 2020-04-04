@@ -3,9 +3,7 @@ import { GameRenderer } from "./render/renderer";
 import { CanvasEventHandler } from "./render/event";
 import { Localizer } from "./localization/localizer";
 import { Packet, PacketType } from "../../dogfight/src/network/types";
-import { InputKey } from "../../dogfight/src/constants";
-import { pack, unpack } from "../../dogfight/src/network/packer";
-import { GameInput } from "./input";
+import { InputHandler } from "./inputHandler";
 import { ClientMode } from "./types";
 import { CacheEntry } from "../../dogfight/src/network/cache";
 import { GameObjectType } from "../../dogfight/src/object";
@@ -13,19 +11,15 @@ import { TeamSelector } from "./teamSelector";
 import { Team } from "../../dogfight/src/constants";
 import { TakeoffSelector } from "./takeoffSelector";
 import { radarObjects } from "./render/objects/radar";
-import { decodePacket } from "../../dogfight/src/network/encode";
-
-const wssPath = "ws://" + location.host;
+import { NetworkHandler } from "./networkHandler";
+import { InputChange } from "../../dogfight/src/input";
 
 export class GameClient {
-  /**
-   * WebSocket connection
-   */
-  private ws: WebSocket;
-
   private renderer: GameRenderer;
 
-  private input: GameInput;
+  private network: NetworkHandler;
+
+  private input: InputHandler;
   private canvasHandler: CanvasEventHandler;
 
   private loadedGame: boolean = false;
@@ -56,18 +50,21 @@ export class GameClient {
     this.canvasHandler = new CanvasEventHandler(this.renderer);
     this.canvasHandler.addListeners();
 
+    // create network handler
+    this.network = new NetworkHandler();
+    this.network.onPacketRecieved = (data): void => {
+      this.processPacket(data);
+    };
+
     // instantiate client UI logic
     this.teamSelector = new TeamSelector();
     this.takeoffSelector = new TakeoffSelector();
 
     // Add event listeners for input
-    this.input = new GameInput();
-    document.addEventListener("keydown", (event): void => {
-      this.keyDown(event);
-    });
-    document.addEventListener("keyup", (event): void => {
-      this.keyUp(event);
-    });
+    this.input = new InputHandler();
+    this.input.processGameKeyChange = (change): void => {
+      this.processGameInput(change);
+    };
 
     // center camera
     this.renderer.centerCamera(0, 150);
@@ -84,24 +81,6 @@ export class GameClient {
 
     // update language
     this.updateLanguage(Localizer.getLanguage());
-
-    // create connection to server.
-    this.ws = new WebSocket(wssPath);
-    this.ws.binaryType = "arraybuffer";
-
-    this.ws.onopen = (): void => {
-      this.ws.send(pack({ type: PacketType.RequestFullSync }));
-    };
-
-    this.ws.onmessage = (event): void => {
-      if (typeof event.data == "string") {
-        const packet = unpack(event.data);
-        this.processPacket(packet);
-      } else {
-        const packet = decodePacket(event.data);
-        this.processPacket(packet);
-      }
-    };
   }
 
   private setMode(mode: ClientMode): void {
@@ -126,73 +105,22 @@ export class GameClient {
     }
   }
 
-  private keyUp(event: KeyboardEvent, press: boolean): void {
-    if (!this.input.isGameKey(event)) {
-      return;
-    }
-    const key = this.input.getGameKey(event);
+  private processGameInput(change: InputChange): void {
     switch (this.mode) {
       case ClientMode.SelectTeam: {
-        //this.teamSelector.processInput(key, this.renderer, this.ws);
-        break;
-      }
-      case ClientMode.PreFlight: {
-        //const runways = this.gameObjects[GameObjectType.Runway];
-        //this.takeoffSelector.updateRunways(runways, this.renderer);
-        //this.takeoffSelector.processInput(key, this.renderer, this.ws);
-        break;
-      }
-      case ClientMode.Playing: {
-	if(key == InputKey.Up || key == InputKey.Left || key == InputKey.Right) {
-		const packet: Packet = {
-        	type: PacketType.UserGameInput,
-        	data: {
-        	  id: this.playerInfo.id,
-		  key: key,
-		  state : false,
-        	}
-      		};
-		this.previousKeyDown[event.which] = false;
-      		this.ws.send(pack(packet));
-      		break;
-	      }
-      }
-    }
-
-  }
-
-
-  private keyDown(event: KeyboardEvent): void {
-    if (!this.input.isGameKey(event)) {
-      return;
-    }
-    const key = this.input.getGameKey(event);
-
-    switch (this.mode) {
-      case ClientMode.SelectTeam: {
-        this.teamSelector.processInput(key, this.renderer, this.ws);
+        this.teamSelector.processInput(change, this.renderer, this.network);
         break;
       }
       case ClientMode.PreFlight: {
         const runways = this.gameObjects[GameObjectType.Runway];
         this.takeoffSelector.updateRunways(runways, this.renderer);
-        this.takeoffSelector.processInput(key, this.renderer, this.ws);
+        this.takeoffSelector.processInput(change, this.renderer, this.network);
         break;
       }
       case ClientMode.Playing: {
-	if((key == InputKey.Up || key == InputKey.Left || key == InputKey.Right  ) && this.previousKeyDown[event.which] == false) {
-		const packet: Packet = {
-        	type: PacketType.UserGameInput,
-        	data: {
-        	  id: this.playerInfo.id,
-		  key: key,
-		  state : true,
-        	}
-      		};
-		this.previousKeyDown[event.which] = true;
-      		this.ws.send(pack(packet));
-      		break;
-	      }
+        const packet: Packet = { type: PacketType.UserGameInput, data: change };
+        this.network.send(packet);
+        break;
       }
     }
   }

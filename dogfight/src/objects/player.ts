@@ -1,6 +1,7 @@
 import { GameObject, GameObjectType } from "../object";
 import { CacheEntry, Cache } from "../network/cache";
 import { Team } from "../constants";
+import { PlayerInput, InputKey } from "../input";
 
 export enum PlayerStatus {
   Playing,
@@ -17,6 +18,8 @@ export class Player extends GameObject {
   public status: PlayerStatus;
   public pressedKeys = {};
 
+  public inputState: PlayerInput;
+
   public constructor(id: number, cache: Cache) {
     super(id);
     this.name = "Player_" + this.id;
@@ -24,6 +27,12 @@ export class Player extends GameObject {
     this.controlID = 0;
     this.team = Team.Spectator;
     this.setStatus(cache, PlayerStatus.Takeoff);
+
+    // initialize player input to all false.
+    this.inputState = {};
+    for (const keyIndex in InputKey) {
+      this.inputState[keyIndex] = false;
+    }
   }
 
   public setStatus(cache: Cache, status: PlayerStatus): void {

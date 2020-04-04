@@ -2,6 +2,7 @@ import { GameObjectType, GameObject } from "../object";
 import { Team, SCALE_FACTOR, ROTATION_DIRECTIONS } from "../constants";
 import { Cache, CacheEntry } from "../network/cache";
 import { directionToRadians } from "../physics/helpers";
+import { KeyChangeList, InputKey } from "../input";
 
 export enum PlaneType {
   Albatros,
@@ -10,6 +11,12 @@ export enum PlaneType {
   Bristol,
   Salmson,
   Sopwith
+}
+
+export enum PlaneRotationStatus {
+  None,
+  Up,
+  Down
 }
 
 interface TeamPlanes {
@@ -92,6 +99,8 @@ export class Plane extends GameObject {
 
   // internal variables //
 
+  private rotateStatus: PlaneRotationStatus;
+
   // physics variables
   public localX: number;
   public localY: number;
@@ -107,6 +116,7 @@ export class Plane extends GameObject {
     // set internal variables
     this.localX = 0;
     this.localY = 0;
+    this.rotateStatus = PlaneRotationStatus.None;
 
     // set fuel decrement threshold
     this.fuelCounter = 0;
@@ -134,6 +144,7 @@ export class Plane extends GameObject {
 
   // advance the plane simulation
   public tick(cache: Cache, deltaTime: number): void {
+    this.rotate(cache);
     this.move(cache, deltaTime);
     this.burnFuel(cache, deltaTime);
   }
@@ -156,11 +167,6 @@ export class Plane extends GameObject {
     }
   }
 
-  /*
-    double d = getAngle(paramInt3);
-    paramInt1 += (int)(100 * paramInt4 / 25.0D * Math.cos(d));
-    paramInt2 += (int)(100 * paramInt4 / 25.0D * Math.sin(d));
-  */
   private move(cache: Cache, deltaTime: number): void {
     this.rotate(cache,this.rotation);
     const multiplier = deltaTime / 1000;
@@ -176,9 +182,26 @@ export class Plane extends GameObject {
     });
   }
 
-  public rotate(cache: Cache,speed : number = 1): void {
-    // avoid negative directions
-    const direction = (this.direction + speed + ROTATION_DIRECTIONS) % ROTATION_DIRECTIONS;
+  public setRotation(cache: Cache, key: InputKey, doRotate: boolean): void {
+    if (doRotate == false) {
+      this.rotateStatus = PlaneRotationStatus.None;
+      return;
+    }
+    if (key == InputKey.Left) {
+      this.rotateStatus = PlaneRotationStatus.Up;
+    } else {
+      this.rotateStatus = PlaneRotationStatus.Down;
+    }
+  }
+
+  public rotate(cache: Cache): void {
+    if (this.rotateStatus == PlaneRotationStatus.None) {
+      return;
+    }
+    const offset = this.rotateStatus == PlaneRotationStatus.Up ? 1 : -1;
+    const rotateSpeed = 2;
+    const direction =
+      (this.direction + offset * rotateSpeed) % ROTATION_DIRECTIONS;
     this.setDirection(cache, direction);
   }
 
