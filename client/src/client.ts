@@ -283,6 +283,7 @@ export class GameClient {
     }
     delete this.gameObjects[type][id];
     this.renderer.deleteSprite(type, id);
+    this.renderer.HUD.radar.refreshRadar(this.gameObjects);
   }
 
   public updateLanguage(language: string): void {
