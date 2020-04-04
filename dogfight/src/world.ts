@@ -304,28 +304,6 @@ export class GameWorld {
     return this.idCounter++;
   }
 
-  public userGameInput(player : Player, key : InputKey, state : boolean) : void {
-	  const p : Plane = this.planes[this.getObjectIndex(this.planes,player.controlID)];
-  	  player.pressedKeys[key] = state;
-	  if(!player.pressedKeys[InputKey.Left] && !player.pressedKeys[InputKey.Right])
-		  p.rotation = 0;
-	  if(player.pressedKeys[InputKey.Left] && player.pressedKeys[InputKey.Right])
-		  p.rotation = 0;
-	  if(player.pressedKeys[InputKey.Left] && !player.pressedKeys[InputKey.Right])
-		  p.rotation = 1;
-	  if(!player.pressedKeys[InputKey.Left] && player.pressedKeys[InputKey.Right])
-		  p.rotation = -1;
-	  if(state) {
-	    if(key == InputKey.Up) {
-	          p.setFlipped(this.cache, !p.flipped);
-	    }
-	  }
-	  else {
-            if(key == InputKey.Up) {
-	          //p.setFlipped(this.cache, !p.flipped);
-	    }
-	  }
-  }
 
   public requestTakeoff(player: Player, takeoffRequest: TakeoffRequest): void {
     const team = player.team;
