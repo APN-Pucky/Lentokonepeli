@@ -76,7 +76,7 @@ wss.on("connection", (ws): void => {
     }
 
     if (packet.type == PacketType.UserGameInput) {
-      world.userGameInput(player,packet.data.key,packet.data.state);
+      world.userGameInput(player, packet.data.key, packet.data.state);
     }
 
     if (packet.type == PacketType.RequestJoinTeam) {
