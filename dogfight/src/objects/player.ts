@@ -16,7 +16,6 @@ export class Player extends GameObject {
   public controlType: GameObjectType;
   public controlID: number;
   public status: PlayerStatus;
-  public pressedKeys = {};
 
   public inputState: PlayerInput;
 

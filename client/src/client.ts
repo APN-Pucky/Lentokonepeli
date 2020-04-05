@@ -30,7 +30,6 @@ export class GameClient {
   private takeoffSelector: TakeoffSelector;
 
   private gameObjects = {};
-  private previousKeyDown = {};
 
   private playerInfo = {
     id: undefined,

@@ -101,7 +101,6 @@ export class Plane extends GameObject {
 
   public planeType: PlaneType;
   public direction: number;
-  public rotation: number;
   public flipped: boolean;
   public health: number;
   public fuel: number;
@@ -150,7 +149,6 @@ export class Plane extends GameObject {
       flipped: false,
       engineOn: true,
       direction: 0,
-      rotation: 0,
       planeType: kind,
       team: side,
       health: 255,
