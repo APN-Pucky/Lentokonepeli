@@ -1,0 +1,1 @@
+{"version":3,"sources":["css/main.scss"],"names":[],"mappings":"AAAA,KACE,QAAA,CACA,SAAA,CACA,eAAA,CACA,sBAGF,OACE","file":"main.f48d79a0.css","sourceRoot":"../client/public","sourcesContent":["body {\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n  background-color: #eee;\n}\n\ncanvas {\n  display: block;\n  /*image-rendering: pixelated;*/\n} \n"]}
