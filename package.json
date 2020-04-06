@@ -9,7 +9,7 @@
     "start": "ts-node server/server.ts",
     "client": "parcel watch client/public/index.html",
     "build": "parcel build client/public/index.html client/public/images/*",
-    "buildsolo": "parcel build client/public/index.html client/public/images/* --public-url replacethislinewithadot", 
+    "buildsolo": "parcel build client/public/index.html client/public/images/* --public-url Lentokonepeli", 
     "clientOnly": "parcel client/public/index.html",
     "collision": "parcel client/collision/index.html",
     "lint": "eslint **/*.ts"

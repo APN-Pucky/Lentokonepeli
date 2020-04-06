@@ -51,7 +51,6 @@ jobs:
           npm install
           npm run buildsolo
           cp client/public/images/images.json dist/images/
-          sed -i 's/replacethislinewithadot/./g' dist/*.html dist/*.js dist/**/*.js
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v3
