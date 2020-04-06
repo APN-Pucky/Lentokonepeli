@@ -15,6 +15,11 @@ const thrust = 500 * SCALE_FACTOR;
 const gravity = 500 * SCALE_FACTOR;
 //const turnRate = Math.round(0.1 * SCALE_FACTOR);
 
+export const planeConstants = {
+  THRUST: 500,
+  GRAVITY: 500
+};
+
 export enum PlaneType {
   Albatros,
   Junkers,
@@ -157,8 +162,6 @@ export class Plane extends GameObject {
     const speed = planeData[kind].speed;
     this.drag = Math.round(thrust / SCALE_FACTOR) / speed;
 
-    console.log(PlaneType[kind], speed, "drag:", this.drag);
-
     // set networked variables
     this.setData(cache, {
       x: 0,
@@ -212,7 +215,14 @@ export class Plane extends GameObject {
     // Also, in the acceleration function you can experiment with drag*v^2,
     // that's more realistic but will come down to how it feels
     const engine = engineStatus == true ? 1 : 0;
-    return -y * gravity - this.drag * v + engine * thrust;
+    const speed = planeData[this.planeType].speed;
+    const DRAG = planeConstants.THRUST / speed;
+
+    return (
+      -y * (planeConstants.GRAVITY * SCALE_FACTOR) -
+      DRAG * v +
+      engine * (planeConstants.THRUST * SCALE_FACTOR)
+    );
     // return -y * gravity - drag * Math.pow(v, 2) + engine * thrust;
   }
 
@@ -263,6 +273,9 @@ export class Plane extends GameObject {
     if (this.rotateStatus == PlaneRotationStatus.None) {
       return;
     }
+    this.rotationThreshold = Math.round(
+      1000 / planeData[this.planeType].turnRate
+    );
     const upOrDown = this.rotateStatus == PlaneRotationStatus.Up ? 1 : -1;
     // add time to counter
     this.rotationCounter += deltaTime;
