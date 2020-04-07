@@ -145,8 +145,7 @@ export class GameWorld {
       switch (key) {
         case InputKey.Left:
         case InputKey.Right: {
-          plane.setRotation(this.cache, key, isPressed);
-          break;
+	        break;
         }
         case InputKey.Up: {
           if (isPressed) {
@@ -172,6 +171,13 @@ export class GameWorld {
         }
       }
     }
+    if(player.inputState[InputKey.Left] && !player.inputState[InputKey.Right])
+        plane.setRotation(this.cache, InputKey.Left,true);
+    else if(!player.inputState[InputKey.Left] && player.inputState[InputKey.Right])
+      	plane.setRotation(this.cache, InputKey.Right,true);
+    else if(player.inputState[InputKey.Left] == player.inputState[InputKey.Right])
+      	plane.setRotation(this.cache, InputKey.Right,false);
+
   }
 
   private processTakeoffs(): void {

@@ -57,7 +57,7 @@ export const planeData: PlaneInfo = {
     ammo: 95,
     fireRate: 500,
     speed: 330,
-    turnRate: 150
+    turnRate: 80
   },
   [PlaneType.Bristol]: {
     flightTime: 70,
@@ -217,11 +217,14 @@ export class Plane extends GameObject {
     const engine = engineStatus == true ? 1 : 0;
     const speed = planeData[this.planeType].speed;
     const DRAG = planeConstants.THRUST / speed;
+    const sintheta = Math.sin(Math.PI+directionToRadians(this.direction));
+    const costheta = Math.cos(Math.PI+directionToRadians(this.direction));
 
     return (
-      -y * (planeConstants.GRAVITY * SCALE_FACTOR) -
-      DRAG * v +
+      (this.engineOn?0:1)*sintheta*(planeConstants.GRAVITY * SCALE_FACTOR) -
+      (this.engineOn?DRAG:DRAG*0.25) * v +
       engine * (planeConstants.THRUST * SCALE_FACTOR)
+
     );
     // return -y * gravity - drag * Math.pow(v, 2) + engine * thrust;
   }
@@ -235,6 +238,13 @@ export class Plane extends GameObject {
     // y = sin(theta)
     const accel = this.accelerate(sinTheta, this.engineOn, this.velocity);
     this.velocity = this.velocity + accel * tstep;
+
+    if(this.velocity < 0) 
+	    this.velocity = 0;
+    if(this.velocity *0.02< 200) {
+	console.log(tstep)
+	this.rotate_impl(cache,deltaTime,this.direction-1>256/4&&this.direction+1<256/4*3 ?2:-2);
+    }
 
     //console.log(this.velocity);
     const deltaX = Math.round(this.velocity * Math.cos(radians) * tstep);
@@ -273,10 +283,17 @@ export class Plane extends GameObject {
     if (this.rotateStatus == PlaneRotationStatus.None) {
       return;
     }
+    const upOrDown = this.rotateStatus == PlaneRotationStatus.Up ? 1 : -1;
+    if(this.velocity*0.02 < 200) {
+	    return;
+    }
+    this.rotate_impl(cache,deltaTime,upOrDown);
+  }
+
+  public rotate_impl(cache: Cache, deltaTime: number,upOrDown : number): void {
     this.rotationThreshold = Math.round(
       1000 / planeData[this.planeType].turnRate
     );
-    const upOrDown = this.rotateStatus == PlaneRotationStatus.Up ? 1 : -1;
     // add time to counter
     this.rotationCounter += deltaTime;
 
@@ -294,6 +311,7 @@ export class Plane extends GameObject {
     }
     //   (this.direction + offset * rotateSpeed) % ROTATION_DIRECTIONS;
     // this.setDirection(cache, direction);
+
   }
 
   public setDirection(cache: Cache, direction: number): void {
