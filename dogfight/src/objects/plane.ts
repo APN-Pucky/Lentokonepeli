@@ -221,8 +221,8 @@ export class Plane extends GameObject {
     const costheta = Math.cos(Math.PI+directionToRadians(this.direction));
 
     return (
-      (this.engineOn?0:1)*sintheta*(planeConstants.GRAVITY * SCALE_FACTOR) -
-      (this.engineOn?DRAG:DRAG*0.25) * v +
+      sintheta*(planeConstants.GRAVITY * SCALE_FACTOR) -
+      DRAG * v +
       engine * (planeConstants.THRUST * SCALE_FACTOR)
 
     );
@@ -240,10 +240,10 @@ export class Plane extends GameObject {
     this.velocity = this.velocity + accel * tstep;
 
     if(this.velocity < 0) 
-	    this.velocity = 0;
+            this.velocity = 0;
     if(this.velocity *0.02< 200) {
-	console.log(tstep)
-	this.rotate_impl(cache,deltaTime,this.direction-1>256/4&&this.direction+1<256/4*3 ?2:-2);
+        console.log(tstep)
+        this.rotate_impl(cache,deltaTime,this.direction-1>256/4&&this.direction+1<256/4*3 ?2:-2);
     }
 
     //console.log(this.velocity);
@@ -287,7 +287,7 @@ export class Plane extends GameObject {
     if(this.velocity*0.02 < 200) {
 	    return;
     }
-    this.rotate_impl(cache,deltaTime,upOrDown);
+    this.rotate_impl(cache,deltaTime*this.velocity*0.02/300,upOrDown);
   }
 
   public rotate_impl(cache: Cache, deltaTime: number,upOrDown : number): void {
