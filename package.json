@@ -11,8 +11,14 @@
     "build": "parcel build client/public/index.html client/public/images/*",
     "build-ghpages": "parcel build client/public/index.html client/public/images/* --public-url /Lentokonepeli", 
     "clientOnly": "parcel client/public/index.html",
+    "lint": "eslint **/*.ts",
     "collision": "parcel client/collision/index.html",
-    "lint": "eslint **/*.ts"
+    "build-no-server": "env MODE=client parcel build client/public/index.html",
+    "no-server": "env MODE=client parcel client/public/index.html",
+    "watch-client": "parcel watch client/public/index.html",
+    "clean": "rm -rf .cache && rm -rf dist",
+    "assets": "cp -r ./client/public/images ./dist/images",
+    "setup": "npm run clean && mkdir dist && npm run assets"
   },
   "repository": {
     "type": "git",
