@@ -44,6 +44,7 @@ jobs:
           npm install
           npm run build-ghpages
           cp client/public/images/images.json dist/images/
+          git log --oneline -n1 >> dist/index.html
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v3

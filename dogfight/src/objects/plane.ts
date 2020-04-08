@@ -8,10 +8,10 @@ import { InputKey } from "../input";
 const w0 = 128;
 const gravity = 300;// * SCALE_FACTOR;
 
-export const planeConstants = {
-  THRUST: 500,
-  GRAVITY: 500
-};
+//export const planeConstants = {
+//  THRUST: 500,
+//  GRAVITY: 500
+//};
 
 export enum PlaneType {
   Albatros,
@@ -325,16 +325,10 @@ export class Plane extends GameObject {
     //  return;
     //}
     const upOrDown = this.rotateStatus == PlaneRotationStatus.Up ? 1 : -1;
-    if(this.velocity*0.02 < 200) {
-	    return;
-    }
     this.rotate_impl(cache,deltaTime,upOrDown);
   }
 
   public rotate_impl(cache: Cache, deltaTime: number,upOrDown : number): void {
-    this.rotationThreshold = Math.round(
-      1000 / planeData[this.planeType].turnRate
-    );
     // add time to counter
     this.rotationCounter += deltaTime;
 
