@@ -239,11 +239,12 @@ export class Plane extends GameObject {
     const accel = this.accelerate(sinTheta, this.engineOn, this.velocity);
     this.velocity = this.velocity + accel * tstep;
 
-    if(this.velocity < 0) 
+    if(this.velocity < 0) {
             this.velocity = 0;
+    }
     if(this.velocity *0.02< 200) {
         console.log(tstep)
-        this.rotate_impl(cache,deltaTime,this.direction-1>256/4&&this.direction+1<256/4*3 ?2:-2);
+        this.rotate_impl(cache,deltaTime,(this.direction-1>256/4&&this.direction+1<256/4*3 ?2:-2));
     }
 
     //console.log(this.velocity);
@@ -284,9 +285,7 @@ export class Plane extends GameObject {
       return;
     }
     const upOrDown = this.rotateStatus == PlaneRotationStatus.Up ? 1 : -1;
-    if(this.velocity*0.02 < 200) {
-	    return;
-    }
+    
     this.rotate_impl(cache,deltaTime*this.velocity*0.02/300,upOrDown);
   }
 
@@ -295,16 +294,16 @@ export class Plane extends GameObject {
       1000 / planeData[this.planeType].turnRate
     );
     // add time to counter
-    this.rotationCounter += deltaTime;
+    this.rotationCounter += deltaTime * upOrDown;
 
     // if time elapsed is greater than our threshold,
     // it's time to rotate
-    if (this.rotationCounter > this.rotationThreshold) {
+    if (Math.abs(this.rotationCounter) > this.rotationThreshold) {
       // rotate plane
       const degreesToRotate = Math.floor(
         this.rotationCounter / this.rotationThreshold
       );
-      let newDirection = this.direction + degreesToRotate * upOrDown;
+      let newDirection = this.direction + degreesToRotate;
       newDirection = mod(newDirection, ROTATION_DIRECTIONS);
       this.rotationCounter = this.rotationCounter % this.rotationThreshold;
       this.set(cache, "direction", newDirection);
