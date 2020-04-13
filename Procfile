@@ -1,1 +1,1 @@
-web: cp client/public/images/images.json dist/images/ && npm run server
+web: npm run assets && npm run server
