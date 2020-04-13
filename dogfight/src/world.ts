@@ -98,7 +98,7 @@ export class GameWorld {
 
       // if fuel has run out, kill entity.
       if (plane.fuel <= 0) {
-        this.removeObject(plane);
+        //this.removeObject(plane);
       }
     });
   }
@@ -145,7 +145,6 @@ export class GameWorld {
       switch (key) {
         case InputKey.Left:
         case InputKey.Right: {
-          plane.setRotation(this.cache, key, isPressed);
           break;
         }
         case InputKey.Up: {
@@ -172,6 +171,12 @@ export class GameWorld {
         }
       }
     }
+    if (player.inputState[InputKey.Left] && !player.inputState[InputKey.Right])
+      plane.setRotation(this.cache, InputKey.Left, true);
+    if (!player.inputState[InputKey.Left] && player.inputState[InputKey.Right])
+      plane.setRotation(this.cache, InputKey.Right, true);
+    if (player.inputState[InputKey.Left] == player.inputState[InputKey.Right])
+      plane.setRotation(this.cache, InputKey.Right, false);
   }
 
   private processTakeoffs(): void {
@@ -215,10 +220,13 @@ export class GameWorld {
       player.team
     );
     let offsetX = 100;
+    let simpleDirection = -1;
     if (runway.direction == FacingDirection.Right) {
       offsetX *= -1;
+      simpleDirection = 1;
     }
     plane.setPos(this.cache, runway.x + offsetX, 10);
+    plane.setVelocity(this.cache, plane.minSpeed * simpleDirection * 1.1, 0);
     plane.setFlipped(this.cache, runway.direction == FacingDirection.Left);
     const direction =
       runway.direction == FacingDirection.Left
@@ -226,7 +234,7 @@ export class GameWorld {
         : 0;
     plane.setDirection(this.cache, direction);
     this.planes.push(plane);
-    // assing plane to player
+    // assign plane to player
     player.setControl(this.cache, plane.type, plane.id);
     player.setStatus(this.cache, PlayerStatus.Playing);
   }
