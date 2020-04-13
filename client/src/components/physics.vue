@@ -1,55 +1,82 @@
 <template>
-  <div id="physics">
+  <div id="physics" v-if="noServerMode">
     <!-- Physics shit goes here -->
-    <div>
+    <div align="left" padding="5px">
+      <b>Current Plane:</b>
+      <div v-for="(val, index) in HUD" v-bind:key="index">
+        {{ index }}:
+        {{ val }}
+      </div>
+      <br />
+    </div>
+    <div align="left" padding="5px">
       <b>Global physics:</b>
       <br />
-      <label>Gravity</label>
-      <input type="text" v-model.number="globals.gravity" />
-      <br />
-      <label>Recovery Angle</label>
-      <input type="text" v-model.number="globals.recoveryAngle" />
+      <label class="statLabel">Gravity</label>
+      <input type="text" class="statBox" v-model.number="globals.gravity" />
     </div>
     <div
       class="planevar"
       v-for="(value, id) in planeInfo"
       :key="id"
       v-bind:class="[isMyPlane(id) ? 'mine' : '']"
+      align="left"
     >
       <b>{{ planeName(id) }}:</b>
       <br />
-      <label>Thrust</label>
-      <input type="text" v-model.number="planeInfo[id].thrust" />
+      <label class="statLabel">Recovery Angle</label>
+      <input type="text" class="statBox" v-model.number="planeInfo[id].recoveryAngle" />
       <br />
-      <label>Max Speed</label>
-      <input type="text" v-model.number="planeInfo[id].maxSpeed" />
+      <label class="statLabel">Glide Angle</label>
+      <input type="text" class="statBox" v-model.number="planeInfo[id].glideAngle" />
       <br />
-      <label>Stall Speed</label>
-      <input type="text" v-model.number="planeInfo[id].minSpeed" />
+      <label class="statLabel">Thrust</label>
+      <input type="text" class="statBox" v-model.number="planeInfo[id].thrust" />
       <br />
-      <label>Turn Radius</label>
-      <input type="text" v-model.number="planeInfo[id].turnRadius" />
+      <label class="statLabel">Drag</label>
+      <input type="text" class="statBox" v-model.number="planeInfo[id].freeDrag" />
       <br />
-      <label>Max Altitude</label>
-      <input type="text" v-model.number="planeInfo[id].maxAltitude" />
+      <label class="statLabel">Max Speed</label>
+      <input type="text" class="statBox" v-model.number="planeInfo[id].maxSpeed" />
       <br />
-      <label>Flight Time</label>
-      <input type="text" v-model.number="planeInfo[id].flightTime" />
+      <label class="statLabel">Stall Speed</label>
+      <input type="text" class="statBox" v-model.number="planeInfo[id].minSpeed" />
       <br />
+      <label class="statLabel">Turn Radius</label>
+      <input type="text" class="statBox" v-model.number="planeInfo[id].turnRadius" />
+      <br />
+      <label class="statLabel">Max Altitude</label>
+      <input type="text" class="statBox" v-model.number="planeInfo[id].maxAltitude" />
+      <br />
+      <label class="statLabel">Flight Time</label>
+      <input type="text" class="statBox" v-model.number="planeInfo[id].flightTime" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { PlaneType, planeGlobals } from "../../../dogfight/src/objects/plane";
+import {
+  PlaneType,
+  planeGlobals,
+  infoHUD
+} from "../../../dogfight/src/objects/plane";
+import { BuildType } from "../../../dogfight/src/constants";
 export default Vue.extend({
+  data: (): any => {
+    return {
+      noServerMode: process.env.BUILD == BuildType.Client
+    };
+  },
   computed: {
     planeInfo() {
       return this.$store.state.planeInfo;
     },
     globals() {
       return planeGlobals;
+    },
+    HUD() {
+      return this.$store.state.infoHUD;
     }
   },
   methods: {
@@ -63,10 +90,6 @@ export default Vue.extend({
         return mine.planeType == id;
       }
       return isMine;
-    },
-    updatePlaneVars() {
-      console.log(this.id);
-      console.log(this.$el.value);
     }
   }
 });
@@ -75,6 +98,15 @@ export default Vue.extend({
 <style>
 #physics {
   margin: 1em;
+  font-size: 14px;
+}
+.statLabel {
+  display: inline-block;
+  width: 100px;
+}
+.statBox {
+  float: "right";
+  width: 80px;
 }
 .mine {
   background-color: lightblue;

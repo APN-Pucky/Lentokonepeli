@@ -1,4 +1,3 @@
-import { loadSpriteSheet } from "../src/render/textures";
 import { GameClient } from "../src/client";
 // import Cookies from "js-cookie";
 // import { Localizer } from "../src/localization/localizer";
@@ -7,8 +6,7 @@ import App from "../src/components/app.vue";
 import Vue from "vue";
 import Vuex from "vuex";
 import { VNode } from "vue/types/umd";
-import { GameObjectType } from "../../dogfight/src/object";
-import { planeData } from "../../dogfight/src/objects/plane";
+import { planeData, infoHUD } from "../../dogfight/src/objects/plane";
 
 Vue.config.productionTip = false;
 Vue.use(Vuex);
@@ -19,7 +17,8 @@ function init(): void {
   const store = new Vuex.Store({
     state: {
       client: client,
-      planeInfo: planeData
+      planeInfo: planeData,
+      infoHUD: infoHUD
     }
   });
 

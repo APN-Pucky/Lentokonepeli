@@ -46,9 +46,7 @@ export class GameClient {
     // Initialize game object container
     this.gameObjects = {};
     for (const key in GameObjectType) {
-      this.gameObjects[key] = {
-        updated: Date.now()
-      };
+      this.gameObjects[key] = {};
     }
 
     // instantiate client UI logic
@@ -128,12 +126,9 @@ export class GameClient {
         this.takeoffSelector.processInput(change, this.renderer, this.network);
         break;
       }
-      case ClientMode.Playing: {
-        const packet: Packet = { type: PacketType.UserGameInput, data: change };
-        this.network.send(packet);
-        break;
-      }
     }
+    const packet: Packet = { type: PacketType.UserGameInput, data: change };
+    this.network.send(packet);
   }
 
   private processPacket(packet: Packet): void {
@@ -167,6 +162,17 @@ export class GameClient {
     }
   }
 
+  private getControllingPlayer(type: GameObjectType, objid: string): number {
+    // check if this ia followed object.
+    for (const id in this.gameObjects[GameObjectType.Player]) {
+      const p = this.gameObjects[GameObjectType.Player][id];
+      if (p.controlType == type && p.controlID == objid) {
+        return parseInt(id);
+      }
+    }
+    return -1;
+  }
+
   private processEntry(entry: CacheEntry, id: string): void {
     const { type, ...data } = entry;
     // If the update data is empty, that is a signal
@@ -188,13 +194,33 @@ export class GameClient {
       let value = data[key];
       object[key] = value;
     }
-    this.gameObjects[type].updated = Date.now();
+    // this.gameObjects[type].updated = Date.now();
 
     this.renderer.updateSprite(type, id, data);
+
+    // If this a controlled object by some player, update the name position
+    const controllerID = this.getControllingPlayer(type, id);
+    if (controllerID >= 0) {
+      // console.log(GameObjectType[type], id, "is controlled by", controllerID);
+      const player = this.gameObjects[GameObjectType.Player][controllerID];
+      this.renderer.playerInfo.setInfo(
+        this.playerInfo.team,
+        controllerID,
+        player,
+        object
+      );
+    }
 
     // check if this changes our radar, if so, update it too.
     if (radarObjects.includes(type)) {
       this.renderer.HUD.radar.refreshRadar(this.gameObjects);
+    }
+
+    // If the player is not following anything, don't display name.
+    if (type == GameObjectType.Player) {
+      if (object.controlType == GameObjectType.None) {
+        this.renderer.playerInfo.deletePlayer(parseInt(id));
+      }
     }
 
     // check if change to our player or followobject
@@ -231,6 +257,9 @@ export class GameClient {
         type: GameObjectType.None,
         id: undefined
       };
+    }
+    if (type == GameObjectType.Player) {
+      this.renderer.playerInfo.deletePlayer(parseInt(id));
     }
     delete this.gameObjects[type][id];
     this.gameObjects[type].updated = Date.now();
