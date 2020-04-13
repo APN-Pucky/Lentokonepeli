@@ -47,11 +47,7 @@ export class ClientServer {
         }
         const key = packet.data.key;
         const isPressed = packet.data.isPressed === true;
-<<<<<<< HEAD
 	this.player.inputState[key] = isPressed;
-=======
-        this.player.inputState[key] = isPressed;
->>>>>>> 99a7a4f6acdc541edeb9c253e7dadfd6c6cda201
         this.world.queueInput(this.player.id, key, isPressed);
         break;
       }
