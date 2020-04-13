@@ -8,11 +8,14 @@ import { Runway } from "./objects/runway";
 import { Tower } from "./objects/tower";
 import { Trooper } from "./objects/trooper";
 import { Water } from "./objects/water";
+import { Explosion, EXPLOSION_TIME } from "./objects/explosion";
 import { GameObject, GameObjectType } from "./object";
 import { Team, FacingDirection, ROTATION_DIRECTIONS } from "./constants";
 import { TakeoffRequest, TakeoffEntry } from "./takeoff";
 import { teamPlanes, Plane } from "./objects/plane";
 import { InputQueue, InputKey, KeyChangeList } from "./input";
+import { RectangleBody } from "./physics/rectangle";
+import { isRectangleCollision } from "./physics/collision";
 
 /**
  * The Game World contains all entites,
@@ -35,6 +38,7 @@ export class GameWorld {
   private waters: Water[];
   private planes: Plane[];
   private troopers: Trooper[];
+  private explosions: Explosion[];
 
   // god please forgive me for this sin
   private objectArrays = {
@@ -46,7 +50,8 @@ export class GameWorld {
     [GameObjectType.ControlTower]: "towers",
     [GameObjectType.Trooper]: "troopers",
     [GameObjectType.Water]: "waters",
-    [GameObjectType.Plane]: "planes"
+    [GameObjectType.Plane]: "planes",
+    [GameObjectType.Explosion]: "explosions"
   };
 
   // Next available ID, incremented by 1.
@@ -75,6 +80,7 @@ export class GameWorld {
     this.troopers = [];
     this.waters = [];
     this.planes = [];
+    this.explosions = [];
   }
 
   /**
@@ -89,7 +95,76 @@ export class GameWorld {
     this.processInputs();
     this.processTakeoffs();
     this.processPlanes(deltaTime);
+    this.processExplosions(deltaTime);
+    this.processCollision();
     return this.cache;
+  }
+
+  private processCollision(): void {
+    const grounds = this.grounds.map(
+      (g): RectangleBody => {
+        return g.getRect();
+      }
+    );
+    const waters = this.waters.map(
+      (w): RectangleBody => {
+        return w.getRect();
+      }
+    );
+    for (const plane of this.planes) {
+      let isDead = false;
+      const planeRect = plane.getRect();
+      for (const ground of grounds) {
+        if (isRectangleCollision(planeRect, ground)) {
+          this.destroyPlane(plane, true);
+          isDead = true;
+          break;
+        }
+      }
+      if (isDead) {
+        continue;
+      }
+      for (const water of waters) {
+        if (isRectangleCollision(planeRect, water)) {
+          this.destroyPlane(plane, false);
+          isDead = true;
+          break;
+        }
+      }
+      // process water collisions.
+    }
+  }
+
+  private destroyPlane(plane: Plane, doExplosion: boolean): void {
+    const x = plane.x;
+    const y = plane.y;
+    // set player info to pre-flight
+    const player = this.getPlayerControlling(plane);
+    player.setStatus(this.cache, PlayerStatus.Takeoff);
+    player.setControl(this.cache, GameObjectType.None, 0);
+    this.removeObject(plane);
+    if (doExplosion) {
+      const explosion = new Explosion(this.nextID(), this.cache, x, y);
+      this.explosions.push(explosion);
+    }
+  }
+
+  private getPlayerControlling(object: GameObject): Player {
+    for (const player of this.players) {
+      if (player.controlID == object.id && player.controlType == object.type) {
+        return player;
+      }
+    }
+  }
+
+  private processExplosions(deltaTime: number): void {
+    // do something
+    this.explosions.forEach((explosion): void => {
+      explosion.tick(this.cache, deltaTime);
+      if (explosion.age > 1000) {
+        this.removeObject(explosion);
+      }
+    });
   }
 
   private processPlanes(deltaTime: number): void {
@@ -145,7 +220,7 @@ export class GameWorld {
       switch (key) {
         case InputKey.Left:
         case InputKey.Right: {
-	        break;
+          break;
         }
         case InputKey.Up: {
           if (isPressed) {
@@ -160,24 +235,19 @@ export class GameWorld {
           break;
         }
         case InputKey.Jump: {
-          // temporary, just destroy the plane for now.
           if (isPressed) {
-            this.removeObject(plane);
-            // set player info to pre-flight
-            player.setStatus(this.cache, PlayerStatus.Takeoff);
-            player.setControl(this.cache, GameObjectType.None, 0);
+            this.destroyPlane(plane, true);
           }
           break;
         }
       }
     }
-    if(player.inputState[InputKey.Left] && !player.inputState[InputKey.Right])
-        plane.setRotation(this.cache, InputKey.Left,true);
-    else if(!player.inputState[InputKey.Left] && player.inputState[InputKey.Right])
-      	plane.setRotation(this.cache, InputKey.Right,true);
-    else if(player.inputState[InputKey.Left] == player.inputState[InputKey.Right])
-      	plane.setRotation(this.cache, InputKey.Right,false);
-
+    if (player.inputState[InputKey.Left] && !player.inputState[InputKey.Right])
+      plane.setRotation(this.cache, InputKey.Left, true);
+    if (!player.inputState[InputKey.Left] && player.inputState[InputKey.Right])
+      plane.setRotation(this.cache, InputKey.Right, true);
+    if (player.inputState[InputKey.Left] == player.inputState[InputKey.Right])
+      plane.setRotation(this.cache, InputKey.Right, false);
   }
 
   private processTakeoffs(): void {
@@ -218,7 +288,7 @@ export class GameWorld {
       this.nextID(),
       this.cache,
       takeoff.request.plane,
-      player.team,
+      player.team
     );
     let offsetX = 100;
     let simpleDirection = -1;
@@ -226,8 +296,8 @@ export class GameWorld {
       offsetX *= -1;
       simpleDirection = 1;
     }
-    plane.setPos(this.cache, runway.x + offsetX, 10);
-    plane.setVel(this.cache, plane.minSpeed * simpleDirection * 1.1, 0);
+    plane.setPos(this.cache, runway.x + offsetX, 30);
+    plane.setVelocity(this.cache, plane.minSpeed * simpleDirection * 1.1, 0);
     plane.setFlipped(this.cache, runway.direction == FacingDirection.Left);
     const direction =
       runway.direction == FacingDirection.Left
@@ -274,7 +344,8 @@ export class GameWorld {
       this.towers,
       this.troopers,
       this.waters,
-      this.planes
+      this.planes,
+      this.explosions
     ];
     const cache: Cache = {};
     for (const obj in objects) {

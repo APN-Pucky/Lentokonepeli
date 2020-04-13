@@ -1,6 +1,7 @@
 import { PacketType, Packet } from "../../dogfight/src/network/types";
 import { encodePacket, decodePacket } from "../../dogfight/src/network/encode";
 import { ClientServer } from "./ClientServer";
+import { BuildType } from "../../dogfight/src/constants";
 
 const wssPath = "ws://" + location.host;
 
@@ -14,7 +15,7 @@ export class NetworkHandler {
 
   private onPacketRecieved: packetCallback;
 
-  private clientOnly = true;
+  private clientOnly = process.env.BUILD == BuildType.Client;
   private clientServer: ClientServer;
 
   public constructor(callback: packetCallback) {

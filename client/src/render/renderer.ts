@@ -6,7 +6,7 @@ import { Vec2d } from "../../../dogfight/src/physics/vector";
 import { toPixiCoords } from "./coords";
 import { SkyBackground } from "./objects/sky";
 import { GameHud } from "./objects/hud";
-import { GameObjectType, GameObject } from "../../../dogfight/src/object";
+import { GameObjectType } from "../../../dogfight/src/object";
 import { FlagSprite } from "./sprites/flag";
 import { GroundSprite } from "./sprites/ground";
 import { WaterSprite } from "./sprites/water";
@@ -19,6 +19,8 @@ import { TeamChooserUI } from "./objects/teamChooserUI";
 import { ClientMode } from "../types";
 import { TakeoffSelectUI } from "./objects/takeoffSelectUI";
 import { PlaneSprite } from "./sprites/plane";
+import { PlayerInfo } from "./objects/playerInfo";
+import { ExplosionSprite } from "./sprites/explosion";
 
 /**
  * A class which renders the game world.
@@ -51,6 +53,11 @@ export class GameRenderer {
    * Entities that belong in the game world go here.
    */
   public entityContainer: PIXI.Container;
+
+  /**
+   * A container for player name strings on the screen
+   */
+  public playerInfo: PlayerInfo;
 
   /**
    * A container which draws grids, coords, and
@@ -87,6 +94,8 @@ export class GameRenderer {
     this.entityContainer = new PIXI.Container();
     this.gameContainer.interactive = true;
 
+    this.playerInfo = new PlayerInfo(this.spriteSheet);
+
     this.debug = new DebugView(this.pixiApp.renderer);
     this.debug.setEnabled(false);
 
@@ -100,6 +109,8 @@ export class GameRenderer {
     // Setup pixi classes
     // Make the screen objects layerable.
     this.entityContainer.sortableChildren = true;
+
+    this.entityContainer.addChild(this.playerInfo.container);
 
     // Add stuff to the appropriate containers
     this.worldContainer.addChild(this.sky.container);
@@ -182,6 +193,8 @@ export class GameRenderer {
         return new PlayerSprite(this.spriteSheet);
       case GameObjectType.Trooper:
         return new TrooperSprite(this.spriteSheet);
+      case GameObjectType.Explosion:
+        return new ExplosionSprite(this.spriteSheet);
       case GameObjectType.Plane:
         return new PlaneSprite(this.spriteSheet);
       default:

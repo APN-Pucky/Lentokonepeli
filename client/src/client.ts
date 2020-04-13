@@ -1,4 +1,4 @@
-import { spriteSheet } from "./render/textures";
+import { spriteSheet, loadSpriteSheet } from "./render/textures";
 import { GameRenderer } from "./render/renderer";
 import { CanvasEventHandler } from "./render/event";
 import { Localizer } from "./localization/localizer";
@@ -13,7 +13,7 @@ import { TakeoffSelector } from "./takeoffSelector";
 import { radarObjects } from "./render/objects/radar";
 import { NetworkHandler } from "./networkHandler";
 import { InputChange } from "../../dogfight/src/input";
-import { PlayerStatus, Player } from "../../dogfight/src/objects/player";
+import { PlayerStatus } from "../../dogfight/src/objects/player";
 
 export class GameClient {
   private renderer: GameRenderer;
@@ -23,21 +23,21 @@ export class GameClient {
   private input: InputHandler;
   private canvasHandler: CanvasEventHandler;
 
-  private loadedGame: boolean = false;
-  private mode: ClientMode;
+  public loadedGame: boolean = false;
+  public mode: ClientMode = ClientMode.SelectTeam;
 
   // Client UI Logic classes
   private teamSelector: TeamSelector;
   private takeoffSelector: TakeoffSelector;
 
-  private gameObjects = {};
+  public gameObjects: {};
 
   private playerInfo = {
     id: undefined,
     team: undefined
   };
 
-  private followObject = {
+  public followObject = {
     type: GameObjectType.None,
     id: undefined
   };
@@ -53,6 +53,13 @@ export class GameClient {
     this.teamSelector = new TeamSelector();
     this.takeoffSelector = new TakeoffSelector();
 
+    loadSpriteSheet((): void => {
+      this.initRenderer();
+    });
+  }
+
+  private initRenderer(): void {
+    // initialize renderer stuff here
     // create renderer
     this.renderer = new GameRenderer(spriteSheet);
 
@@ -65,21 +72,25 @@ export class GameClient {
       this.processPacket(data);
     });
 
+    // center camera
+    this.renderer.centerCamera(0, 150);
+
+    // Draw it to the screen
+    const div = document.getElementById("game");
+    div.appendChild(this.renderer.getView());
+
+    // update language
+    this.updateLanguage(Localizer.getLanguage());
+
     // Add event listeners for input
     this.input = new InputHandler();
     this.input.processGameKeyChange = (change): void => {
       this.processGameInput(change);
     };
+  }
 
-    // center camera
-    this.renderer.centerCamera(0, 150);
-
-    // Draw it to the screen
-    const div = document.getElementById("app");
-    div.appendChild(this.renderer.getView());
-
-    // update language
-    this.updateLanguage(Localizer.getLanguage());
+  public getFollowObject(): any | undefined {
+    return this.gameObjects[this.followObject.type][this.followObject.id];
   }
 
   private setMode(mode: ClientMode): void {
@@ -115,12 +126,9 @@ export class GameClient {
         this.takeoffSelector.processInput(change, this.renderer, this.network);
         break;
       }
-      case ClientMode.Playing: {
-        const packet: Packet = { type: PacketType.UserGameInput, data: change };
-        this.network.send(packet);
-        break;
-      }
     }
+    const packet: Packet = { type: PacketType.UserGameInput, data: change };
+    this.network.send(packet);
   }
 
   private processPacket(packet: Packet): void {
@@ -154,6 +162,17 @@ export class GameClient {
     }
   }
 
+  private getControllingPlayer(type: GameObjectType, objid: string): number {
+    // check if this ia followed object.
+    for (const id in this.gameObjects[GameObjectType.Player]) {
+      const p = this.gameObjects[GameObjectType.Player][id];
+      if (p.controlType == type && p.controlID == objid) {
+        return parseInt(id);
+      }
+    }
+    return -1;
+  }
+
   private processEntry(entry: CacheEntry, id: string): void {
     const { type, ...data } = entry;
     // If the update data is empty, that is a signal
@@ -175,12 +194,33 @@ export class GameClient {
       let value = data[key];
       object[key] = value;
     }
+    // this.gameObjects[type].updated = Date.now();
 
     this.renderer.updateSprite(type, id, data);
+
+    // If this a controlled object by some player, update the name position
+    const controllerID = this.getControllingPlayer(type, id);
+    if (controllerID >= 0) {
+      // console.log(GameObjectType[type], id, "is controlled by", controllerID);
+      const player = this.gameObjects[GameObjectType.Player][controllerID];
+      this.renderer.playerInfo.setInfo(
+        this.playerInfo.team,
+        controllerID,
+        player,
+        object
+      );
+    }
 
     // check if this changes our radar, if so, update it too.
     if (radarObjects.includes(type)) {
       this.renderer.HUD.radar.refreshRadar(this.gameObjects);
+    }
+
+    // If the player is not following anything, don't display name.
+    if (type == GameObjectType.Player) {
+      if (object.controlType == GameObjectType.None) {
+        this.renderer.playerInfo.deletePlayer(parseInt(id));
+      }
     }
 
     // check if change to our player or followobject
@@ -218,7 +258,11 @@ export class GameClient {
         id: undefined
       };
     }
+    if (type == GameObjectType.Player) {
+      this.renderer.playerInfo.deletePlayer(parseInt(id));
+    }
     delete this.gameObjects[type][id];
+    this.gameObjects[type].updated = Date.now();
     this.renderer.deleteSprite(type, id);
     this.renderer.HUD.radar.refreshRadar(this.gameObjects);
   }
