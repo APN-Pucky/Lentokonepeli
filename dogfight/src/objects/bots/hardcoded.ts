@@ -51,7 +51,8 @@ export class HardcodedBot extends Player {
   private current_manover: Manover;
 
   public constructor(id: number, cache: Cache) {
-    super(id, cache);
+   super(id, cache);
+   this.name = "Stupid_Bot_" + this.id;
 
     this.count = 0;
     this.sum = 0;
