@@ -1,5 +1,7 @@
 import { Cache } from "../network/cache";
 import { Player } from "../objects/player";
+import { ReinforceBot } from "../objects/bots/reinforce";
+import { HardcodedBot } from "../objects/bots/hardcoded";
 import { Flag } from "../objects/flag";
 import { Ground } from "../objects/ground";
 import { Hill } from "../objects/hill";
@@ -16,6 +18,7 @@ import { processInputs } from "./input";
 import { processCollision } from "./collision";
 import { processTakeoffs, TakeoffEntry } from "./takeoff";
 import { processPlanes } from "./plane";
+import { processPlayersBefore, processPlayersAfter } from "./players";
 import { processExplosions } from "./explosion";
 
 /**
@@ -61,6 +64,13 @@ export class GameWorld {
 
   public constructor() {
     this.resetWorld();
+    const player = new ReinforceBot(this.nextID(), this.cache);
+    player.set(this.cache, "team", Team.Centrals);
+    this.addObject(player);
+
+    const player2 = new HardcodedBot(this.nextID(), this.cache);
+    player2.set(this.cache, "team", Team.Centrals);
+    this.addObject(player2);
   }
 
   public clearCache(): void {
@@ -95,11 +105,14 @@ export class GameWorld {
   public tick(deltaTime: number): Cache {
     processInputs(this);
     processTakeoffs(this);
+    processPlayersBefore(this, deltaTime);
     processPlanes(this, deltaTime);
     processExplosions(this, deltaTime);
     processCollision(this);
+    processPlayersAfter(this, deltaTime);
     return this.cache;
   }
+
 
   public getPlayerControlling(object: GameObject): Player {
     for (const player of this.players) {
@@ -126,6 +139,8 @@ export class GameWorld {
     this.addObject(player);
     return player;
   }
+
+
 
   public removePlayer(p: Player): void {
     this.removeObject(p);

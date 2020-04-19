@@ -50,8 +50,8 @@ function loop(): void {
   }
   lastTick = currentTick;
 }
-
-setInterval(loop, 1000 / 60);
+const ticking = 60;
+setInterval(loop, 1000 / ticking);
 
 wss.on("connection", (ws): void => {
   console.log("New connection!");
