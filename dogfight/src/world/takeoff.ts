@@ -32,6 +32,7 @@ export function requestTakeoff(
       playerID: player.id,
       request: takeoffRequest
     });
+    console.log("takeoff");
   }
 }
 

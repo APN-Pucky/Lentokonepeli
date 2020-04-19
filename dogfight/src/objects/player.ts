@@ -2,6 +2,7 @@ import { GameObject, GameObjectType } from "../object";
 import { CacheEntry, Cache } from "../network/cache";
 import { Team } from "../constants";
 import { PlayerInput, InputKey } from "../input";
+import { GameWorld } from "../world/world";
 
 export enum PlayerStatus {
   Playing,
@@ -32,6 +33,13 @@ export class Player extends GameObject {
     for (const keyIndex in InputKey) {
       this.inputState[keyIndex] = false;
     }
+  }
+
+  public tick(cache: Cache, delta: number, world: GameWorld): void {
+    return;
+  }
+  public reward(cache: Cache, delta: number, world: GameWorld): void {
+    return;
   }
 
   public setStatus(cache: Cache, status: PlayerStatus): void {
