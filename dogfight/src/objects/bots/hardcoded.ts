@@ -100,7 +100,7 @@ export class HardcodedBot extends Player {
 
       let key = key_steer + key_plane + key_manover + key_ground;
       if (this.count > 9) {
-        console.log("key: " + key + " = " + key_value + " " + key_steer + " " + key_plane + " " + key_ground + " " + key_manover + "@" + this.current_manover);
+        //console.log("key: " + key + " = " + key_value + " " + key_steer + " " + key_plane + " " + key_ground + " " + key_manover + "@" + this.current_manover);
       }
 
       if (key > 0) {
@@ -378,7 +378,7 @@ export class HardcodedBot extends Player {
     let value_clock_engineoff = this.value_position(plane["x"] + plane["speed"] * cos / 1000 / 2, plane["y"] + plane["speed"] * sin / 1000 / 2, world);
 
     if (this.count > 9) {
-      console.log("value: " + value_plane + " " + value_forward + " " + value_clock + " " + value_counterclock + " " + value_clock_engineoff + " " + value_counterclock_engineoff);
+      //console.log("value: " + value_plane + " " + value_forward + " " + value_clock + " " + value_counterclock + " " + value_clock_engineoff + " " + value_counterclock_engineoff);
     }
 
 

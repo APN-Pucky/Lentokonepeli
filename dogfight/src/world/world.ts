@@ -64,9 +64,9 @@ export class GameWorld {
 
   public constructor() {
     this.resetWorld();
-    const player = new ReinforceBot(this.nextID(), this.cache);
-    player.set(this.cache, "team", Team.Centrals);
-    this.addObject(player);
+    //const player = new ReinforceBot(this.nextID(), this.cache);
+    //player.set(this.cache, "team", Team.Centrals);
+    //this.addObject(player);
 
     const player2 = new HardcodedBot(this.nextID(), this.cache);
     player2.set(this.cache, "team", Team.Centrals);
