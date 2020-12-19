@@ -2,6 +2,7 @@ import { PacketType, Packet } from "../../dogfight/src/network/types";
 import { encodePacket, decodePacket } from "../../dogfight/src/network/encode";
 import { ClientServer } from "./ClientServer";
 import { BuildType } from "../../dogfight/src/constants";
+import { ClientState, ConnectionState } from "./clientState";
 
 const wssPath = "ws://" + location.host;
 
@@ -18,14 +19,14 @@ export class NetworkHandler {
   private clientOnly = process.env.BUILD == BuildType.Client;
   private clientServer: ClientServer;
 
-  public constructor(callback: packetCallback) {
-    console.log("network handler made!");
+  public constructor(callback: packetCallback, img) {
+    // console.log("network handler made!");
     this.onPacketRecieved = callback;
 
     // create connection to server.
     // If we are in client only mode, fake a "server" locally.
     if (this.clientOnly == true) {
-      this.clientServer = new ClientServer(this.onPacketRecieved);
+      this.clientServer = new ClientServer(this.onPacketRecieved, img);
       const syncRequest = { type: PacketType.RequestFullSync };
       this.send(syncRequest);
     }
@@ -35,8 +36,13 @@ export class NetworkHandler {
       this.ws.binaryType = "arraybuffer";
 
       this.ws.onopen = (): void => {
+        ClientState.connection = ConnectionState.OPEN;
         const syncRequest = { type: PacketType.RequestFullSync };
         this.send(syncRequest);
+      };
+
+      this.ws.onclose = (): void => {
+        ClientState.connection = ConnectionState.CLOSED;
       };
 
       this.ws.onmessage = (event): void => {

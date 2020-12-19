@@ -1,4 +1,5 @@
 import {
+  Rectangle,
   projectPointToAxis,
   projectionToScalar,
   RectangleBody
@@ -76,4 +77,44 @@ test("rotated rectangles should hit each other", (): void => {
   rectC.center = { x: 454, y: 382 };
   rectC.direction = 25;
   expect(isRectangleCollision(rectB, rectC)).toBe(true); // hit
+});
+
+test("rectangle collision", (): void => {
+  const r1 = new Rectangle(0, 0, 10, 10);
+  const r2 = new Rectangle(0, 0, 5, 5);
+  const r3 = r1.intersection(r2);
+  expect(r3.x).toBe(0);
+  expect(r3.y).toBe(0);
+  expect(r3.width).toBe(5);
+  expect(r3.height).toBe(5);
+});
+
+test("rectangle collision", (): void => {
+  const r1 = new Rectangle(2, 2, 6, 6);
+  const r2 = new Rectangle(-2, -2, 6, 6);
+  const r3 = r1.intersection(r2);
+  expect(r3.x).toBe(0);
+  expect(r3.y).toBe(0);
+  expect(r3.width).toBe(2);
+  expect(r3.height).toBe(2);
+});
+
+test("rectangle collision", (): void => {
+  const r1 = new Rectangle(2, 0, 6, 6);
+  const r2 = new Rectangle(-2, 0, 6, 6);
+  const r3 = r1.intersection(r2);
+  expect(r3.x).toBe(0);
+  expect(r3.y).toBe(0);
+  expect(r3.width).toBe(2);
+  expect(r3.height).toBe(6);
+});
+
+test("rectangle collision", (): void => {
+  const r1 = new Rectangle(4, 4, 4, 4);
+  const r2 = new Rectangle(6, 4, 2, 2);
+  const r3 = r1.intersection(r2);
+  expect(r3.x).toBe(5.5);
+  expect(r3.y).toBe(4);
+  expect(r3.width).toBe(1);
+  expect(r3.height).toBe(2);
 });

@@ -1,39 +1,21 @@
 import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer } from "../constants";
-import { PlaneType } from "../../../../dogfight/src/objects/plane";
+import {
+  PlaneType,
+  getPlaneRect,
+  FrameStatus,
+  planeImageIDs,
+  frameTextureString,
+  flipAnimation
+} from "../../../../dogfight/src/entities/Plane";
 import { directionToRadians } from "../../../../dogfight/src/physics/helpers";
+import { Vec2d, setSize } from "../../../../dogfight/src/physics/vector";
 
-const planeImageIDs = {
-  [PlaneType.Albatros]: 4,
-  [PlaneType.Fokker]: 6,
-  [PlaneType.Junkers]: 5,
-  [PlaneType.Bristol]: 7,
-  [PlaneType.Sopwith]: 9,
-  [PlaneType.Salmson]: 8
-};
-
-enum FrameStatus {
-  Normal,
-  Flip1,
-  Flip2
-}
-
-const frameTextureString = {
-  [FrameStatus.Normal]: "planeX.gif",
-  [FrameStatus.Flip1]: "planeX_flip1.gif",
-  [FrameStatus.Flip2]: "planeX_flip2.gif"
-};
-
-const flipAnimation = [
-  FrameStatus.Flip1,
-  FrameStatus.Flip2,
-  FrameStatus.Flip1,
-  FrameStatus.Normal
-];
 
 // How long smoke stays on the screen, in milliseconds.
 const SMOKE_DURATION = 200;
+const BLACK_SMOKE_DURATION = 300;
 
 export class PlaneSprite extends GameSprite {
   public x: number;
@@ -42,7 +24,7 @@ export class PlaneSprite extends GameSprite {
   public direction: number;
   public planeType: PlaneType;
   public flipped: boolean;
-  public engineOn: boolean = true;
+  public motorOn: boolean = true;
 
   private flipFrame: number = 0;
   private lastFlipState: boolean = undefined;
@@ -50,16 +32,18 @@ export class PlaneSprite extends GameSprite {
 
   private frameStatus: FrameStatus;
 
-  private container: PIXI.Container;
+  protected container: PIXI.Container;
   private spritesheet: PIXI.Spritesheet;
 
-  private plane: PIXI.Sprite;
+  protected plane: PIXI.Sprite;
 
   private lightSmoke: PIXI.Container;
   private lightSmokeInterval: number;
 
   private darkSmoke: PIXI.Container;
   private darkSmokeTimeout: number;
+
+  private debug: PIXI.Graphics;
 
   public constructor(spritesheet: PIXI.Spritesheet) {
     super();
@@ -76,6 +60,7 @@ export class PlaneSprite extends GameSprite {
     this.spritesheet = spritesheet;
 
     this.container = new PIXI.Container();
+    this.debug = new PIXI.Graphics();
     this.lightSmoke = new PIXI.Container();
     this.darkSmoke = new PIXI.Container();
 
@@ -98,6 +83,7 @@ export class PlaneSprite extends GameSprite {
     this.renderables.push(this.container);
     this.renderables.push(this.lightSmoke);
     this.renderables.push(this.darkSmoke);
+    this.renderablesDebug.push(this.debug);
   }
 
   private setDirection(): void {
@@ -155,28 +141,36 @@ export class PlaneSprite extends GameSprite {
     this.handleFlip();
     this.setPlaneTexture();
     this.setDirection();
+    this.drawDebug();
     this.container.position.set(this.x, this.y);
   }
 
+  private drawDebug(): void {
+    // debug
+    this.debug.clear();
+    this.debug.beginFill(0xff00ff);
+    const rect = getPlaneRect(this.x, this.y, this.direction, this.planeType);
+    const halfW = rect.width / 2;
+    const halfH = rect.height / 2;
+    this.debug.lineStyle(1, 0xff00ff);
+    this.debug.beginFill(0x000000, 0);
+    this.debug.drawRect(-halfW, -halfH, rect.width, rect.height);
+    this.debug.drawCircle(0, 0, 2);
+    this.debug.rotation = directionToRadians(this.direction) * -1;
+    this.debug.position.set(this.x, this.y);
+    this.debug.endFill();
+  }
+
   private createLightSmoke(): void {
-    if (this.engineOn == false) {
+    if (this.motorOn == false) {
       return;
     }
     const smoketex = this.spritesheet.textures["smoke1.gif"];
     const smoke = new PIXI.Sprite(smoketex);
+    const smokePos = this.getSmokePosition(false);
 
-    // direction = 0 -> 256   2^8
-    const radians = directionToRadians(this.direction);
-    const halfWidth = Math.round(this.plane.width / 2);
-    const offset = Math.round(halfWidth / 6);
-
-    const r = halfWidth + offset;
-    const theta = radians * -1;
-    const deltaX = r * Math.cos(theta);
-    const deltaY = r * Math.sin(theta);
-    const newX = this.x - deltaX;
-    const newY = this.y - deltaY;
-    smoke.position.set(newX, newY);
+    smoke.anchor.set(0.5, 0.5);
+    smoke.position.set(smokePos.x, smokePos.y);
 
     this.lightSmoke.addChild(smoke);
     setTimeout((): void => {
@@ -195,7 +189,12 @@ export class PlaneSprite extends GameSprite {
       // callback time based on how damaged plane is.
       const smoketex = this.spritesheet.textures["smoke2.gif"];
       const smoke = new PIXI.Sprite(smoketex);
-      smoke.position.set(this.x, this.y);
+      const smokePos = this.getSmokePosition(true);
+
+      smoke.anchor.set(0.5, 0.5);
+      smoke.position.set(smokePos.x, smokePos.y);
+      smoke.alpha = 0.9;
+
       this.darkSmoke.addChild(smoke);
 
       if (percentage <= 0.66) {
@@ -207,12 +206,33 @@ export class PlaneSprite extends GameSprite {
       // destroy it after a while
       window.setTimeout((): void => {
         this.darkSmoke.removeChild(smoke);
-      }, SMOKE_DURATION);
+      }, BLACK_SMOKE_DURATION);
     }
 
     this.darkSmokeTimeout = window.setTimeout((): void => {
       this.createDarkSmoke();
     }, smokeFrequency);
+  }
+
+  private getSmokePosition(center: boolean): Vec2d {
+    // direction = 0 -> 256   2^8
+    const radians = directionToRadians(this.direction);
+    const halfWidth = Math.round(this.plane.width / 2);
+    const offset = Math.round(halfWidth / 6);
+
+    const r = halfWidth + offset;
+    const theta = radians * -1;
+    const deltaX = r * Math.cos(theta);
+    const deltaY = r * Math.sin(theta);
+    let newX: number, newY: number;
+    if (center) {
+      newX = this.x;
+      newY = this.y;
+    } else {
+      newX = this.x - deltaX;
+      newY = this.y - deltaY;
+    }
+    return { x: newX, y: newY };
   }
 
   public destroy(): void {

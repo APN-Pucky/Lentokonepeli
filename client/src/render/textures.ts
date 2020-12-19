@@ -1,8 +1,10 @@
 import * as PIXI from "pixi.js";
 
+
 export let spriteSheet: PIXI.Spritesheet;
 
-const sheetPath = "images/images.json";
+//const sheetPath = "https://raw.githubusercontent.com/APN-Pucky/Lentokonepeli/master/client/public/images/images.json";//"assets/images/images.json";
+const sheetPath = "assets/images/images.json";
 const loader = PIXI.Loader.shared;
 
 loader.onError.add((): void => {
@@ -13,7 +15,7 @@ loader.onStart.add((): void => {
   console.log("loading spritesheet...");
 });
 
-export function loadSpriteSheet(callback: () => void): void {
+export function loadSpriteSheet(callback: () => void, sheetPat = sheetPath) {
   loader.onLoad.add((): void => {
     const percent = loader.progress;
     console.log("Loading... " + percent + "%");
@@ -23,6 +25,5 @@ export function loadSpriteSheet(callback: () => void): void {
       callback();
     }
   });
-
-  loader.add(sheetPath).load();
+  loader.add(sheetPat).load();
 }

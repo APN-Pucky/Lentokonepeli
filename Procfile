@@ -1,1 +1,1 @@
-web: npm run assets && npm run server
+web: npm run server

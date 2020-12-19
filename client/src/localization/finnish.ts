@@ -5,6 +5,22 @@ import { Translation } from "./translation";
 // Ö, ö
 
 export const Finnish: Translation = {
+  languageName: "suomi",
+
+  language: "Kieli",
+  settings: "Asetukset",
+  showDebug: "Näytä vianetsintävalikko",
+
+  name: "Nimi",
+  team: "Tiimi",
+  updateName: "Päivitä nimi",
+  ping: "Ping",
+  pingDescription:
+    "Aika millisekunnissa ennen syötteesi saapumista palvelimelle.",
+  connecting: "Yhdistetään pelipalvelimeen...",
+  connectionError: `Yhteys pelipalvelimeen on suljettu.
+Lataa web-sivu uudelleen muodostaaksesi yhteyden uudelleen.`,
+
   gameName: "Lentokonepeli",
   teamChooserTitle: "Valitse kumpien puolella lennät:",
   teamChooserDescription: `keskusvaltojen vai ympärysvaltojen

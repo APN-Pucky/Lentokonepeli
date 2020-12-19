@@ -1,22 +1,31 @@
 import { Cache } from "../network/cache";
-import { Player } from "../objects/player";
-import { Flag } from "../objects/flag";
-import { Ground } from "../objects/ground";
-import { Hill } from "../objects/hill";
-import { Runway } from "../objects/runway";
-import { Tower } from "../objects/tower";
-import { Trooper } from "../objects/trooper";
-import { Water } from "../objects/water";
-import { Explosion } from "../objects/explosion";
-import { GameObject, GameObjectType } from "../object";
+import { PlayerInfo, PlayerStatus } from "../entities/PlayerInfo";
+import { Flag } from "../entities/flag";
+import { Bullet } from "../entities/Bullet";
+import { Bomb } from "../entities/Bomb";
+import { Ground } from "../entities/Ground";
+import { Hill } from "../entities/hill";
+import { Runway } from "../entities/Runway";
+import { Tower } from "../entities/tower";
+import { Man } from "../entities/Man";
+import { Water } from "../entities/water";
+import { Explosion } from "../entities/Explosion";
+import { Entity, EntityType } from "../entity";
 import { Team } from "../constants";
-import { Plane } from "../objects/plane";
+import { Plane, teamPlanes } from "../entities/Plane";
 import { InputQueue, InputKey } from "../input";
 import { processInputs } from "./input";
 import { processCollision } from "./collision";
 import { processTakeoffs, TakeoffEntry } from "./takeoff";
 import { processPlanes } from "./plane";
+import { processBullets } from "./bullet";
+import { processBombs } from "./bomb";
 import { processExplosions } from "./explosion";
+import { processTroopers } from "./trooper";
+import { Ownable } from "../ownable";
+import { BufferedImage } from "../BufferedImage";
+
+
 
 /**
  * The Game World contains all entites,
@@ -26,45 +35,70 @@ export class GameWorld {
   // A cache of changes to send, refreshed on every tick.
   public cache: Cache = {};
 
+  // ID increment counter by type
+  private ids = {};
+
   // A queue of takeoff requests to be processed.
   public takeoffQueue: TakeoffEntry[];
   public inputQueue: InputQueue;
 
-  public players: Player[];
+  public players: PlayerInfo[];
   public flags: Flag[];
   public grounds: Ground[];
   public hills: Hill[];
   public runways: Runway[];
   public towers: Tower[];
-  public waters: Water[];
+  public troopers: Man[];
   public planes: Plane[];
-  public troopers: Trooper[];
+  public waters: Water[];
   public explosions: Explosion[];
+  public bullets: Bullet[];
+  public bombs: Bomb[];
 
   // god please forgive me for this sin
   private objectArrays = {
-    [GameObjectType.Player]: "players",
-    [GameObjectType.Flag]: "flags",
-    [GameObjectType.Ground]: "grounds",
-    [GameObjectType.Hill]: "hills",
-    [GameObjectType.Runway]: "runways",
-    [GameObjectType.ControlTower]: "towers",
-    [GameObjectType.Trooper]: "troopers",
-    [GameObjectType.Water]: "waters",
-    [GameObjectType.Plane]: "planes",
-    [GameObjectType.Explosion]: "explosions"
+    [EntityType.Player]: "players",
+    [EntityType.Flag]: "flags",
+    [EntityType.Ground]: "grounds",
+    [EntityType.Hill]: "hills",
+    [EntityType.Runway]: "runways",
+    [EntityType.ControlTower]: "towers",
+    [EntityType.Trooper]: "troopers",
+    [EntityType.Water]: "waters",
+    [EntityType.Plane]: "planes",
+    [EntityType.Explosion]: "explosions",
+    [EntityType.Bullet]: "bullets",
+    [EntityType.Bomb]: "bombs"
   };
 
   // Next available ID, incremented by 1.
   // Always counts up, never resets.
   private idCounter = 0;
+  private app = null;
+  private textures = null;
 
-  public constructor() {
+  public constructor(textures = null, app = null) {
     this.resetWorld();
+    this.textures = textures;
+    this.app = app;
+    for (const type in EntityType) {
+      this.ids[type] = 0;
+    }
+    //cont();
   }
 
+  public getImage(name: string) {
+
+    return this.textures[name];
+  }
+
+
+  public getEntities(): Entity[][] {
+    return [this.planes, this.troopers, this.bombs, this.bullets, this.runways, this.grounds, this.waters, this.players, this.towers, this.hills, this.flags, this.explosions];
+  }
   public clearCache(): void {
     this.cache = {};
+    //console.log(this.cache);
   }
 
   private resetWorld(): void {
@@ -82,6 +116,8 @@ export class GameWorld {
     this.waters = [];
     this.planes = [];
     this.explosions = [];
+    this.bullets = [];
+    this.bombs = [];
   }
 
   /**
@@ -96,12 +132,15 @@ export class GameWorld {
     processInputs(this);
     processTakeoffs(this);
     processPlanes(this, deltaTime);
+    processBullets(this, deltaTime);
+    processBombs(this, deltaTime);
+    processTroopers(this, deltaTime);
     processExplosions(this, deltaTime);
     processCollision(this);
     return this.cache;
   }
 
-  public getPlayerControlling(object: GameObject): Player {
+  public getPlayerControlling(object: Entity): PlayerInfo {
     for (const player of this.players) {
       if (player.controlID == object.id && player.controlType == object.type) {
         return player;
@@ -120,18 +159,22 @@ export class GameWorld {
    * Adds a player to the game,
    * and returns the information.
    */
-  public addPlayer(team: Team): Player {
-    const player = new Player(this.nextID(), this.cache);
+  public addPlayer(team: Team): PlayerInfo {
+    const player = new PlayerInfo(this.nextID(EntityType.Player), this, this.cache);
     player.set(this.cache, "team", team);
-    this.addObject(player);
+    this.addEntity(player);
     return player;
   }
 
-  public removePlayer(p: Player): void {
-    this.removeObject(p);
+  public removePlayer(p: PlayerInfo): void {
+    const controlling = this.getObject(p.controlType, p.controlID);
+    if (controlling !== undefined) {
+      this.removeEntity(controlling);
+    }
+    this.removeEntity(p);
   }
 
-  public getObject(type: GameObjectType, id: number): GameObject | undefined {
+  public getObject(type: EntityType, id: number): Entity | undefined {
     const index = this.getObjectIndex(type, id);
     if (index < 0) {
       return undefined;
@@ -148,27 +191,46 @@ export class GameWorld {
       this.hills,
       this.runways,
       this.towers,
-      this.troopers,
       this.waters,
       this.planes,
-      this.explosions
+      this.explosions,
+      this.troopers,
+      this.bombs,
+      this.bullets
     ];
     const cache: Cache = {};
     for (const obj in objects) {
       for (const thing of objects[obj]) {
-        cache[thing.id] = thing.getState();
+        if (cache[thing.type] == undefined) {
+          cache[thing.type] = {};
+        }
+        cache[thing.type][thing.id] = thing.getState();
       }
     }
     return cache;
   }
 
-  public addObject(obj: GameObject): void {
-    const arr = this[this.objectArrays[obj.type]];
-    arr.push(obj);
-    this.cache[obj.id] = obj.getState();
+  public createExplosion(x: number, y: number, o: Ownable): void {
+    const explosion = new Explosion(
+      this.nextID(EntityType.Explosion),
+      this,
+      this.cache,
+      o,
+      x,
+      y
+    );
+    //explosion.setPlayerID(this.cache, uid);
+    //explosion.setTeam(this.cache, team);
+    this.explosions.push(explosion);
   }
 
-  public removeObject(obj: GameObject): void {
+  public addEntity(obj: Entity): void {
+    const arr = this[this.objectArrays[obj.type]];
+    arr.push(obj);
+    this.cache[obj.type][obj.id] = obj.getState();
+  }
+
+  public removeEntity(obj: Entity): void {
     const index = this.getObjectIndex(obj.type, obj.id);
     if (index < 0) {
       return;
@@ -181,7 +243,11 @@ export class GameWorld {
 
     // Create an empty update in the cache.
     // The renderer treats an empty update as a deletion.
-    this.cache[id] = {
+    obj.removed = true;
+    if (this.cache[type] == undefined) {
+      this.cache[type] = {};
+    }
+    this.cache[type][id] = {
       type
     };
   }
@@ -191,9 +257,9 @@ export class GameWorld {
    * @param arr Array of game objects to search through.
    * @param id The ID of the object to find.
    */
-  public getObjectIndex(type: GameObjectType, id: number): number {
+  public getObjectIndex(type: EntityType, id: number): number {
     let index = -1;
-    if (type === GameObjectType.None) {
+    if (type === EntityType.None) {
       return index;
     }
     const array = this[this.objectArrays[type]];
@@ -206,7 +272,37 @@ export class GameWorld {
     return index;
   }
 
-  public nextID(): number {
-    return this.idCounter++;
+  public nextID(type: EntityType): number {
+    const id = this.ids[type]++;
+    if (id >= 65535) {
+      this.ids[type] = 0;
+    }
+    return id;
   }
+
+  public died(o: Ownable, x: number, y: number): void {
+    let p = o.getPlayerInfo();
+    p.setStatus(p.world.cache, PlayerStatus.Takeoff);
+    p.setControl(p.world.cache, EntityType.None, 0);
+    /*
+    if (this.gameMode == 1) {
+      // ghost
+    }
+    else {
+      // respawn
+    }
+
+    //*/
+  }
+  public landed(o: Ownable, r: Runway, bol: boolean = false) {
+    let p: PlayerInfo = o.getPlayerInfo();
+    p.setStatus(p.world.cache, PlayerStatus.Takeoff);
+    p.setControl(p.world.cache, EntityType.None, 0);
+
+  }
+
+  public killed(p: Ownable, e: Ownable, c: number) {
+    // TODO handle scores
+  }
+
 }

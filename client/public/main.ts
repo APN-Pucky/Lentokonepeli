@@ -1,12 +1,15 @@
 import { GameClient } from "../src/client";
-// import Cookies from "js-cookie";
-// import { Localizer } from "../src/localization/localizer";
-
+import Cookies from "js-cookie";
 import App from "../src/components/app.vue";
 import Vue from "vue";
 import Vuex from "vuex";
 import { VNode } from "vue/types/umd";
-import { planeData, infoHUD } from "../../dogfight/src/objects/plane";
+import { planeData, infoHUD } from "../../dogfight/src/entities/Plane";
+import { Localizer } from "../src/localization/localizer";
+import { bulletGlobals } from "../../dogfight/src/entities/Bullet";
+import { bombGlobals } from "../../dogfight/src/entities/Bomb";
+import { trooperGlobals } from "../../dogfight/src/entities/Man";
+import { ClientState } from "../src/clientState";
 
 Vue.config.productionTip = false;
 Vue.use(Vuex);
@@ -17,8 +20,27 @@ function init(): void {
   const store = new Vuex.Store({
     state: {
       client: client,
+      clientState: ClientState,
       planeInfo: planeData,
-      infoHUD: infoHUD
+      bulletInfo: bulletGlobals,
+      bombInfo: bombGlobals,
+      trooperInfo: trooperGlobals,
+      infoHUD: infoHUD,
+      lang: Localizer,
+      viewSettings: false,
+      viewDebug: Cookies.get("debug") == "true"
+    },
+    mutations: {
+      setDebug(state, value): void {
+        Cookies.set("debug", value, { expires: 9999 });
+        state.viewDebug = value;
+      },
+      setLanguage(state, newLangID): void {
+        state.client.updateLanguage(newLangID);
+      },
+      updateName(state, newName): void {
+        state.client.updateName(newName);
+      }
     }
   });
 

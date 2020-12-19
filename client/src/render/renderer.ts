@@ -1,12 +1,12 @@
 import * as PIXI from "pixi.js";
 import { GameSprite } from "./sprite";
 import { GameScreen } from "./constants";
-import { DebugView } from "./objects/debug";
+import { DebugView } from "./entities/debug";
 import { Vec2d } from "../../../dogfight/src/physics/vector";
 import { toPixiCoords } from "./coords";
-import { SkyBackground } from "./objects/sky";
-import { GameHud } from "./objects/hud";
-import { GameObjectType } from "../../../dogfight/src/object";
+import { SkyBackground } from "./entities/sky";
+import { GameHud } from "./entities/hud";
+import { EntityType } from "../../../dogfight/src/entity";
 import { FlagSprite } from "./sprites/flag";
 import { GroundSprite } from "./sprites/ground";
 import { WaterSprite } from "./sprites/water";
@@ -15,12 +15,16 @@ import { HillSprite } from "./sprites/hill";
 import { RunwaySprite } from "./sprites/runway";
 import { PlayerSprite } from "./sprites/player";
 import { TrooperSprite } from "./sprites/trooper";
-import { TeamChooserUI } from "./objects/teamChooserUI";
+import { TeamChooserUI } from "./entities/teamChooserUI";
 import { ClientMode } from "../types";
-import { TakeoffSelectUI } from "./objects/takeoffSelectUI";
+import { TakeoffSelectUI } from "./entities/takeoffSelectUI";
 import { PlaneSprite } from "./sprites/plane";
-import { PlayerInfo } from "./objects/playerInfo";
+import { PlayerInfo } from "./entities/playerInfo";
 import { ExplosionSprite } from "./sprites/explosion";
+import { BulletSprite } from "./sprites/bullet";
+import { BombSprite } from "./sprites/bomb";
+
+PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
 /**
  * A class which renders the game world.
@@ -85,7 +89,7 @@ export class GameRenderer {
 
     // Initialize sprite container
     this.sprites = {};
-    for (const key in GameObjectType) {
+    for (const key in EntityType) {
       this.sprites[key] = {};
     }
 
@@ -109,6 +113,7 @@ export class GameRenderer {
     // Setup pixi classes
     // Make the screen objects layerable.
     this.entityContainer.sortableChildren = true;
+    this.debug.worldContainer.sortableChildren = true;
 
     this.entityContainer.addChild(this.playerInfo.container);
 
@@ -149,8 +154,11 @@ export class GameRenderer {
       for (const container of this.sprites[type][id].renderables) {
         this.entityContainer.addChild(container);
       }
-      if (type == GameObjectType.Plane) {
-        console.log(data);
+      for (const debugContainer of this.sprites[type][id].renderablesDebug) {
+        this.debug.worldContainer.addChild(debugContainer);
+      }
+      if (type == EntityType.Plane) {
+        // console.log(data);
       }
     }
     this.sprites[type][id].update(data);
@@ -175,32 +183,36 @@ export class GameRenderer {
     delete this.sprites[type][id];
   }
 
-  private createSprite(type: GameObjectType): GameSprite {
+  private createSprite(type: EntityType): GameSprite {
     switch (type) {
-      case GameObjectType.Flag:
+      case EntityType.Flag:
         return new FlagSprite(this.spriteSheet);
-      case GameObjectType.Ground:
+      case EntityType.Ground:
         return new GroundSprite(this.spriteSheet);
-      case GameObjectType.Water:
+      case EntityType.Water:
         return new WaterSprite(this.spriteSheet);
-      case GameObjectType.ControlTower:
+      case EntityType.ControlTower:
         return new TowerSprite(this.spriteSheet);
-      case GameObjectType.Hill:
+      case EntityType.Hill:
         return new HillSprite(this.spriteSheet, this.entityContainer);
-      case GameObjectType.Runway:
+      case EntityType.Runway:
         return new RunwaySprite(this.spriteSheet);
-      case GameObjectType.Player:
+      case EntityType.Player:
         return new PlayerSprite(this.spriteSheet);
-      case GameObjectType.Trooper:
+      case EntityType.Trooper:
         return new TrooperSprite(this.spriteSheet);
-      case GameObjectType.Explosion:
+      case EntityType.Explosion:
         return new ExplosionSprite(this.spriteSheet);
-      case GameObjectType.Plane:
+      case EntityType.Bullet:
+        return new BulletSprite(this.spriteSheet);
+      case EntityType.Bomb:
+        return new BombSprite(this.spriteSheet);
+      case EntityType.Plane:
         return new PlaneSprite(this.spriteSheet);
       default:
         console.log(
           "ERROR: Failed to create undefined object sprite:",
-          GameObjectType[type]
+          EntityType[type]
         );
         break;
     }
@@ -237,7 +249,7 @@ export class GameRenderer {
     this.sky.setCamera(x, y);
 
     // set hill position
-    const hills = this.sprites[GameObjectType.Hill];
+    const hills = this.sprites[EntityType.Hill];
     for (const id in hills) {
       hills[id].setCamera();
     }

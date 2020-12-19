@@ -1,4 +1,21 @@
 export interface Translation {
+  /*** UI ***/
+  languageName: string;
+
+  language: string;
+  settings: string;
+  showDebug: string;
+
+  team: string;
+  name: string;
+  updateName: string;
+  ping: string;
+  pingDescription: string;
+  connecting: string;
+  connectionError: string;
+
+  /*** GAME ***/
+
   gameName: string;
 
   teamChooserTitle: string;

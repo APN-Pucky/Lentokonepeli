@@ -1,8 +1,10 @@
 <template>
   <div id="app">
-    <!-- <Header></Header> -->
-    <Game></Game>
-    <Physics />
+    <Header></Header>
+    <Settings v-show="viewSettings"></Settings>
+    <Game v-show="conn == states.OPEN"></Game>
+    <div v-if="conn == states.CONNECTING">{{ lang.connecting }}</div>
+    <div class="error" v-if="conn == states.CLOSED">{{ lang.error }}</div>
   </div>
 </template>
 
@@ -10,17 +12,34 @@
 import Vue from "vue";
 import Game from "./game.vue";
 import Header from "./header.vue";
-import Physics from "./physics.vue";
+import Settings from "./settings/settings.vue";
 import { GameObjectType } from "../../../dogfight/src/object";
 import { ClientMode } from "../types";
+import { ConnectionState } from "../clientState";
+import { Localizer } from "../localization/localizer";
 export default Vue.extend({
   name: "App",
   components: {
     Game,
     Header,
-    Physics
+    Settings
   },
   computed: {
+    lang() {
+      return {
+        connecting: Localizer.get("connecting"),
+        error: Localizer.get("connectionError")
+      };
+    },
+    states() {
+      return ConnectionState;
+    },
+    conn() {
+      return this.$store.state.clientState.connection;
+    },
+    viewSettings() {
+      return this.$store.state.viewSettings;
+    },
     status() {
       const mode = this.$store.state.client.mode;
       return ClientMode[mode];
@@ -40,8 +59,10 @@ body {
   padding: 0;
 }
 
-#app {
-  display: grid;
-  grid-template-rows: auto auto;
+.error {
+  font-size: 2rem;
+  color: red;
+  font-weight: bold;
+  text-align: center;
 }
 </style>

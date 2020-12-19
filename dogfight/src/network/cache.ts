@@ -1,4 +1,4 @@
-import { GameObjectType } from "../object";
+import { EntityType } from "../entity";
 import { SendableType } from "./types";
 
 /**
@@ -9,7 +9,9 @@ import { SendableType } from "./types";
  * Indexed by a unique global object ID.
  */
 export interface Cache {
-  [key: number]: CacheEntry;
+  [key: number]: {
+    [key: number]: CacheEntry;
+  };
 }
 
 /**
@@ -17,12 +19,12 @@ export interface Cache {
  * and properties to send.
  */
 export interface CacheEntry {
-  type: GameObjectType;
+  type: EntityType;
   [key: string]: SendableType;
 }
 
 export const foo: CacheEntry = {
-  type: GameObjectType.Trooper,
+  type: EntityType.Trooper,
   x: 0,
   y: 200,
   health: 255,

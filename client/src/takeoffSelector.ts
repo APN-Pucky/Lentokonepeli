@@ -1,7 +1,7 @@
 import { Team, FacingDirection } from "../../dogfight/src/constants";
 import { GameRenderer } from "./render/renderer";
 import { Packet, PacketType } from "../../dogfight/src/network/types";
-import { PlaneType } from "../../dogfight/src/objects/plane";
+import { PlaneType } from "../../dogfight/src/entities/Plane";
 import { NetworkHandler } from "./networkHandler";
 import { InputChange, InputKey } from "../../dogfight/src/input";
 
@@ -68,14 +68,18 @@ export class TakeoffSelector {
       return;
     }
 
-    // sort by furthest away
+    // sort by ID
     this.runways.sort((a, b): number => {
-      return Math.abs(b.x) - Math.abs(a.x);
+      return Math.abs(parseInt(a.id)) - Math.abs(parseInt(b.id));
     });
 
     // set default runway if not set.
     if (reset) {
-      this.setRunway(this.runways[0].id, renderer);
+      const closest = this.runways.reduce(
+        (prev, curr): RunwayInfo =>
+          Math.abs(prev.x) > Math.abs(curr.x) ? prev : curr
+      );
+      this.setRunway(closest.id, renderer);
     }
   }
 

@@ -1,6 +1,21 @@
 import { Translation } from "./translation";
 
 export const English: Translation = {
+  languageName: "English",
+  language: "Language",
+  settings: "Settings",
+  showDebug: "Show Debug Menu",
+
+  team: "Team",
+  name: "Name",
+  updateName: "Update Name",
+  ping: "Ping",
+  pingDescription:
+    "The time in milliseconds before your input arrives at the server.",
+  connecting: "Connecting to the game server...",
+  connectionError: `Connection to the game server has been closed.
+Please reload the webpage to connect again.`,
+
   gameName: "Dogfight",
   teamChooserTitle: "Choose your team:",
   teamChooserDescription: `Central Powers or Allies.
