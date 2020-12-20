@@ -916,7 +916,6 @@ export class Plane extends OwnableSolidEntity {
   private moveDodging(cache: Cache, deltaTime: number): void {
     const tstep = deltaTime / 1000;
     this.moveEngine(cache, deltaTime);
-    this.movePlane(cache, deltaTime);
 
     let d2 = this.direction;
     this.run(deltaTime);
