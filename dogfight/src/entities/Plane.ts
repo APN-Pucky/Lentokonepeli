@@ -88,7 +88,7 @@ interface PlaneInfo {
     maxHealth: number;
     accelerationSpeed: number; // units per second, original code runs every ~100ms
     maxY: number;
-    turnStep: number; // TODO: figure out how these were calculated
+    turnStep: number;
     shootDelay: number; // Cooldown time in milliseconds
     speedModifier: number;
   };
@@ -358,7 +358,9 @@ export class Plane extends OwnableSolidEntity {
       let lx = 50;
       let ly = 50;
 
-      let x = this.runway.getStartX();
+      let x;
+      /*
+      x = this.runway.getStartX();
       y0 = this.runway.getStartY();
       for (let y = y0; y < y0 + ly; y += 5) {
         const bullet = new Bullet(
@@ -371,6 +373,7 @@ export class Plane extends OwnableSolidEntity {
         );
         world.addEntity(bullet);
       }
+      */
 
       x = this.runway.getLandableX();
       y0 = this.runway.getLandableY();
@@ -484,7 +487,7 @@ export class Plane extends OwnableSolidEntity {
 
   public getCollisionImage(): BufferedImage {
     //console.log("get image " + this.imagename + "_rot" + Math.round(this.direction));
-    console.log("rot: " + Math.round(this.direction), " flip:" + this.flipped);
+    //console.log("rot: " + Math.round(this.direction), " flip:" + this.flipped);
     return this.world.getImage(this.imagename + "_rot_" + Math.round(this.direction) + "_flip_" + this.flipped);
   }
 
@@ -504,7 +507,7 @@ export class Plane extends OwnableSolidEntity {
       this.bottomHeight = 0;
       return this.bottomHeight;
     }
-    console.log("bottom height: " + this.bottomHeight);
+    //console.log("bottom height: " + this.bottomHeight);
     return this.bottomHeight;
   }
 
@@ -968,7 +971,7 @@ export class Plane extends OwnableSolidEntity {
 
   private moveLanding(cache: Cache, deltaTime: number): void {
     const tstep = deltaTime / 1000;
-    console.log("landing " + this.radians);
+    //console.log("landing " + this.radians);
     if (this.speed > 100) {
       //?
       this.speed -= 3;
@@ -1032,10 +1035,12 @@ export class Plane extends OwnableSolidEntity {
     if (se.getType() == EntityType.Runway) {
       let localRunway: Runway = se as Runway;
       console.log("HHIITT - Runway");
-      if (this.mode != PlaneMode.Landing && this.localX / SCALE_FACTOR > localRunway.getLandableX() && this.localX / SCALE_FACTOR + this.width / 2 < localRunway.getLandableX() + localRunway.getLandableWidth() && !this.motorOn &&
+      if (this.mode != PlaneMode.Landing && this.localX / SCALE_FACTOR - this.width / 2 > localRunway.getLandableX() && this.localX / SCALE_FACTOR + this.width / 2 < localRunway.getLandableX() + localRunway.getLandableWidth() &&
+        !this.motorOn &&
         this.speed < 250 + this.speedModifier &&
-        (!this.flipped && (2 * Math.PI - this.radians < 0.8975979010256552 || 2 * Math.PI - this.radians > 5.385587406153931)) ||
-        this.flipped && (2 * Math.PI - this.radians < 4.039190554615448 && 2 * Math.PI - this.radians > 2.243994752564138)) {
+        ((!this.flipped && (2 * Math.PI - this.radians < 0.8975979010256552 || 2 * Math.PI - this.radians > 5.385587406153931)) ||
+          this.flipped && (2 * Math.PI - this.radians < 4.039190554615448 && 2 * Math.PI - this.radians > 2.243994752564138))) {
+        console.log("motorOn  = " + this.motorOn);
         if (this.flipped) {
           this.radians = Math.PI;
         }

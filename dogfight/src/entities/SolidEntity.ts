@@ -14,7 +14,7 @@ export abstract class SolidEntity extends Entity {
     this.team = team;
   }
   public abstract getCollisionBounds(): Rectangle;
-  public getCollisionImage(): BufferedImage { return null }; //TODO pixel perfect check
+  public getCollisionImage(): BufferedImage { return null };
 
   public checkCollisionWith(paramSolidEntity: SolidEntity): boolean {
     if ((paramSolidEntity.isAlive()) && (this.getCollisionBounds().intersects(paramSolidEntity.getCollisionBounds()))) {

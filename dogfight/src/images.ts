@@ -23,6 +23,7 @@ export async function loadImages(path = "./dist/assets/images/images.png") {
     */
 
   const image1 = main_image.clone();
+  /*
   image1.crop(info.x, info.y, info.w, info.h).rotate(45).autocrop();
   //.getBuffer(jimp.MIME_BMP, (e, dat) => 
   {
@@ -40,6 +41,7 @@ export async function loadImages(path = "./dist/assets/images/images.png") {
       console.log();
     }
   }
+  */
 
 
   /*
@@ -122,7 +124,7 @@ export async function loadImages(path = "./dist/assets/images/images.png") {
           let d = image3.bitmap.data;
           images[key + "_rot_" + a + "_flip_" + f] = new BufferedImage(Buffer.from(d), { w: image3.bitmap.width, h: image3.bitmap.height });
           if (a == 64 && key == "plane8.gif") image3.getBase64(jimp.MIME_PNG, (err, res) => {
-            console.log(res)
+            //console.log(res)
           })
           /*
           const ret2 = await sharp("./dist/assets/images/images.png")

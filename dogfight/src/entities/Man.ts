@@ -155,7 +155,6 @@ export class Man extends OwnableSolidEntity {
         this.localY -= 100 * this.vy / this.speedPerPixel * tstep * SCALE_FACTOR;
         this.vx -= Math.round((this.vx * 0.01) * tstep * SCALE_FACTOR);
         this.vy += this.speedPerPixel / 30 * tstep * SCALE_FACTOR;
-        // TODO parachute condition
         if (this.isKeyPressed(GameKey.MAN_PARACHUTE)) {
           this.parachute();
         }

@@ -37,7 +37,7 @@ export class Runway extends SolidEntity {
   public imageWidth;
   public imageHeight;
 
-  public yOffset = 7;
+  public yOffset = 7; // TODO why do we need a offset for the hitbox of the runway?!?!?!?!?
 
   public constructor(id: number, world: GameWorld, cache: Cache, team: number, x: number, y: number, direction: number) {
     super(id, world, team);
@@ -52,7 +52,7 @@ export class Runway extends SolidEntity {
       health: 1530
     });
 
-    console.log(this.getCollisionBounds());
+    //console.log(this.getCollisionBounds());
 
   }
 
@@ -151,17 +151,14 @@ export class Runway extends SolidEntity {
       return;
     }
     switch (paramSolidEntity.getType()) {
-      // TODO check vs src if ids correct
       case EntityType.Bomb:
         this.health -= 30;
         break;
       case EntityType.Bullet:
         let b: Bullet = paramSolidEntity as Bullet;
         this.health -= (4.0 * b.getDamageFactor());
-        //console.log("bullet hit");
         break;
       case EntityType.Explosion:
-        //TODO reenable plane hit damage
         this.health -= 17;
         break;
       default:

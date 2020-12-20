@@ -34,7 +34,9 @@ export interface InputChange {
   isPressed: boolean;
 }
 
-//TODO use this as InputKey?
+/**
+ * Inputkeys like in the original game
+ */
 export enum GameKey {
   PLANE_UP,
   PLANE_DOWN,
