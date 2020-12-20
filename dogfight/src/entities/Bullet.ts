@@ -152,7 +152,7 @@ export class Bullet extends OwnableSolidEntity {
     let rm: boolean = true;
     if (se instanceof Plane || se instanceof Man) {
       if (this.origin.getPlayerInfo().getId() == se.getPlayerInfo().getId()) {
-        //rm = false;
+        //rm = false; //TODO remove this for non-debug of hitboxes
       }
     }
     if (se instanceof Runway) {

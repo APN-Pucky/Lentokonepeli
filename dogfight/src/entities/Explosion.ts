@@ -58,7 +58,7 @@ export class Explosion extends OwnableSolidEntity {
   public tick(cache: Cache, deltaTime: number): void {
     this.age += deltaTime;
     if (this.age >= 560) {
-      console.log("bomb age " + this.age);
+      //console.log("explosion age " + this.age);
       this.world.removeEntity(this);
     }
     else {

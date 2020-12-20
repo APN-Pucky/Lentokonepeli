@@ -483,7 +483,7 @@ export class Plane extends OwnableSolidEntity {
 
   public getCollisionImage(): BufferedImage {
     //console.log("get image " + this.imagename + "_rot" + Math.round(this.direction));
-    console.log("rot: " + Math.round(this.direction), " flip:" + this.flipped);
+    //console.log("rot: " + Math.round(this.direction), " flip:" + this.flipped);
     return this.world.getImage(this.imagename + "_rot_" + Math.round(this.direction) + "_flip_" + this.flipped);
   }
 
@@ -503,7 +503,7 @@ export class Plane extends OwnableSolidEntity {
       this.bottomHeight = 0;
       return this.bottomHeight;
     }
-    console.log("bottom height: " + this.bottomHeight);
+    //console.log("bottom height: " + this.bottomHeight);
     return this.bottomHeight;
   }
 
