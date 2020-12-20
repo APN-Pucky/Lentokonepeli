@@ -971,7 +971,7 @@ export class Plane extends OwnableSolidEntity {
 
   private moveLanding(cache: Cache, deltaTime: number): void {
     const tstep = deltaTime / 1000;
-    console.log("landing " + this.radians);
+    //console.log("landing " + this.radians);
     if (this.speed > 100) {
       //?
       this.speed -= 3;
