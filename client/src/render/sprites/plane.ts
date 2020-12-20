@@ -52,7 +52,7 @@ export class PlaneSprite extends GameSprite {
 
     this.x = 0;
     this.y = 0;
-    this.health = 100;
+    this.health = 255;
     this.direction = 0;
     this.planeType = PlaneType.Albatros;
     this.flipped = false;
@@ -183,6 +183,7 @@ export class PlaneSprite extends GameSprite {
 
     // how often black smoke should appear, in milliseconds.
     let smokeFrequency = 300;
+    console.log("per " + percentage);
 
     if (percentage < 0.9) {
       // Draw the dark smoke and change

@@ -283,12 +283,12 @@ export class GameClient {
       let value = data[key];
       object[key] = value;
     }
+
     if (type == EntityType.Player) {
       this.playersUpdated = Date.now();
     }
     // this.gameObjects[type].updated = Date.now();
 
-    this.renderer.updateSprite(type, id, data);
 
     // If this a controlled object by some player, update the name position
     const controllerID = this.getControllingPlayer(type, id);
@@ -301,7 +301,13 @@ export class GameClient {
         player,
         object
       );
+      if (type == EntityType.Plane) {
+        object.health = player.health; // in order to create dark smoke
+        data["health"] = player.health;
+      }
     }
+
+    this.renderer.updateSprite(type, id, data);
 
     // check if this changes our radar, if so, update it too.
     if (radarObjects.includes(type)) {
@@ -318,10 +324,12 @@ export class GameClient {
     // check if change to our player or followobject
     if (type == EntityType.Player && this.playerInfo.id == id) {
       // set following
-      this.followObject = {
-        type: object.controlType,
-        id: object.controlID
-      };
+      if (object.controlType !== undefined && object.controlID !== undefined) {
+        this.followObject = {
+          type: object.controlType,
+          id: object.controlID
+        };
+      }
       if (object.name !== undefined) {
         this.playerInfo.name = object.name;
       }
@@ -339,6 +347,7 @@ export class GameClient {
           this.setMode(ClientMode.PreFlight);
         }
       }
+      this.renderer.HUD.updateFollowObject(object);
     }
     // If this is an update to our follow object,
     // update our HUD
@@ -347,7 +356,6 @@ export class GameClient {
       if (x !== undefined && y !== undefined) {
         this.renderer.centerCamera(x, y);
       }
-      this.renderer.HUD.updateFollowObject(object);
     }
   }
 

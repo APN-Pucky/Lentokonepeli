@@ -322,6 +322,8 @@ export class Plane extends OwnableSolidEntity {
     this.height = planeData[kind].height;
     this.maxBombs = planeData[kind].maxBombs;
     this.maxAmmo = planeData[kind].maxAmmo;
+    this.maxHealth = planeData[kind].maxHealth;
+    this.maxFuel = planeData[kind].maxFuel;
     this.bombs = this.maxBombs;
     this.ammo = this.maxAmmo;
 
@@ -341,9 +343,9 @@ export class Plane extends OwnableSolidEntity {
       x: 0,
       y: 0,
       direction: 0,
-      health: 255,
-      fuel: 255,
-      ammo: 255,
+      //health: 255,
+      //fuel: 255,
+      //ammo: 255,
       team: side,
       flipped: false,
       motorOn: true,
@@ -458,7 +460,11 @@ export class Plane extends OwnableSolidEntity {
     }
     this.speed = 0.0;
     this.setDirection(this.world.cache, radiansToDirection(this.radians));
-    // TODO handle this
+    // TODO this code actually is from PlaneChooster.java:168
+    this.playerInfo.setHealthMax(this.getMaxHealth());
+    this.playerInfo.setAmmoMax(this.getMaxAmmo());
+    this.playerInfo.setFuelMax(this.getMaxFuel());
+
     this.playerInfo.setHealth(this.getMaxHealth());
     this.playerInfo.setAmmo(this.getMaxAmmo());
     this.playerInfo.setFuel(this.getMaxFuel());
@@ -1077,7 +1083,9 @@ export class Plane extends OwnableSolidEntity {
       else if (se.getPlayerInfo().getId() != this.getPlayerInfo().getId()) {
         if (se instanceof Bullet) {
           let b = se as Bullet;
+          console.log("before = " + this.getPlayerInfo().getHealth());
           this.getPlayerInfo().setHealth(this.getPlayerInfo().getHealth() - Math.round(30 * b.getDamageFactor()));
+          console.log("after = " + this.getPlayerInfo().getHealth());
           //this.health -= 30 * b.getDamageFactor();
           if (this.getPlayerInfo().getHealth() <= 0) {
             this.fraggedBy(b);
@@ -1107,7 +1115,7 @@ export class Plane extends OwnableSolidEntity {
           }
         }
         else {
-          console.log("ownabel hit kill");
+          console.log("ownable hit kill");
           this.fraggedBy(se);
           this.explode(se);
         }

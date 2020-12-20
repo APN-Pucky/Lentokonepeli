@@ -3,14 +3,14 @@ import { Team } from "../../../../dogfight/src/constants";
 import { TeamColor, DrawLayer } from "../constants";
 import { EntityType } from "../../../../dogfight/src/entity";
 
-interface PlayerInfoObject {
+interface PlayerInfosObject {
   [key: number]: PIXI.Text;
 }
 
-export class PlayerInfo {
+export class PlayerInfos {
   public container: PIXI.Container;
   private spritesheet: PIXI.Spritesheet;
-  private info: PlayerInfoObject;
+  private info: PlayerInfosObject;
 
   public constructor(spritesheet: PIXI.Spritesheet) {
     this.info = {};

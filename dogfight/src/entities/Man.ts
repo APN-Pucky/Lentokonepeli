@@ -95,6 +95,12 @@ export class Man extends OwnableSolidEntity {
   public constructor(id: number, world: GameWorld, cache: Cache, x: number, y: number, player: PlayerInfo) {
     super(id, world, player.getTeam());
     this.playerinfo = player;
+    this.playerinfo.setHealth(1);
+    this.playerinfo.setHealthMax(1);
+    this.playerinfo.setFuel(0);
+    this.playerinfo.setAmmo(1);
+    this.playerinfo.setAmmoMax(1);
+    this.playerinfo.setBombs(1);
     this.localX = x * SCALE_FACTOR;
     this.localY = y * SCALE_FACTOR;
     this.image = [world.getImage("parachuter0.gif"), world.getImage("parachuter1.gif")];
@@ -107,6 +113,7 @@ export class Man extends OwnableSolidEntity {
     this.invulnerabilityTimer = Date.now();
     this.vx = 0;
     this.vy = 0;
+
     this.setData(cache, {
       x: x,
       y: y,
@@ -459,8 +466,8 @@ export class Man extends OwnableSolidEntity {
       health: this.health,
       state: this.state,
       //direction: this.direction,
-      ammo: this.ammo,
-      bombs: this.bombs,
+      //ammo: this.ammo,
+      //bombs: this.bombs,
       team: this.team
     };
   }

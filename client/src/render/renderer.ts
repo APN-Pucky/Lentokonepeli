@@ -19,7 +19,7 @@ import { TeamChooserUI } from "./entities/teamChooserUI";
 import { ClientMode } from "../types";
 import { TakeoffSelectUI } from "./entities/takeoffSelectUI";
 import { PlaneSprite } from "./sprites/plane";
-import { PlayerInfo } from "./entities/playerInfo";
+import { PlayerInfos } from "./entities/playerInfos";
 import { ExplosionSprite } from "./sprites/explosion";
 import { BulletSprite } from "./sprites/bullet";
 import { BombSprite } from "./sprites/bomb";
@@ -61,7 +61,7 @@ export class GameRenderer {
   /**
    * A container for player name strings on the screen
    */
-  public playerInfo: PlayerInfo;
+  public playerInfo: PlayerInfos;
 
   /**
    * A container which draws grids, coords, and
@@ -98,7 +98,7 @@ export class GameRenderer {
     this.entityContainer = new PIXI.Container();
     this.gameContainer.interactive = true;
 
-    this.playerInfo = new PlayerInfo(this.spriteSheet);
+    this.playerInfo = new PlayerInfos(this.spriteSheet);
 
     this.debug = new DebugView(this.pixiApp.renderer);
     this.debug.setEnabled(false);

@@ -11,7 +11,7 @@ export function processPlanes(world: GameWorld, deltaTime: number): void {
   world.planes.forEach((plane): void => {
     plane.tick(world.cache, deltaTime);
 
-    ///*
+    /*
     // if below health, lose control
     if (plane.health <= 0 && !plane.isAbandoned) {
       plane.abandonPlane(world.cache);

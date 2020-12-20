@@ -28,13 +28,18 @@ export class PlayerInfo extends Entity {
   private fuelMax = 255;
   private healthMax = 255;
   private ammoMax = 255;
+  private bombsMax = 5;
   private teamKills = 0;
   private shots = 0;
   private hits = 0;
   private fuel = this.fuelMax;
   private health = this.healthMax;
   private ammo = this.ammoMax;
-  private bombs = this.ammoMax;
+  private bombs = this.bombsMax;
+  private localfuel = this.fuelMax;
+  private localhealth = this.healthMax;
+  private localammo = this.ammoMax;
+  private localbombs = this.bombsMax;
   public constructor(id: number, world: GameWorld, cache: Cache) {
     super(id, world);
     this.name = "Player_" + this.id;
@@ -65,35 +70,44 @@ export class PlayerInfo extends Entity {
     return e.getId() == this.getControlId() && e.getType() == this.getControlType();
   }
 
+  public setHealthMax(mh: number) {
+    this.healthMax = mh;
+  }
+  public setFuelMax(mf: number) {
+    this.fuelMax = mf;
+  }
+  public setAmmoMax(ma: number) {
+    this.ammoMax = ma;
+  }
   public getFuel() {
-    return this.fuel;
+    return this.localfuel;
   }
   public setFuel(fuel: number) {
-    this.fuel = fuel;
-    //this.set(this.world.cache, "fuel", fuel);
+    this.localfuel = fuel;
+    this.set(this.world.cache, "fuel", Math.round(fuel / this.fuelMax * 255));
   }
 
   public getHealth() {
-    return this.health;
+    return this.localhealth;
   }
   public setHealth(health: number) {
-    this.health = health;
-    //this.set(this.world.cache, "health", health);
+    this.localhealth = health;
+    this.set(this.world.cache, "health", Math.round(health / this.healthMax * 255));
   }
 
   public getAmmo() {
-    return this.ammo;
+    return this.localammo;
   }
   public setAmmo(ammo: number) {
-    this.ammo = ammo;
-    //this.set(this.world.cache, "ammo", ammo);
+    this.localammo = ammo;
+    this.set(this.world.cache, "ammo", Math.round(ammo / this.ammoMax * 255));
   }
   public getBombs() {
     return this.bombs;
   }
   public setBombs(bombs: number) {
-    this.bombs = bombs;
-    //this.set(this.world.cache, "bombs", bombs);
+    //this.bombs = bombs;
+    this.set(this.world.cache, "bombs", bombs);
   }
 
   public setName(cache: Cache, name: string): void {
@@ -135,10 +149,10 @@ export class PlayerInfo extends Entity {
       controlType: this.controlType,
       controlID: this.controlID,
       status: this.status,
-      //fuel: this.fuel,
-      //ammo: this.ammo,
-      //health: this.health,
-      //bombs: this.bombs,
+      fuel: this.fuel,
+      ammo: this.ammo,
+      health: this.health,
+      bombs: this.bombs,
     };
   }
 }

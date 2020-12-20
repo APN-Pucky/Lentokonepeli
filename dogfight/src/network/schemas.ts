@@ -8,10 +8,10 @@ const planeSchema: GameObjectSchema = {
     { name: "planeType", intType: IntType.Uint8 },
     { name: "team", intType: IntType.Uint8 },
     { name: "direction", intType: IntType.Uint8 },
-    { name: "health", intType: IntType.Uint8 },
-    { name: "fuel", intType: IntType.Uint8 },
-    { name: "ammo", intType: IntType.Uint8 },
-    { name: "bombs", intType: IntType.Uint8 }
+    //{ name: "health", intType: IntType.Uint8 },
+    //{ name: "fuel", intType: IntType.Uint8 },
+    //{ name: "ammo", intType: IntType.Uint8 },
+    //{ name: "bombs", intType: IntType.Uint8 }
   ],
   booleans: ["flipped", "motorOn"],
   strings: []
@@ -54,7 +54,11 @@ const playerSchema: GameObjectSchema = {
     { name: "controlType", intType: IntType.Uint8 },
     { name: "controlID", intType: IntType.Uint16 },
     { name: "ping", intType: IntType.Uint16 },
-    { name: "status", intType: IntType.Uint8 }
+    { name: "status", intType: IntType.Uint8 },
+    { name: "fuel", intType: IntType.Uint8 },
+    { name: "ammo", intType: IntType.Uint8 },
+    { name: "health", intType: IntType.Uint8 },
+    { name: "bombs", intType: IntType.Uint8 }
   ],
   booleans: [],
   strings: ["name"]
@@ -90,8 +94,8 @@ const trooperSchema: GameObjectSchema = {
     { name: "health", intType: IntType.Uint8 },
     { name: "state", intType: IntType.Uint8 },
     { name: "direction", intType: IntType.Uint8 },
-    { name: "ammo", intType: IntType.Uint8 },
-    { name: "bombs", intType: IntType.Uint8 },
+    //{ name: "ammo", intType: IntType.Uint8 },
+    //{ name: "bombs", intType: IntType.Uint8 },
     { name: "team", intType: IntType.Uint8 }
   ],
   booleans: [],
