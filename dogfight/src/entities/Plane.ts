@@ -357,7 +357,9 @@ export class Plane extends OwnableSolidEntity {
       let lx = 50;
       let ly = 50;
 
-      let x = this.runway.getStartX();
+      let x;
+      /*
+      x = this.runway.getStartX();
       y0 = this.runway.getStartY();
       for (let y = y0; y < y0 + ly; y += 5) {
         const bullet = new Bullet(
@@ -370,6 +372,7 @@ export class Plane extends OwnableSolidEntity {
         );
         world.addEntity(bullet);
       }
+      */
 
       x = this.runway.getLandableX();
       y0 = this.runway.getLandableY();
@@ -1032,10 +1035,12 @@ export class Plane extends OwnableSolidEntity {
     if (se.getType() == EntityType.Runway) {
       let localRunway: Runway = se as Runway;
       console.log("HHIITT - Runway");
-      if (this.mode != PlaneMode.Landing && this.localX / SCALE_FACTOR > localRunway.getLandableX() && this.localX / SCALE_FACTOR + this.width / 2 < localRunway.getLandableX() + localRunway.getLandableWidth() && !this.motorOn &&
+      if (this.mode != PlaneMode.Landing && this.localX / SCALE_FACTOR - this.width / 2 > localRunway.getLandableX() && this.localX / SCALE_FACTOR + this.width / 2 < localRunway.getLandableX() + localRunway.getLandableWidth() &&
+        !this.motorOn &&
         this.speed < 250 + this.speedModifier &&
-        (!this.flipped && (2 * Math.PI - this.radians < 0.8975979010256552 || 2 * Math.PI - this.radians > 5.385587406153931)) ||
-        this.flipped && (2 * Math.PI - this.radians < 4.039190554615448 && 2 * Math.PI - this.radians > 2.243994752564138)) {
+        ((!this.flipped && (2 * Math.PI - this.radians < 0.8975979010256552 || 2 * Math.PI - this.radians > 5.385587406153931)) ||
+          this.flipped && (2 * Math.PI - this.radians < 4.039190554615448 && 2 * Math.PI - this.radians > 2.243994752564138))) {
+        console.log("motorOn  = " + this.motorOn);
         if (this.flipped) {
           this.radians = Math.PI;
         }
