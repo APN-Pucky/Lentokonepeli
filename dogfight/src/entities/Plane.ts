@@ -351,6 +351,7 @@ export class Plane extends OwnableSolidEntity {
       planeType: kind,
     });
     //return;
+    runway = null;
     if (runway != null) {
       let x0 = -30;
       let y0 = 400;
