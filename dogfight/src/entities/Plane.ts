@@ -88,7 +88,7 @@ interface PlaneInfo {
     maxHealth: number;
     accelerationSpeed: number; // units per second, original code runs every ~100ms
     maxY: number;
-    turnStep: number; // TODO: figure out how these were calculated
+    turnStep: number;
     shootDelay: number; // Cooldown time in milliseconds
     speedModifier: number;
   };
