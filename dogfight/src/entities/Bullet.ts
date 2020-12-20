@@ -68,7 +68,7 @@ export class Bullet extends OwnableSolidEntity {
     this.setData(cache, {
       x: x,
       y: y,
-      age: -1000000,
+      age: 0,
       shotBy: origin.getPlayerInfo().getId(),
       team: origin.getTeam(),
       clientVX: this.clientVX,

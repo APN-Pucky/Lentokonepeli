@@ -1063,8 +1063,8 @@ export class Plane extends OwnableSolidEntity {
     }
     if (se instanceof OwnableSolidEntity) {
       if (se instanceof Explosion) { // equivalent  check
-        this.health -= 50;
-        if (this.health <= 0) {
+        this.getPlayerInfo().setHealth(this.getPlayerInfo().getHealth() - 50);
+        if (this.getPlayerInfo().getHealth() <= 0) {
           this.fraggedBy(se as Ownable);
           this.explode(se as Ownable);
           console.log("explosion kill");
@@ -1073,8 +1073,9 @@ export class Plane extends OwnableSolidEntity {
       else if (se.getPlayerInfo().getId() != this.getPlayerInfo().getId()) {
         if (se instanceof Bullet) {
           let b = se as Bullet;
-          this.health -= 30 * b.getDamageFactor();
-          if (this.health <= 0) {
+          this.getPlayerInfo().setHealth(this.getPlayerInfo().getHealth() - Math.round(30 * b.getDamageFactor()));
+          //this.health -= 30 * b.getDamageFactor();
+          if (this.getPlayerInfo().getHealth() <= 0) {
             this.fraggedBy(b);
             this.setMode(PlaneMode.Falling)
             console.log("bullet kill");
@@ -1090,9 +1091,9 @@ export class Plane extends OwnableSolidEntity {
           if (this.mode == PlaneMode.Flying) {
             this.setMode(PlaneMode.Dodging);
             this.radians += (Math.random() - 0.5) * 0.7853981633974483;
-            this.health -= 25;
+            this.getPlayerInfo().setHealth(this.getPlayerInfo().getHealth() - 25);
             this.flipped = !this.flipped;
-            if (this.health <= 0) {
+            if (this.getPlayerInfo().getHealth()<= 0) {
               this.fraggedBy(se);
               this.setMode(PlaneMode.Falling)
               console.log("dodge kill");
