@@ -927,17 +927,17 @@ export class Plane extends OwnableSolidEntity {
       i = 1;
     }
     if (++this.dodgeCounter > 40) {
-      this.mode = 0;
+      this.setMode(PlaneMode.Flying)
       this.dodgeCounter = 0;
     }
     else if (this.dodgeCounter == 10) {
-      this.flipped = (!this.flipped);
+      this.setFlipped(cache, !this.flipped);
     }
     else if (this.dodgeCounter == 20) {
-      this.flipped = (!this.flipped);
+      this.setFlipped(cache, !this.flipped);
     }
     else if (this.dodgeCounter == 30) {
-      this.flipped = (!this.flipped);
+      this.setFlipped(cache, !this.flipped);
     }
     if (i != 0) {
       if (this.checkCollision()) { }
@@ -1092,8 +1092,9 @@ export class Plane extends OwnableSolidEntity {
             this.setMode(PlaneMode.Dodging);
             this.radians += (Math.random() - 0.5) * 0.7853981633974483;
             this.getPlayerInfo().setHealth(this.getPlayerInfo().getHealth() - 25);
-            this.flipped = !this.flipped;
-            if (this.getPlayerInfo().getHealth()<= 0) {
+            this.setFlipped(this.world.cache, !this.flipped);
+            this.set(this.world.cache, "direction", radiansToDirection(this.radians));
+            if (this.getPlayerInfo().getHealth() <= 0) {
               this.fraggedBy(se);
               this.setMode(PlaneMode.Falling)
               console.log("dodge kill");
