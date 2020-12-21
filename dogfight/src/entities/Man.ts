@@ -127,10 +127,10 @@ export class Man extends OwnableSolidEntity {
   }
   public getCollisionBounds(): Rectangle {
     if (this.state != TrooperState.Parachuting) {
-      return new Rectangle(this.x, this.y + this.height / 2, this.width, this.height);
+      return new Rectangle(this.localX / SCALE_FACTOR, this.localY / SCALE_FACTOR + this.height / 2, this.width, this.height);
     }
     else {
-      return new Rectangle(this.x, this.y + this.image[1].height / 2, this.image[1].width, this.image[1].height);
+      return new Rectangle(this.localX / SCALE_FACTOR, this.localY / SCALE_FACTOR + this.image[1].height / 2, this.image[1].width, this.image[1].height);
     }
     //throw new Error("Method not implemented.");
   }
@@ -198,7 +198,7 @@ export class Man extends OwnableSolidEntity {
         //console.log("step");
         let i = this.state;
         this.setState(cache, TrooperState.Standing);
-        this.lastX = this.localX;
+        this.lastX = this.x;
         if (this.isKeyPressed(GameKey.MAN_LEFT)) { //this.direction == TrooperDirection.Left) { // todo here key pressed?
           this.localX -= 100 * tstep * SCALE_FACTOR;
           if (this.localX / 100 < -45536) { // random bound {
@@ -396,7 +396,8 @@ export class Man extends OwnableSolidEntity {
             this.respawn(se as Runway);
           }
           else {
-            this.x = this.lastX;
+            //this.x = this.lastX;
+            this.setPos(this.world.cache, this.lastX, this.localY / SCALE_FACTOR);
           }
         }
         else if (se.getTeam() != this.getTeam()) {

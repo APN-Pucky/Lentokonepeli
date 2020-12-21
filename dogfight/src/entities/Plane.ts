@@ -449,7 +449,7 @@ export class Plane extends OwnableSolidEntity {
 
   private park(paramRunway: Runway): void {
     this.localX = (paramRunway.getStartX() + this.width / 2) * SCALE_FACTOR;
-    this.localY = ((paramRunway.getStartY() + this.getBottomHeight() / 2 + this.height / 2 + 5)) * SCALE_FACTOR;
+    this.localY = ((paramRunway.getStartY() + this.getBottomHeight() / 2 + this.height / 2)) * SCALE_FACTOR;
     if (paramRunway.getDirection() == 0) {
       this.radians = Math.PI;
       this.setFlipped(this.world.cache, true);
@@ -486,7 +486,7 @@ export class Plane extends OwnableSolidEntity {
 
   public getCollisionBounds(): Rectangle {
     let tmp = this.getCollisionImage();
-    let r = new Rectangle(this.x, this.y, tmp.width, tmp.height);
+    let r = new Rectangle(this.localX / SCALE_FACTOR, this.localY / SCALE_FACTOR, tmp.width, tmp.height);
     //console.log(r);
     return r;
   }

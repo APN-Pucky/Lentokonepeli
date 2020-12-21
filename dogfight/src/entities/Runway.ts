@@ -37,7 +37,7 @@ export class Runway extends SolidEntity {
   public imageWidth;
   public imageHeight;
 
-  public yOffset = 7; // TODO why do we need a offset for the hitbox of the runway?!?!?!?!?
+  public yOffset = 6; // TODO why do we need a offset for the hitbox of the runway?!?!?!?!?
 
   private localhealth = 1530;
 

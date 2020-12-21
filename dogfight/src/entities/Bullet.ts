@@ -83,7 +83,7 @@ export class Bullet extends OwnableSolidEntity {
   }
 
   public getCollisionBounds(): Rectangle {
-    return new Rectangle(this.x, this.y, this.width, this.height);
+    return new Rectangle(this.localX/SCALE_FACTOR, this.localY/SCALE_FACTOR, this.width, this.height);
   }
 
   public tick(cache: Cache, deltaTime: number): void {
