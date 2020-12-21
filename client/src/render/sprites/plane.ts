@@ -183,7 +183,6 @@ export class PlaneSprite extends GameSprite {
 
     // how often black smoke should appear, in milliseconds.
     let smokeFrequency = 300;
-    console.log("per " + percentage);
 
     if (percentage < 0.9) {
       // Draw the dark smoke and change

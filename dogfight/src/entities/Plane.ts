@@ -1134,7 +1134,7 @@ export class Plane extends OwnableSolidEntity {
       //}
       if (se.getType() == EntityType.Ground) {
         console.log("plane - ground");
-        return;
+        //return;
       }
       console.log("plane - obj " + se);
       this.fraggedBy(null);

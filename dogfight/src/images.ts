@@ -87,7 +87,7 @@ export async function loadImages(path = "./dist/assets/images/images.png") {
     //console.log(await loadImage("./dist/assets/images/images.png"));
     const image2 = main_image.clone(); //await jimp.read(path);
     image2.crop(info.x, info.y, info.w, info.h)
-      //.autocrop()
+      .autocrop()
       ;
     images[key] = new BufferedImage(Buffer.from(image2.bitmap.data), { w: image2.bitmap.width, h: image2.bitmap.height });
     /*
@@ -119,7 +119,7 @@ export async function loadImages(path = "./dist/assets/images/images.png") {
           //console.log(a);
           image3
             .rotate(-a / ma * 360)
-            //.autocrop()
+            .autocrop()
             ;
           let d = image3.bitmap.data;
           images[key + "_rot_" + a + "_flip_" + f] = new BufferedImage(Buffer.from(d), { w: image3.bitmap.width, h: image3.bitmap.height });

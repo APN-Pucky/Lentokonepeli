@@ -126,7 +126,12 @@ export class Man extends OwnableSolidEntity {
     });
   }
   public getCollisionBounds(): Rectangle {
-    return new Rectangle(this.x, this.y, this.width, this.height);
+    if (this.state != TrooperState.Parachuting) {
+      return new Rectangle(this.x, this.y, this.width, this.height);
+    }
+    else {
+      return new Rectangle(this.x - this.width / 2 + this.image[1].width / 2, this.y - this.height / 2 + this.image[1].height / 2, this.image[1].width, this.image[1].height);
+    }
     //throw new Error("Method not implemented.");
   }
   public getCollisionImage(): BufferedImage {
@@ -271,7 +276,7 @@ export class Man extends OwnableSolidEntity {
       }
     }
     let j = this.localX / 100;
-    let m = this.localY / 100 - 10 + this.height / 2;
+    let m = this.localY / 100 + 10 - this.height / 2;
     console.log("bullet shot");
     const b = new Bullet(
       this.world.nextID(EntityType.Bullet),
@@ -374,7 +379,7 @@ export class Man extends OwnableSolidEntity {
     if (se.getType() == EntityType.Ground && (this.state == TrooperState.Falling || this.state == TrooperState.Parachuting)) {
       if (this.vy < this.speedPerPixel * 1.5) {
         this.setState(this.world.cache, TrooperState.Standing);
-        this.localY = (se.getCollisionBounds().y + this.image[0].getHeight() / 2) * 100;
+        this.localY = (se.getCollisionBounds().getMaxY() + this.image[0].getHeight() / 2) * 100;
         console.log("landed - ground ");
         this.set(this.world.cache, "y", Math.round(this.localY / SCALE_FACTOR));
       }
