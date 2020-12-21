@@ -448,7 +448,7 @@ export class Plane extends OwnableSolidEntity {
   }
 
   private park(paramRunway: Runway): void {
-    this.localX = (paramRunway.getStartX()) * SCALE_FACTOR;
+    this.localX = (paramRunway.getStartX() + this.width / 2) * SCALE_FACTOR;
     this.localY = ((paramRunway.getStartY() - this.getBottomHeight() / 2 + this.height / 2)) * SCALE_FACTOR;
     if (paramRunway.getDirection() == 0) {
       this.radians = Math.PI;
