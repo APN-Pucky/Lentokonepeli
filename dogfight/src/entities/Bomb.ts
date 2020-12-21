@@ -44,7 +44,6 @@ export class Bomb extends OwnableSolidEntity {
     super(id, world, origin.getTeam());
     //this.radians = directionToRadians(direction);
     this.setDirection(cache, direction);
-    this.setPos(cache, x, y);
     //this.localX = x * SCALE_FACTOR;
     //this.localY = y * SCALE_FACTOR;
     this.setSpeed(cache, speed * SCALE_FACTOR); // needs radians to be set
@@ -52,6 +51,8 @@ export class Bomb extends OwnableSolidEntity {
     this.width = this.image.width;
     this.height = this.image.height;
     this.origin = origin;
+
+    this.setPos(cache, x - Math.cos(this.radians) * this.width / 2, y - Math.sin(this.radians) * this.width / 2);
 
 
     this.setData(cache, {

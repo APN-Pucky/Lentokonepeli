@@ -119,7 +119,7 @@ export async function loadImages(path = "./dist/assets/images/images.png") {
           //console.log(a);
           image3
             .rotate(-a / ma * 360)
-            .autocrop()
+            //.autocrop()
             ;
           let d = image3.bitmap.data;
           images[key + "_rot_" + a + "_flip_" + f] = new BufferedImage(Buffer.from(d), { w: image3.bitmap.width, h: image3.bitmap.height });
