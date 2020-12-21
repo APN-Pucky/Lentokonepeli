@@ -460,7 +460,7 @@ export class Plane extends OwnableSolidEntity {
     }
     this.speed = 0.0;
     this.setDirection(this.world.cache, radiansToDirection(this.radians));
-    // TODO this code actually is from PlaneChooster.java:168
+    // TODO this code actually is from PlaneChooser.java:168
     this.playerInfo.setHealthMax(this.getMaxHealth());
     this.playerInfo.setAmmoMax(this.getMaxAmmo());
     this.playerInfo.setFuelMax(this.getMaxFuel());
@@ -807,8 +807,8 @@ export class Plane extends OwnableSolidEntity {
         this.world.nextID(EntityType.Bomb),
         this.world,
         this.world.cache,
-        this.x,
-        this.y,
+        Math.round(this.localX / SCALE_FACTOR),
+        Math.round(this.localY / SCALE_FACTOR),
         this.direction,
         this.speed / SCALE_FACTOR,
         this,
@@ -830,8 +830,8 @@ export class Plane extends OwnableSolidEntity {
         this.world.nextID(EntityType.Bullet),
         this.world,
         this.world.cache,
-        this.x + Math.cos(directionToRadians(this.direction)) * (this.width / 2 + 2),
-        this.y + Math.sin(directionToRadians(this.direction)) * (this.width / 2 + 2),
+        Math.round(this.localX / SCALE_FACTOR + Math.cos(directionToRadians(this.direction)) * (this.width / 2 + 2)),
+        Math.round(this.localY / SCALE_FACTOR + Math.sin(directionToRadians(this.direction)) * (this.height / 2 + 2)),
         this.radians,
         this.speed / SCALE_FACTOR,
         this,

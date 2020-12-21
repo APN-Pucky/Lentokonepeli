@@ -11,6 +11,7 @@ import { Cache, CacheEntry } from "../network/cache";
 export abstract class SolidEntity extends Entity {
   public team: number = -1;
 
+  //TODO this constructor just resembles SolidEntity.java but does not use team variable, since not all entities have a cached team (atm)
   public constructor(id: number, world: GameWorld, team: Team) {
     super(id, world);
     //this.setTeam(world.cache, team);
