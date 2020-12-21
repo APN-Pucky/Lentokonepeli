@@ -94,6 +94,7 @@ export class PlayerInfo extends Entity {
     return this.localhealth;
   }
   public setHealth(health: number) {
+    if (health < 0) health = 0;
     this.localhealth = health;
     this.set(this.world.cache, "health", Math.round(health / this.healthMax * 255));
   }

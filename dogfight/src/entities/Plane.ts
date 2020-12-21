@@ -565,7 +565,7 @@ export class Plane extends OwnableSolidEntity {
   }
 
   public setMotor(cache: Cache, value: boolean): void {
-    this.mode = PlaneMode.Flying; // value ? PlaneMode.Flying : PlaneMode.Falling;
+    //this.mode = PlaneMode.Flying; // value ? PlaneMode.Flying : PlaneMode.Falling;
     this.set(cache, "motorOn", value);
   }
 
@@ -772,6 +772,7 @@ export class Plane extends OwnableSolidEntity {
   private moveFalling(cache: Cache, deltaTime: number): void {
     const tstep = deltaTime / 1000;
     //TODO serverside black smoke ?
+    this.setMotor(cache, false) // actually only black smoke here
     this.run(deltaTime);
     this.movePlane(cache, deltaTime);
     if (!this.checkCollision()) { }
@@ -971,8 +972,8 @@ export class Plane extends OwnableSolidEntity {
     this.set(cache, "direction", direction);
   }
   public setMode(mode: number): void {
+    //this.mode = mode;
     this.set(this.world.cache, "mode", mode);
-    this.mode = mode;
   }
 
   private moveLanding(cache: Cache, deltaTime: number): void {
