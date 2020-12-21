@@ -53,7 +53,7 @@ export class Bomb extends OwnableSolidEntity {
     this.origin = origin;
 
     // shift position by bomb width/height
-    this.setPos(cache, x - Math.cos(this.radians) * this.width / 2 - Math.sin(this.radians) * this.height / 2, y - Math.sin(this.radians) * this.width / 2 + Math.cos(this.radians) * this.width / 2);
+    this.setPos(cache, x - Math.cos(this.radians) * this.width / 2 - Math.sin(this.radians) * this.height / 2, y - Math.sin(this.radians) * this.width / 2 + Math.cos(this.radians) * this.height / 2);
 
 
     this.setData(cache, {
