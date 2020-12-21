@@ -5,13 +5,15 @@ import { GameWorld } from "../world/world"
 import { BufferedImage } from "../BufferedImage";
 import { Bullet } from "./Bullet";
 import { Runway } from "./Runway";
+import { Team } from "../constants";
+import { Cache, CacheEntry } from "../network/cache";
 
 export abstract class SolidEntity extends Entity {
-  public team: number;
+  public team: number = -1;
 
-  public constructor(id: number, world: GameWorld, team: number) {
+  public constructor(id: number, world: GameWorld, team: Team) {
     super(id, world);
-    this.team = team;
+    //this.setTeam(world.cache, team);
   }
   public abstract getCollisionBounds(): Rectangle;
   public getCollisionImage(): BufferedImage { return null };
@@ -125,4 +127,8 @@ export abstract class SolidEntity extends Entity {
   public hit(se: SolidEntity): void { }
   public getTeam(): number { return this.team; }
   public isAlive(): boolean { return true; }
+
+  //public setTeam(cache: Cache, team: Team) {
+  //  this.set(cache, "team", team);
+  //}
 }

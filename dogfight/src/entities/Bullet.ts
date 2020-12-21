@@ -95,7 +95,7 @@ export class Bullet extends OwnableSolidEntity {
     if (this.age > 175 * 10) {
       return 0.0;
     }
-    let d = this.age / 175.0 * 10;
+    let d = this.age / 175.0 / 10;
     d *= d;
     return 1.0 - d;
   }

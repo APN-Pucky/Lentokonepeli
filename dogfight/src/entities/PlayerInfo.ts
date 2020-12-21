@@ -59,6 +59,9 @@ export class PlayerInfo extends Entity {
   public getTeam(): Team {
     return this.team;
   }
+  public setTeam(team: Team) {
+    this.set(this.world.cache, "team", team);
+  }
 
   public getControlId(): number {
     return this.controlID;

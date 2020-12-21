@@ -38,18 +38,20 @@ export class Runway extends SolidEntity {
   public imageHeight;
 
   public yOffset = 7; // TODO why do we need a offset for the hitbox of the runway?!?!?!?!?
+  private localhealth = 1530;
 
   public constructor(id: number, world: GameWorld, cache: Cache, team: number, x: number, y: number, direction: number) {
     super(id, world, team);
     this.image = [world.getImage("runway.gif"), world.getImage("runway2.gif")];
     this.imageWidth = [this.image[0].width, this.image[1].width];
     this.imageHeight = [this.image[0].height, this.image[1].height];
+    this.localhealth = HEALTH_MAX;
     this.setData(cache, {
       x: x,
       y: y,
       direction: direction, //FacingDirection.Right,
       team: team, //Team.Centrals,
-      health: 1530
+      health: 255
     });
 
     //console.log(this.getCollisionBounds());
@@ -76,6 +78,13 @@ export class Runway extends SolidEntity {
 
   public getLandableWidth(): number {
     return (this.imageWidth[1 - this.direction] - 65);
+  }
+  public getHealth() {
+    return this.localhealth;
+  }
+  public setHealth(health: number) {
+    this.localhealth = health;
+    this.set(this.world.cache, "health", Math.round(this.localhealth / HEALTH_MAX * 255));
   }
 
   public getLandableX(): number {
@@ -126,7 +135,7 @@ export class Runway extends SolidEntity {
     if (this.reserveTimer + l2 > l1) {
       return false;
     }
-    if (this.health <= 0) {
+    if (this.localhealth <= 0) {
       return false;
     }
     this.reserveTimer = l1;
@@ -135,12 +144,12 @@ export class Runway extends SolidEntity {
   }
 
   public run(): void {
-    if ((this.health > 0) && (this.health < 1530)) {
+    if ((this.localhealth > 0) && (this.localhealth < HEALTH_MAX)) {
       this.healthTimer = ((this.healthTimer + 1) % 50);
       if (this.healthTimer == 0) {
-        this.health += 1;
-        if (this.health * 255 % 1530 == 0) {
-          this.setChanged(true);
+        this.localhealth += 1
+        if (this.localhealth * 255 % 1530 == 0) {
+          this.setHealth(this.localhealth);
         }
       }
     }
@@ -152,32 +161,32 @@ export class Runway extends SolidEntity {
     }
     switch (paramSolidEntity.getType()) {
       case EntityType.Bomb:
-        this.health -= 30;
+        this.setHealth(this.getHealth() - 30);
         break;
       case EntityType.Bullet:
         let b: Bullet = paramSolidEntity as Bullet;
-        this.health -= (4.0 * b.getDamageFactor());
+        this.setHealth(this.getHealth() - (4.0 * b.getDamageFactor()));
         break;
       case EntityType.Explosion:
-        this.health -= 17;
+        this.setHealth(this.getHealth() - 17);
         break;
       default:
         return;
     }
-    if (this.health <= 0) {
-      this.health = 0;
+    if (this.getHealth() <= 0) {
+      this.setHealth(0);
       this.destroyed(paramSolidEntity.getTeam());
     }
     this.setChanged(true);
   }
 
   public planeCrash(): void {
-    if (this.health <= 0) {
+    if (this.localhealth <= 0) {
       return;
     }
-    this.health -= 17;
-    if (this.health <= 0) {
-      this.health = 0;
+    this.setHealth(this.getHealth() - 17);
+    if (this.getHealth() <= 0) {
+      this.setHealth(0);
       this.destroyed(this.getTeam());
     }
     this.setChanged(true);
@@ -211,7 +220,7 @@ export class Runway extends SolidEntity {
   }
 
   public isAlive() {
-    return this.health > 0;
+    return this.localhealth > 0;
   }
 
   public addPlayerInside(pi: PlayerInfo): void {

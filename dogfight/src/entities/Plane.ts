@@ -452,11 +452,11 @@ export class Plane extends OwnableSolidEntity {
     this.localY = ((paramRunway.getStartY() - this.getBottomHeight() / 2 + this.height / 2)) * SCALE_FACTOR;
     if (paramRunway.getDirection() == 0) {
       this.radians = Math.PI;
-      this.flipped = true;
+      this.setFlipped(this.world.cache, true);
     }
     else {
       this.radians = 0.0;
-      this.flipped = false;
+      this.setFlipped(this.world.cache, false);
     }
     this.speed = 0.0;
     this.setDirection(this.world.cache, radiansToDirection(this.radians));

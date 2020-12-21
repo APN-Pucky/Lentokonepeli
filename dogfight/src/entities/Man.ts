@@ -259,7 +259,7 @@ export class Man extends OwnableSolidEntity {
       });
     });
 
-    let d = 4.71238898038469; //
+    let d = 4.71238898038469 - Math.PI; //
     if (localObject1 != null) {
       d = this.countAngle(localObject1);
     }
@@ -279,7 +279,7 @@ export class Man extends OwnableSolidEntity {
       this.world.cache,
       j,
       m,
-      -d,
+      d,
       0,
       this,
     );
@@ -417,7 +417,7 @@ export class Man extends OwnableSolidEntity {
           this.removeSelf();
         }
       }
-      else if (se.getType() == EntityType.Bomb) {
+      else if (se.getType() == EntityType.Bomb || se.getType() == EntityType.Explosion) {
         let b = se as Bomb;
         this.fraggedBy(b);
         this.removeSelf();
