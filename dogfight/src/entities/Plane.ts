@@ -361,7 +361,7 @@ export class Plane extends OwnableSolidEntity {
       let ly = 50;
 
       let x;
-      /*
+      ///*
       x = this.runway.getStartX();
       y0 = this.runway.getStartY();
       for (let y = y0; y < y0 + ly; y += 5) {
@@ -375,7 +375,7 @@ export class Plane extends OwnableSolidEntity {
         );
         world.addEntity(bullet);
       }
-      */
+      //*/
 
       x = this.runway.getLandableX();
       y0 = this.runway.getLandableY();
@@ -449,7 +449,7 @@ export class Plane extends OwnableSolidEntity {
 
   private park(paramRunway: Runway): void {
     this.localX = (paramRunway.getStartX() + this.width / 2) * SCALE_FACTOR;
-    this.localY = ((paramRunway.getStartY() - this.getBottomHeight() / 2 + this.height / 2)) * SCALE_FACTOR;
+    this.localY = ((paramRunway.getStartY() + this.getBottomHeight() / 2 + this.height / 2 + 5)) * SCALE_FACTOR;
     if (paramRunway.getDirection() == 0) {
       this.radians = Math.PI;
       this.setFlipped(this.world.cache, true);
@@ -1100,27 +1100,29 @@ export class Plane extends OwnableSolidEntity {
           this.explode(b);
           console.log("bomb kill");
         }
-        else if (se instanceof Plane) {
-          if (this.mode == PlaneMode.Flying) {
-            this.setMode(PlaneMode.Dodging);
-            this.radians += (Math.random() - 0.5) * 0.7853981633974483;
-            if (this.radians < 0) this.radians += 2 * Math.PI;
-            if (this.radians >= Math.PI * 2) this.radians -= 2 * Math.PI;
-            this.getPlayerInfo().setHealth(this.getPlayerInfo().getHealth() - 25);
-            this.setFlipped(this.world.cache, !this.flipped);
-            this.set(this.world.cache, "direction", radiansToDirection(this.radians));
-            if (this.getPlayerInfo().getHealth() <= 0) {
-              this.fraggedBy(se);
-              this.setMode(PlaneMode.Falling)
-              console.log("dodge kill");
+        else if (se.getType() != EntityType.Trooper) {
+          if (se instanceof Plane) {
+            if (this.mode == PlaneMode.Flying) {
+              this.setMode(PlaneMode.Dodging);
+              this.radians += (Math.random() - 0.5) * 0.7853981633974483;
+              if (this.radians < 0) this.radians += 2 * Math.PI;
+              if (this.radians >= Math.PI * 2) this.radians -= 2 * Math.PI;
+              this.getPlayerInfo().setHealth(this.getPlayerInfo().getHealth() - 25);
+              this.setFlipped(this.world.cache, !this.flipped);
+              this.set(this.world.cache, "direction", radiansToDirection(this.radians));
+              if (this.getPlayerInfo().getHealth() <= 0) {
+                this.fraggedBy(se);
+                this.setMode(PlaneMode.Falling)
+                console.log("dodge kill");
+              }
+              this.setChanged(true);
             }
-            this.setChanged(true);
           }
-        }
-        else {
-          console.log("ownable hit kill");
-          this.fraggedBy(se);
-          this.explode(se);
+          else {
+            console.log("ownable hit kill");
+            this.fraggedBy(se);
+            this.explode(se);
+          }
         }
       }
     }

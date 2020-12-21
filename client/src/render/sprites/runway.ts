@@ -14,7 +14,7 @@ export class RunwaySprite extends GameSprite {
 
   private spritesheet: PIXI.Spritesheet;
 
-  private runway: PIXI.Sprite;
+  public runway: PIXI.Sprite;
   private backpart: PIXI.Sprite;
   private healthBar: PIXI.Graphics;
 

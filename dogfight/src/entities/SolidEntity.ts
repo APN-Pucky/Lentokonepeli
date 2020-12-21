@@ -106,6 +106,12 @@ export abstract class SolidEntity extends Entity {
     return false;
   }
 
+  public checkCollisionWith2(se: SolidEntity): boolean {
+    if (!(this.checkCollisionWith(se) == se.checkCollisionWith(this))) {
+      console.log("WTTTFFF")
+    }
+    return this.checkCollisionWith(se);
+  }
   public checkCollision(): boolean {
     let bool = false;
     let entities = this.world.getEntities();
@@ -114,6 +120,9 @@ export abstract class SolidEntity extends Entity {
       list.forEach((entity): void => {
         if (entity instanceof SolidEntity && entity != this) {
           let se: SolidEntity = entity;
+          //if (!(this.checkCollisionWith(se) == se.checkCollisionWith(this))) {
+          //  console.log("WTTTFFF")
+          //}
           if (se.isAlive() && this.checkCollisionWith(se)) {
             bool = true;
             this.hit(se);

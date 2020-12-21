@@ -1,5 +1,5 @@
 import { PlaneSprite } from "../src/render/sprites/plane";
-import { TrooperSprite } from "../src/render/sprites/trooper";
+import { RunwaySprite } from "../src/render/sprites/runway";
 import { Draggable, Renderable } from "./helper";
 import {
   randBetween,
@@ -8,12 +8,12 @@ import {
   onDragMove
 } from "./helper";
 
-export class dragtrooper extends TrooperSprite implements Draggable, Renderable {
+export class dragrunway extends RunwaySprite implements Draggable, Renderable {
   public constructor(s) {
     super(s)
-    this.x = 150;
-    this.y = 150;
-    this.sprite = this.container;
+    this.x = 200;
+    this.y = 200;
+    this.sprite = this.runway;
     this.sprite.interactive = true;
     this.sprite.buttonMode = true;
 

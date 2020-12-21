@@ -127,7 +127,7 @@ export class Man extends OwnableSolidEntity {
   }
   public getCollisionBounds(): Rectangle {
     if (this.state != TrooperState.Parachuting) {
-      return new Rectangle(this.x, this.y - this.height / 2, this.width, this.height);
+      return new Rectangle(this.x, this.y + this.height / 2, this.width, this.height);
     }
     else {
       return new Rectangle(this.x, this.y + this.image[1].height / 2, this.image[1].width, this.image[1].height);
@@ -197,7 +197,7 @@ export class Man extends OwnableSolidEntity {
       case TrooperState.Walking_RIGHT:
         //console.log("step");
         let i = this.state;
-        this.state = TrooperState.Standing;
+        this.setState(cache, TrooperState.Standing);
         this.lastX = this.localX;
         if (this.isKeyPressed(GameKey.MAN_LEFT)) { //this.direction == TrooperDirection.Left) { // todo here key pressed?
           this.localX -= 100 * tstep * SCALE_FACTOR;
@@ -379,7 +379,7 @@ export class Man extends OwnableSolidEntity {
     if (se.getType() == EntityType.Ground && (this.state == TrooperState.Falling || this.state == TrooperState.Parachuting)) {
       if (this.vy < this.speedPerPixel * 1.5) {
         this.setState(this.world.cache, TrooperState.Standing);
-        this.localY = (se.getCollisionBounds().getMaxY() + this.image[0].getHeight() / 2) * 100;
+        this.localY = (se.getCollisionBounds().getMaxY()) * 100;
         console.log("landed - ground ");
         this.set(this.world.cache, "y", Math.round(this.localY / SCALE_FACTOR));
       }

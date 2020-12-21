@@ -87,8 +87,10 @@ export async function loadImages(path = "./dist/assets/images/images.png") {
     //console.log(await loadImage("./dist/assets/images/images.png"));
     const image2 = main_image.clone(); //await jimp.read(path);
     image2.crop(info.x, info.y, info.w, info.h)
+      //.flip(false, true)
       .autocrop()
       ;
+    //if (["runway.gif", "runway2.gif"].indexOf(key) >= 0) image2.flip(false, true)
     images[key] = new BufferedImage(Buffer.from(image2.bitmap.data), { w: image2.bitmap.width, h: image2.bitmap.height });
     /*
      images[key] = new BufferedImage(await sharp("./dist/assets/images/images.png")
@@ -100,6 +102,9 @@ export async function loadImages(path = "./dist/assets/images/images.png") {
        .toBuffer(), info);
        */
     let ma = 256;
+    if (key == "plane6.gif") image2.getBase64(jimp.MIME_PNG, (err, res) => {
+      console.log(res)
+    })
 
     //image3 = image3.crop(info.x, info.y, info.w, info.h);
     if ([
