@@ -14,7 +14,7 @@ import { OwnableSolidEntity } from "./OwnableSolidEntity";
 export const bulletGlobals = {
   speed: 400,
   damage: 25,
-  lifetime: 2000 // milliseconds
+  lifetime: 1750 // milliseconds
 };
 
 // Like Bullet Engine
@@ -68,7 +68,7 @@ export class Bullet extends OwnableSolidEntity {
     this.setData(cache, {
       x: x,
       y: y,
-      age: -1000000,
+      age: 0,
       shotBy: origin.getPlayerInfo().getId(),
       team: origin.getTeam(),
       clientVX: this.clientVX,
@@ -152,7 +152,7 @@ export class Bullet extends OwnableSolidEntity {
     let rm: boolean = true;
     if (se instanceof Plane || se instanceof Man) {
       if (this.origin.getPlayerInfo().getId() == se.getPlayerInfo().getId()) {
-        //rm = false;
+        rm = false;
       }
     }
     if (se instanceof Runway) {
