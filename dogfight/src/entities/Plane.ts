@@ -1104,6 +1104,8 @@ export class Plane extends OwnableSolidEntity {
           if (this.mode == PlaneMode.Flying) {
             this.setMode(PlaneMode.Dodging);
             this.radians += (Math.random() - 0.5) * 0.7853981633974483;
+            if (this.radians < 0) this.radians += 2 * Math.PI;
+            if (this.radians >= Math.PI * 2) this.radians -= 2 * Math.PI;
             this.getPlayerInfo().setHealth(this.getPlayerInfo().getHealth() - 25);
             this.setFlipped(this.world.cache, !this.flipped);
             this.set(this.world.cache, "direction", radiansToDirection(this.radians));
