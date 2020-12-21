@@ -19,7 +19,7 @@ export class TrooperSprite extends GameSprite {
   public direction: TrooperDirection;
   public team: Team;
 
-  private container: PIXI.Container;
+  public container: PIXI.Container;
   private spritesheet: PIXI.Spritesheet;
 
   private trooper: PIXI.Sprite;

@@ -948,8 +948,8 @@ export class Plane extends OwnableSolidEntity {
     else if (this.dodgeCounter == 30) {
       this.setFlipped(cache, !this.flipped);
     }
+    if (this.checkCollision()) { }
     if (i != 0) {
-      if (this.checkCollision()) { }
       i = 0;
     }
     //setChanged(True);

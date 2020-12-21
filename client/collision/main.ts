@@ -14,6 +14,8 @@ import { GameWorld } from "../../dogfight/src/world/world";
 import { Bullet } from "../../dogfight/src/entities/Bullet";
 import { PlayerInfo } from "../../dogfight/src/entities/PlayerInfo";
 import { loadImages } from "../../dogfight/src/images";
+import { Man, TrooperState } from "../../dogfight/src/entities/Man";
+import { dragtrooper } from "./dragtrooper";
 
 console.log("collision script");
 
@@ -29,6 +31,7 @@ const rect2 = new RectangleSprite();
 const circle = new CircleSprite();
 const bullet = new PointSprite();
 let plane;
+let trooper;
 let gw;
 rect2.sprite.alpha = 0;
 function updateCollisions(): void {
@@ -51,12 +54,14 @@ function updateCollisions(): void {
     bullet.sprite.scale.set(1);
   }
 
-  let p = new Plane(0, gw, gw.cache, plane.planeType, new PlayerInfo(2, gw, gw.cache), 1, null);
+  let pi = new PlayerInfo(2, gw, gw.cache);
+  let p = new Plane(0, gw, gw.cache, plane.planeType, pi, 1, null);
   p.setPos(gw.cache, plane.x, plane.y);
   p.setDirection(gw.cache, plane.direction);
   p.setFlipped(gw.cache, plane.flipped);
   let b = new Bullet(1, gw, gw.cache, bullet.position.x, bullet.position.y, 0, 0, p);
-  if (p.checkCollisionWith(b)) {
+  let t = new Man(1, gw, gw.cache, trooper.x, trooper.y, pi);
+  if (p.checkCollisionWith(b) || t.checkCollisionWith(p) || b.checkCollisionWith(t)) {
     bullet.sprite.scale.set(2);
     //console.log("hit");
   }
@@ -73,20 +78,28 @@ function addRenderable(container: PIXI.Container): void {
 
 function init(): void {
   document.body.appendChild(app.view);
+  trooper = new dragtrooper(spriteSheet);
   plane = new dragplane(spriteSheet);
-  plane.flipped = true;
-  plane.direction = 64 / 2 + 0 * 64;
+  plane.flipped = false;
+  plane.direction = 0 * 64 / 2 + 0 * 64;
   plane.setDirection();
   addRenderable(rect1.getContainer());
   addRenderable(rect2.getContainer());
   addRenderable(circle.getContainer());
   addRenderable(bullet.getContainer());
+  //addRenderable(trooper.getContainer());
   for (const a of plane.renderables) {
     addRenderable(a);
     break;
   }
+  for (const a of trooper.renderables) {
+    addRenderable(a);
+    //break;
+  }
   plane.update({ planeType: PlaneType.Salmson });
+  trooper.update({ state: TrooperState.Falling });
   plane.setCollisionCallback(updateCollisions);
+  trooper.setCollisionCallback(updateCollisions);
   rect1.setCollisionCallback(updateCollisions);
   rect2.setCollisionCallback(updateCollisions);
   circle.setCollisionCallback(updateCollisions);

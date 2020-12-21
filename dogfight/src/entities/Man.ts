@@ -127,10 +127,10 @@ export class Man extends OwnableSolidEntity {
   }
   public getCollisionBounds(): Rectangle {
     if (this.state != TrooperState.Parachuting) {
-      return new Rectangle(this.x, this.y, this.width, this.height);
+      return new Rectangle(this.x, this.y - this.height / 2, this.width, this.height);
     }
     else {
-      return new Rectangle(this.x - this.width / 2 + this.image[1].width / 2, this.y - this.height / 2 + this.image[1].height / 2, this.image[1].width, this.image[1].height);
+      return new Rectangle(this.x, this.y + this.image[1].height / 2, this.image[1].width, this.image[1].height);
     }
     //throw new Error("Method not implemented.");
   }
