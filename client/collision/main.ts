@@ -58,13 +58,13 @@ function updateCollisions(): void {
 
   let pi = new PlayerInfo(2, gw, gw.cache);
   let p = new Plane(0, gw, gw.cache, plane.planeType, pi, 1, null);
-  p.setPos(gw.cache, plane.x, plane.y);
+  p.setPos(gw.cache, plane.x, -plane.y);
   p.setDirection(gw.cache, plane.direction);
   p.setFlipped(gw.cache, plane.flipped);
-  let b = new Bullet(1, gw, gw.cache, bullet.position.x, bullet.position.y, 0, 0, p);
-  let t = new Man(1, gw, gw.cache, trooper.x, trooper.y, pi);
+  let b = new Bullet(1, gw, gw.cache, bullet.position.x, -bullet.position.y, 0, 0, p);
+  let t = new Man(1, gw, gw.cache, trooper.x, -trooper.y, pi);
   t.setState(gw.cache, trooper.state)
-  let r = new Runway(4, gw, gw.cache, 0, runway.x, runway.y, runway.direction);
+  let r = new Runway(4, gw, gw.cache, 0, runway.x, -runway.y, runway.direction);
   if (p.checkCollisionWith2(b) || p.checkCollisionWith2(t) || t.checkCollisionWith2(b) 
   || b.checkCollisionWith2(r) 
   || p.checkCollisionWith2(r)|| t.checkCollisionWith2(r)) {

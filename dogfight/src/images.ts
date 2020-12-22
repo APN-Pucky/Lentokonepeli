@@ -120,7 +120,7 @@ export async function loadImages(path = "./dist/assets/images/images.png") {
       let f: boolean = false;
       for (f of [true, false]) {
         for (let a = 0; a < ma + 1; ++a) {
-          let image3 = image2.clone().flip(false, !f);//.clone();
+          let image3 = image2.clone().flip(false, f);//.clone();
           //console.log(a);
           image3
             .rotate(-a / ma * 360)
