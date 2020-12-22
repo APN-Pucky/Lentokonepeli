@@ -306,6 +306,10 @@ export class GameClient {
         data["health"] = player.health;
       }
     }
+    else if (type == EntityType.Plane) {
+      object.health = 0; // in order to create dark smoke
+      data["health"] = 0;
+    }
 
     this.renderer.updateSprite(type, id, data);
 
