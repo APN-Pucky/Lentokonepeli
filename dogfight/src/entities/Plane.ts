@@ -787,8 +787,8 @@ export class Plane extends OwnableSolidEntity {
         this.world.nextID(EntityType.Trooper),
         this.world,
         this.world.cache,
-        this.localX / SCALE_FACTOR,
-        this.localY / SCALE_FACTOR,
+        this.localX / SCALE_FACTOR - this.width / 2,
+        this.localY / SCALE_FACTOR - this.height / 2,
         this.getPlayerInfo()
       );
       this.world.addEntity(localMan);
@@ -830,8 +830,8 @@ export class Plane extends OwnableSolidEntity {
         this.world.nextID(EntityType.Bullet),
         this.world,
         this.world.cache,
-        Math.round(this.localX / SCALE_FACTOR + Math.cos(directionToRadians(this.direction)) * (this.width / 2 + 2)),
-        Math.round(this.localY / SCALE_FACTOR + Math.sin(directionToRadians(this.direction)) * (this.height / 2 + 2)),
+        Math.round(this.localX / SCALE_FACTOR + Math.cos((this.radians)) * (this.width / 2 + 2)),
+        Math.round(this.localY / SCALE_FACTOR + Math.sin((this.radians)) * (this.height / 2 + 2)),
         this.radians,
         this.speed / SCALE_FACTOR,
         this,
