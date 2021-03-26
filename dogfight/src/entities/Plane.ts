@@ -22,7 +22,20 @@ import { isRectangleCollision } from "../physics/collision";
 import { OwnableSolidEntity } from "./OwnableSolidEntity";
 import { Explosion } from "./Explosion";
 
-
+// deprecated
+export const infoHUD = {
+  speed: 0,
+  altitude: 0,
+  inclination: 0,
+  maxAscentAngle: 0
+};
+// deprecated
+export const planeGlobals = {
+  w0: Math.round(ROTATION_DIRECTIONS / 2),
+  gravity: 425,
+  feather: 16,
+  dragPower: 2
+};
 export enum PlaneType {
   Albatros,
   Junkers,
