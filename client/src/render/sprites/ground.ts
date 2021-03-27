@@ -17,8 +17,13 @@ export class GroundSprite extends GameSprite {
   private ground: PIXI.TilingSprite;
   private beachLeft: PIXI.Sprite;
   private beachRight: PIXI.Sprite;
+  private desertLeft: PIXI.Texture;
+  private desertRight: PIXI.Texture;
+  private textureGround: PIXI.Texture
+  private textureDesert: PIXI.Texture
 
   private debug: PIXI.Graphics;
+  private once: boolean = true;
 
   public constructor(spritesheet: PIXI.Spritesheet) {
     super();
@@ -35,11 +40,14 @@ export class GroundSprite extends GameSprite {
 
     this.beachLeft = new PIXI.Sprite(spritesheet.textures["beach-l.gif"]);
     this.beachRight = new PIXI.Sprite(spritesheet.textures["beach-l.gif"]);
+    this.desertLeft = (spritesheet.textures["beach-l_desert.gif"]);
+    this.desertRight = (spritesheet.textures["beach-l_desert.gif"]);
 
-    const textureGround: PIXI.Texture = spritesheet.textures["ground1.gif"];
+    this.textureGround = spritesheet.textures["ground1.gif"];
+    this.textureDesert = spritesheet.textures["groundDesert.gif"];
 
-    this.ground = new PIXI.TilingSprite(textureGround);
-    this.ground.height = textureGround.height;
+    this.ground = new PIXI.TilingSprite(this.textureGround);
+    this.ground.height = this.textureGround.height;
 
     this.container.addChild(this.ground);
     this.container.addChild(this.beachLeft);
@@ -63,6 +71,12 @@ export class GroundSprite extends GameSprite {
   }
 
   public redraw(): void {
+    if (this.once && this.terrain == Terrain.Desert) {
+      this.ground.texture = this.textureDesert;
+      this.beachLeft.texture = this.desertLeft;
+      this.beachRight.texture = this.desertRight;
+      this.once = false;
+    }
     this.ground.width = this.width;
     this.beachRight.scale.x = -1;
     this.beachLeft.position.x = 0;

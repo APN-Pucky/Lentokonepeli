@@ -9,12 +9,12 @@ export class Flag extends Entity {
   public y: number;
   public team: Team;
 
-  public constructor(id: number, world: GameWorld, cache: Cache) {
+  public constructor(id: number, world: GameWorld, cache: Cache, t_x = 0, t_y = 0, t_team = Team.Centrals) {
     super(id, world);
     this.setData(cache, {
-      x: 0,
-      y: 0,
-      team: Team.Centrals
+      x: t_x,
+      y: t_y,
+      team: t_team
     });
   }
 

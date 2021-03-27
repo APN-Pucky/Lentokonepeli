@@ -9,12 +9,12 @@ export class Hill extends Entity {
   public y: number;
   public terrain: Terrain;
 
-  public constructor(id: number, world: GameWorld, cache: Cache) {
+  public constructor(id: number, world: GameWorld, cache: Cache, t_x = 0, t_y = 0, t_subType = Terrain.Normal) {
     super(id, world);
     this.setData(cache, {
-      x: 0,
-      y: 0,
-      terrain: Terrain.Normal
+      x: t_x,
+      y: t_y,
+      terrain: t_subType
     });
   }
 

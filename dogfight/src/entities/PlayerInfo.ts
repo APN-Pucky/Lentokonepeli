@@ -187,7 +187,8 @@ export class PlayerInfo extends Entity {
     let j = 0;
     switch (i) {
       case EntityType.Plane:
-        j = ((o as Plane).planeType) + 2;
+        j = ((o.getRootOwner() as Plane).planeType) + 2;
+        break;
       case EntityType.Trooper:
         if ((o as Man).getRootOwner().getTeam() == 0) {
           j = 0;

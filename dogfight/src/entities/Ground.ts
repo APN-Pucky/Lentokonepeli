@@ -14,14 +14,14 @@ export class Ground extends SolidEntity {
   public image;
   private yHitOffset = 6.5; // 6.5 since image.height/2 == 18.5 and offset is 25
 
-  public constructor(id: number, world: GameWorld, cache: Cache) {
+  public constructor(id: number, world: GameWorld, cache: Cache, t_x: number = 0, t_y: number = 0, t_width: number = 0, subType: number = 0) {
     super(id, world, -1);
     this.image = world.getImage("ground1.gif");
     this.setData(cache, {
-      x: 0,
-      y: 0,
-      width: 0,
-      terrain: Terrain.Normal
+      x: t_x,
+      y: t_y,
+      width: t_width,
+      terrain: subType
     });
   }
 

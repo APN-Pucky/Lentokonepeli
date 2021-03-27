@@ -12,7 +12,7 @@ import {
 } from "../entities/Man";
 import { getPlaneRect, Plane } from "../entities/Plane";
 import { getGroundRect } from "../entities/Ground";
-import { getWaterRect } from "../entities/water";
+import { getWaterRect } from "../entities/Water";
 import { Vec2d } from "../physics/vector";
 import { destroyTrooper } from "./trooper";
 import { SCALE_FACTOR } from "../constants";

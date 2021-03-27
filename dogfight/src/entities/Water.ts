@@ -13,13 +13,13 @@ export class Water extends SolidEntity {
   public width: number;
   public direction: FacingDirection;
 
-  public constructor(id: number, world: GameWorld, cache: Cache) {
+  public constructor(id: number, world: GameWorld, cache: Cache, t_x: number = 0, t_y: number = 0, t_width: number = 30000, t_subType: number = FacingDirection.Right) {
     super(id, world, -1);
     this.setData(cache, {
-      x: 0,
-      y: 0,
-      width: 30000,
-      direction: FacingDirection.Right
+      x: t_x,
+      y: t_y,
+      width: t_width,
+      direction: t_subType
     });
   }
 
