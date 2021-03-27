@@ -327,6 +327,7 @@ export class GameClient {
 
     // check if change to our player or followobject
     if (type == EntityType.Player && this.playerInfo.id == id) {
+
       // set following
       if (object.controlType !== undefined && object.controlID !== undefined) {
         this.followObject = {

@@ -58,7 +58,11 @@ const playerSchema: GameObjectSchema = {
     { name: "fuel", intType: IntType.Uint8 },
     { name: "ammo", intType: IntType.Uint8 },
     { name: "health", intType: IntType.Uint8 },
-    { name: "bombs", intType: IntType.Uint8 }
+    { name: "bombs", intType: IntType.Uint8 },
+    { name: "frags", intType: IntType.Int16 },
+    { name: "score", intType: IntType.Int16 },
+    { name: "deaths", intType: IntType.Int16 },
+    { name: "precision", intType: IntType.Uint8 },
   ],
   booleans: [],
   strings: ["name"]

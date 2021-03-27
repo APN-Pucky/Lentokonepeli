@@ -9,7 +9,11 @@ export const German: Translation = {
   name: "Name",
   team: "Mannschaft",
   updateName: "Name aktualisieren",
-  ping: "Klingeln",
+  ping: "Ping",
+  score: "Punkte",
+  frags: "Kills",
+  deaths: "Tode",
+  precision: "Genauigkeit",
   pingDescription:
     "Die Zeit in Millisekunden, bevor Ihre Eingabe auf dem Server eintrifft.",
   connecting: "Verbindung zum Spieleserver herstellen...",

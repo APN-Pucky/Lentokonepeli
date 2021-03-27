@@ -183,32 +183,6 @@ export class GameWorld {
     return array[index];
   }
 
-  public getState(): Cache {
-    const objects = [
-      this.players,
-      this.flags,
-      this.grounds,
-      this.hills,
-      this.runways,
-      this.towers,
-      this.waters,
-      this.planes,
-      this.explosions,
-      this.troopers,
-      this.bombs,
-      this.bullets
-    ];
-    const cache: Cache = {};
-    for (const obj in objects) {
-      for (const thing of objects[obj]) {
-        if (cache[thing.type] == undefined) {
-          cache[thing.type] = {};
-        }
-        cache[thing.type][thing.id] = thing.getState();
-      }
-    }
-    return cache;
-  }
 
   public createExplosion(x: number, y: number, o: Ownable): void {
     const explosion = new Explosion(
@@ -301,8 +275,87 @@ export class GameWorld {
 
   }
 
-  public killed(p: Ownable, e: Ownable, c: number) {
-    // TODO handle scores
+  //TODO s
+  public getGameTimeLeft(): number {
+    //return this.gameUtil.getTimeLeft();
+    return -1;
   }
 
+  public adjustScore(paramInt1: number, paramInt2: number): void {
+    //this.gameUtil.scored(paramInt1, paramInt2);
+  }
+
+  public isRoundOver(): boolean {
+    //return this.roundOver;
+    return false;
+  }
+
+  public setRoundOver(paramBoolean: boolean): void {
+    //this.roundOver = paramBoolean;
+  }
+
+  public killed(p: Ownable, e: Ownable, c: number) {
+    let localPlayerInfo1: PlayerInfo = p.getPlayerInfo();
+    localPlayerInfo1.submitDeath(p);
+    if ((e == null) || (e.getPlayerInfo() == localPlayerInfo1)) {
+      localPlayerInfo1.submitSuicide(p);
+      let i = c == 1 ? 1 : 4;
+      //this.toolkit.pushText(4, localPlayerInfo1.getTeam() + "\t" + i + "\t" + localPlayerInfo1.getFullName());
+    }
+    else {
+      let localPlayerInfo2: PlayerInfo = e.getPlayerInfo();
+      let j;
+      if (localPlayerInfo2.getTeam() == localPlayerInfo1.getTeam()) {
+        j = c == 1 ? 2 : 5;
+        localPlayerInfo2.submitTeamKill(e, p);
+        //this.toolkit.pushText(4, localPlayerInfo2.getTeam() + "\t" + j + "\t" + localPlayerInfo2.getFullName() + "\t" + localPlayerInfo1.getFullName());
+      }
+      else {
+        j = c == 1 ? 3 : 6;
+        localPlayerInfo2.submitKill(e, p);
+        //this.toolkit.pushText(4, localPlayerInfo2.getTeam() + "\t" + j + "\t" + localPlayerInfo2.getFullName() + "\t" + localPlayerInfo1.getFullName());
+      }
+    }
+  }
+  public killedWithoutAvatar(paramPlayerInfo: PlayerInfo, paramInt: number): void {
+    //this.gameUtil.killedWithoutAvatar(paramPlayerInfo, paramInt);
+    paramPlayerInfo.submitSuicide(null);
+    let i = paramInt == 1 ? 1 : 4;
+    //this.toolkit.pushText(4, paramPlayerInfo.getTeam() + "\t" + i + "\t" + paramPlayerInfo.getFullName());
+  }
+  public isTeamBalance(): boolean {
+    //return this.teamBalance;
+    return true;
+  }
+
+  public setTeamBalance(paramBoolean: boolean): void {
+    //this.teamBalance = paramBoolean;
+  }
+
+  public getState(): Cache {
+    const objects = [
+      this.players,
+      this.flags,
+      this.grounds,
+      this.hills,
+      this.runways,
+      this.towers,
+      this.waters,
+      this.planes,
+      this.explosions,
+      this.troopers,
+      this.bombs,
+      this.bullets
+    ];
+    const cache: Cache = {};
+    for (const obj in objects) {
+      for (const thing of objects[obj]) {
+        if (cache[thing.type] == undefined) {
+          cache[thing.type] = {};
+        }
+        cache[thing.type][thing.id] = thing.getState();
+      }
+    }
+    return cache;
+  }
 }

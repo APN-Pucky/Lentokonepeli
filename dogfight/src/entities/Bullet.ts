@@ -10,6 +10,8 @@ import { Plane } from "./Plane";
 import { Man } from "./Man";
 import { Runway } from "./Runway";
 import { OwnableSolidEntity } from "./OwnableSolidEntity";
+import { Tower } from "./tower";
+import { Bomb } from "./Bomb";
 
 export const bulletGlobals = {
   speed: 400,
@@ -83,7 +85,7 @@ export class Bullet extends OwnableSolidEntity {
   }
 
   public getCollisionBounds(): Rectangle {
-    return new Rectangle(this.localX/SCALE_FACTOR, this.localY/SCALE_FACTOR, this.width, this.height);
+    return new Rectangle(this.localX / SCALE_FACTOR, this.localY / SCALE_FACTOR, this.width, this.height);
   }
 
   public tick(cache: Cache, deltaTime: number): void {
@@ -150,18 +152,23 @@ export class Bullet extends OwnableSolidEntity {
 
   public hit(se: SolidEntity): void {
     let rm: boolean = true;
+    let bool: boolean = false;
     if (se instanceof Plane || se instanceof Man) {
       if (this.origin.getPlayerInfo().getId() == se.getPlayerInfo().getId()) {
         rm = false;
       }
+      else {
+        bool = true;
+      }
     }
-    if (se instanceof Runway) {
+    if (se instanceof Runway || se instanceof Tower || se instanceof Bullet || se instanceof Bomb) {
+      bool = true;
       //console.log("WTF");
     }
     if (rm) {
       //if (se != null) console.log("hit");
       //console.log("rm");
-      //this.world.submitBullet()
+      this.getPlayerInfo().submitBullet(this, bool);
       this.world.removeEntity(this);
     }
   }

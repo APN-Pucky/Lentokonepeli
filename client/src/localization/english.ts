@@ -10,6 +10,10 @@ export const English: Translation = {
   name: "Name",
   updateName: "Update Name",
   ping: "Ping",
+  score: "Score",
+  frags: "Kills",
+  deaths: "Deaths",
+  precision: "Precision",
   pingDescription:
     "The time in milliseconds before your input arrives at the server.",
   connecting: "Connecting to the game server...",

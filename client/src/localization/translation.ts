@@ -10,6 +10,11 @@ export interface Translation {
   name: string;
   updateName: string;
   ping: string;
+  score: string;
+  frags: string;
+  deaths: string;
+  precision: string;
+
   pingDescription: string;
   connecting: string;
   connectionError: string;

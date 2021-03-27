@@ -5,6 +5,10 @@
         <tr>
           <th>{{ lang.team }}</th>
           <th>{{ lang.name }}</th>
+          <th>S{{ lang.score }}</th>
+          <th>K{{ lang.frags }}</th>
+          <th>D{{ lang.deaths }}</th>
+          <th>P{{ lang.precision}}</th>
           <th :title="lang.pingDesc">{{ lang.ping }}</th>
         </tr>
       </thead>
@@ -22,6 +26,10 @@
             :class="isAlive(player.status) ? 'player-alive' : 'player-dead'"
             :title="'Player ID #' + player.id"
           >{{ player.name }}</td>
+          <td > {{ player.score }} </td>
+          <td > {{ player.frags }} </td>
+          <td > {{ player.deaths }} </td>
+          <td > {{ player.precision}} </td>
           <td :style="{ backgroundColor: getPingColor(player.ping) }">{{ player.ping }}</td>
         </tr>
       </tbody>
