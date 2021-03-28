@@ -3,11 +3,10 @@ import { GameSprite } from "../sprite";
 import { DrawLayer } from "../constants";
 import { Terrain, FacingDirection } from "../../../../dogfight/src/constants";
 
-export class TowerSprite extends GameSprite {
+export class BackgroundItemSprite extends GameSprite {
   public x: number;
   public y: number;
-  public terrain: Terrain;
-  public direction: FacingDirection;
+  public subType: number;
 
   private spritesheet: PIXI.Spritesheet;
 
@@ -15,24 +14,21 @@ export class TowerSprite extends GameSprite {
 
   private tower: PIXI.Sprite;
 
-  private towerWidth: number;
 
   public constructor(spritesheet: PIXI.Spritesheet) {
     super();
 
     this.x = 0;
     this.y = 0;
-    this.terrain = Terrain.Normal;
-    this.direction = FacingDirection.Right;
+    this.subType = 0;
 
     this.spritesheet = spritesheet;
 
     this.container = new PIXI.Container();
 
-    const tex: PIXI.Texture = spritesheet.textures["controlTower.gif"];
+    const tex: PIXI.Texture = spritesheet.textures["palmtree.gif"];
     this.tower = new PIXI.Sprite(tex);
-    this.tower.position.y = -tex.height;
-    this.towerWidth = tex.width;
+
 
     this.container.addChild(this.tower);
     this.container.zIndex = DrawLayer.ControlTower;
@@ -41,22 +37,30 @@ export class TowerSprite extends GameSprite {
   }
 
   public redraw(): void {
+    // update tex
+    let tex: string;
+    if (this.subType < 2) {
+      tex = "controlTower.gif"
+    }
+    else if (this.subType < 4) {
+      tex = "controlTowerDesert.gif"
+    }
+    else {
+      tex = "palmtree.gif"
+    }
+
+    this.tower.texture = this.spritesheet.textures[tex];
+
+
     // orient properly
-    if (this.direction == FacingDirection.Left) {
+    if (this.subType % 2 == 1) {
       this.tower.scale.x = -1;
-      this.tower.position.x = this.towerWidth;
+      this.tower.position.x = this.tower.texture.width;
     } else {
       this.tower.scale.x = 1;
       this.tower.position.x = 0;
     }
-    // update terrain
-    const tex =
-      this.terrain == Terrain.Normal
-        ? "controlTower.gif"
-        : "controlTowerDesert.gif";
-
-    this.tower.texture = this.spritesheet.textures[tex];
-
+    this.tower.position.y = -this.tower.texture.height;
     // center tower
     const halfWidth = Math.round(this.container.width / 2);
     this.container.x = this.x - halfWidth;

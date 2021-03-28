@@ -6,7 +6,7 @@ import { Bomb } from "../entities/Bomb";
 import { Ground } from "../entities/Ground";
 import { Hill } from "../entities/Hill";
 import { Runway } from "../entities/Runway";
-import { Tower } from "../entities/tower";
+import { BackgroundItem } from "../entities/BackgroundItem";
 import { Man } from "../entities/Man";
 import { Water } from "../entities/Water";
 import { Explosion } from "../entities/Explosion";
@@ -49,7 +49,7 @@ export class GameWorld {
   public coasts: Coast[];
   public hills: Hill[];
   public runways: Runway[];
-  public towers: Tower[];
+  public towers: BackgroundItem[];
   public troopers: Man[];
   public planes: Plane[];
   public waters: Water[];
@@ -65,7 +65,7 @@ export class GameWorld {
     [EntityType.Coast]: "coasts",
     [EntityType.Hill]: "hills",
     [EntityType.Runway]: "runways",
-    [EntityType.ControlTower]: "towers",
+    [EntityType.BackgroundItem]: "towers",
     [EntityType.Trooper]: "troopers",
     [EntityType.Water]: "waters",
     [EntityType.Plane]: "planes",

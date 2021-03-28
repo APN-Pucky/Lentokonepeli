@@ -20,7 +20,7 @@ export enum EntityType {
   Water, // 28
   Runway, // 16
   Flag,
-  ControlTower, // 42 ?!
+  BackgroundItem, // 42 ?!
   Hill,
   Plane,  //30,31,32,33,34,35
   Trooper,//18 

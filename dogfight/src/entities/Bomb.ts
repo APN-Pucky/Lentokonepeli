@@ -100,7 +100,7 @@ export class Bomb extends OwnableSolidEntity {
       this.world.removeEntity(this);
     }
     else if (this.origin == null || !(this.origin === se)) { //&& !this.isRemoved()) 
-      if (se.getType() == EntityType.ControlTower || se.getType() == EntityType.Runway) {
+      if (se.getType() == EntityType.BackgroundItem || se.getType() == EntityType.Runway) {
         if (se.getTeam() == this.getTeam()) {
           this.getPlayerInfo().submitTeamBomb(this, true);
         }

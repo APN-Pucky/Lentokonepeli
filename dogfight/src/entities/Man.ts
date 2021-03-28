@@ -407,7 +407,7 @@ export class Man extends OwnableSolidEntity {
         }
 
       }
-      else if (se.getType() == EntityType.ControlTower) {
+      else if (se.getType() == EntityType.BackgroundItem) {
         console.log("landed - tower");
         if ((this.state == TrooperState.Standing) || (this.state == TrooperState.Walking_LEFT) || (this.state == TrooperState.Walking_RIGHT)) {
           this.x = this.lastX;

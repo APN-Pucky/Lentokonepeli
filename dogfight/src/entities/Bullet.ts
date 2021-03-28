@@ -10,7 +10,7 @@ import { Plane } from "./Plane";
 import { Man } from "./Man";
 import { Runway } from "./Runway";
 import { OwnableSolidEntity } from "./OwnableSolidEntity";
-import { Tower } from "./tower";
+import { BackgroundItem } from "./BackgroundItem";
 import { Bomb } from "./Bomb";
 import { GameObjectSchema, IntType } from "../network/types";
 
@@ -162,7 +162,7 @@ export class Bullet extends OwnableSolidEntity {
         bool = true;
       }
     }
-    if (se instanceof Runway || se instanceof Tower || se instanceof Bullet || se instanceof Bomb) {
+    if (se instanceof Runway || se instanceof BackgroundItem || se instanceof Bullet || se instanceof Bomb) {
       bool = true;
       //console.log("WTF");
     }

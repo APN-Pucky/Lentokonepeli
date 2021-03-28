@@ -10,7 +10,7 @@ import { hillSchema } from "../entities/Hill";
 import { trooperSchema } from "../entities/Man";
 import { playerSchema } from "../entities/PlayerInfo";
 import { runwaySchema } from "../entities/Runway";
-import { towerSchema } from "../entities/tower";
+import { backgroundItemSchema } from "../entities/BackgroundItem";
 import { waterSchema } from "../entities/Water";
 import { coastSchema } from "../entities/Coast";
 
@@ -20,7 +20,7 @@ export const schemaTypes = {
   [EntityType.Hill]: hillSchema,
   [EntityType.Flag]: flagSchema,
   [EntityType.Runway]: runwaySchema,
-  [EntityType.ControlTower]: towerSchema,
+  [EntityType.BackgroundItem]: backgroundItemSchema,
   [EntityType.Trooper]: trooperSchema,
   [EntityType.Player]: playerSchema,
   [EntityType.Water]: waterSchema,

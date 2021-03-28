@@ -10,7 +10,7 @@ import { EntityType } from "../../../dogfight/src/entity";
 import { FlagSprite } from "./sprites/flag";
 import { GroundSprite } from "./sprites/ground";
 import { WaterSprite } from "./sprites/water";
-import { TowerSprite } from "./sprites/tower";
+import { BackgroundItemSprite } from "./sprites/backgrounditem";
 import { HillSprite } from "./sprites/hill";
 import { RunwaySprite } from "./sprites/runway";
 import { PlayerSprite } from "./sprites/player";
@@ -194,8 +194,8 @@ export class GameRenderer {
         return new CoastSprite(this.spriteSheet);
       case EntityType.Water:
         return new WaterSprite(this.spriteSheet);
-      case EntityType.ControlTower:
-        return new TowerSprite(this.spriteSheet);
+      case EntityType.BackgroundItem:
+        return new BackgroundItemSprite(this.spriteSheet);
       case EntityType.Hill:
         return new HillSprite(this.spriteSheet, this.entityContainer);
       case EntityType.Runway:

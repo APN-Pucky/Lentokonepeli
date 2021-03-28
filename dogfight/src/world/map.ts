@@ -3,7 +3,7 @@ import { Ground } from "../entities/Ground";
 import { Flag } from "../entities/flag";
 import { Hill } from "../entities/Hill";
 import { Runway } from "../entities/Runway";
-import { Tower } from "../entities/tower";
+import { BackgroundItem } from "../entities/BackgroundItem";
 import { Water } from "../entities/Water";
 import { EntityType } from "../entity";
 import { FacingDirection, Terrain } from "../constants";
@@ -32,13 +32,13 @@ export let london: string[] = [
   ".R..................i....l..i..r....i..................L.",
   "F...F..........fft....ff..t...T..ff....Tff..........F...F",
   "#####>////////<###########################>\\\\\\\\\\\\\\\\<#####",
-]
+];
 export let bunkers: string[] = [
   "...Sp..S.p...........pP...........P..S..p.S...",
   ".....D.F.R..........F..f.............f.d......",
   "...R................I..i..........l.....l.....",
   "([_________]((((((([____])))))))[___________])"
-]
+];
 
 export let classic2: string[] = [
   "...H.....H.....H.....H.....H.....H.....H.....H.....H.....H...",
@@ -46,13 +46,30 @@ export let classic2: string[] = [
   "........R....R.................................l....l........",
   "........F....T.................................t....f........",
   "\\<#########################################################>/"
-]
+];
 export let desert: string[] = [
   "...P.....P....p..p....P.......P........pP....",
   "........D...R.S.........S.....S.....d........",
   "...IF.R.........................l.....l.fi...",
   "([_________________________________________])",
+];
+export let africa: string[] = [
+  "..p.PPpP.p.......Pp....pp..P.p...p.P......pP.p.......p.pPPpPp..",
+  "...S....S....S...S....S.....S....S...S......S...S...S...S..S...",
+  "..I.I.I...R..FDF...............................fdf..l...i.i.i..",
+  "..................L.........................r..................",
+  "([___________________________________________________________])"
+];
+
+export let jungle: string[] = [
+  "..p..p......P.Pp.pp.....PpP.....Pp.p.p......P.pP...",
+  "...H....H....H.....H...H.....H...H......H...H....H.",
+  "............R........................l.............",
+  "...R.......F..........................f......l.....",
+  "([_____])([________])(([____])([_______]))([_____])",
 ]
+
+export let maps = [katala, london, bunkers, classic2, desert, africa, jungle];
 
 export function loadMap(world: GameWorld, map: GameMap): void {
   map.grounds.forEach((ground): void => {
@@ -76,8 +93,8 @@ export function loadMap(world: GameWorld, map: GameMap): void {
     world.runways.push(obj);
   });
   map.towers.forEach((tower): void => {
-    const obj = new Tower(
-      world.nextID(EntityType.ControlTower),
+    const obj = new BackgroundItem(
+      world.nextID(EntityType.BackgroundItem),
       world,
       world.cache
     );
@@ -202,27 +219,35 @@ export function parseLevelLayer(world: GameWorld, paramString: string): void {
         world.runways.push(obj);
         break;
       case "T":
-        obj = new Tower(world.nextID(EntityType.ControlTower), world, world.cache, i + j * 100 + 50, 0, Terrain.Normal, 0)
+        obj = new BackgroundItem(world.nextID(EntityType.BackgroundItem), world, world.cache, i + j * 100 + 50, 0, 0)
         world.towers.push(obj);
         break;
       case "t":
-        obj = new Tower(world.nextID(EntityType.ControlTower), world, world.cache, i + j * 100 + 50, 0, Terrain.Normal, 1)
+        obj = new BackgroundItem(world.nextID(EntityType.BackgroundItem), world, world.cache, i + j * 100 + 50, 0, 1)
         world.towers.push(obj);
         break;
       case "D":
-        obj = new Tower(world.nextID(EntityType.ControlTower), world, world.cache, i + j * 100 + 50, 0, Terrain.Desert, 0)
+        obj = new BackgroundItem(world.nextID(EntityType.BackgroundItem), world, world.cache, i + j * 100 + 50, 0, 2)
         world.towers.push(obj);
         break;
       case "d":
-        obj = new Tower(world.nextID(EntityType.ControlTower), world, world.cache, i + j * 100 + 50, 0, Terrain.Desert, 1)
+        obj = new BackgroundItem(world.nextID(EntityType.BackgroundItem), world, world.cache, i + j * 100 + 50, 0, 3)
+        world.towers.push(obj);
+        break;
+      case "P":
+        obj = new BackgroundItem(world.nextID(EntityType.BackgroundItem), world, world.cache, i + j * 100 + 50, 0, 4)
+        world.towers.push(obj);
+        break;
+      case "p":
+        obj = new BackgroundItem(world.nextID(EntityType.BackgroundItem), world, world.cache, i + j * 100 + 50, 0, 5)
         world.towers.push(obj);
         break;
       case "F":
-        obj = new Flag(world.nextID(EntityType.ControlTower), world, world.cache, i + j * 100 + 50 /* - flag width */, 0, 0)
+        obj = new Flag(world.nextID(EntityType.BackgroundItem), world, world.cache, i + j * 100 + 50 /* - flag width */, 0, 0)
         world.flags.push(obj);
         break;
       case "f":
-        obj = new Flag(world.nextID(EntityType.ControlTower), world, world.cache, i + j * 100 + 50 /* - flag width */, 0, 1)
+        obj = new Flag(world.nextID(EntityType.BackgroundItem), world, world.cache, i + j * 100 + 50 /* - flag width */, 0, 1)
         world.flags.push(obj);
         break;
       default:
