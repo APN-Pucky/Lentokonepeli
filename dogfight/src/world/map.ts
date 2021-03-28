@@ -47,6 +47,12 @@ export let classic2: string[] = [
   "........F....T.................................t....f........",
   "\\<#########################################################>/"
 ]
+export let desert: string[] = [
+  "...P.....P....p..p....P.......P........pP....",
+  "........D...R.S.........S.....S.....d........",
+  "...IF.R.........................l.....l.fi...",
+  "([_________________________________________])",
+]
 
 export function loadMap(world: GameWorld, map: GameMap): void {
   map.grounds.forEach((ground): void => {
@@ -107,35 +113,37 @@ export function parseLevelLayer(world: GameWorld, paramString: string): void {
         break;
       case '_':
         aoi = parseContinuedPiece(paramString, j, '_', i);
-        obj = new Ground(world.nextID(EntityType.Ground), world, world.cache, aoi[0], 0, aoi[1], 1);
+        obj = new Ground(world.nextID(EntityType.Ground), world, world.cache, aoi[0] + aoi[1] / 2, 0, aoi[1], 1);
         //obj.setData(world.cache, ground);
         world.grounds.push(obj);
         j = aoi[2];
         break;
       case '/':
         aoi = parseContinuedPiece(paramString, j, '/', i);
-        obj = new Water(world.nextID(EntityType.Water), world, world.cache, aoi[0], -25, aoi[1], 0);
+        obj = new Water(world.nextID(EntityType.Water), world, world.cache, aoi[0] + aoi[1] / 2, -25, aoi[1], 0);
         //obj.setData(world.cache, ground);
         world.waters.push(obj);
         j = aoi[2];
         break;
       case '\\':
         aoi = parseContinuedPiece(paramString, j, '\\', i);
-        obj = new Water(world.nextID(EntityType.Water), world, world.cache, aoi[0], -25, aoi[1], 1);
+        obj = new Water(world.nextID(EntityType.Water), world, world.cache, aoi[0] + aoi[1] / 2, -25, aoi[1], 1);
         //obj.setData(world.cache, ground);
         world.waters.push(obj);
         j = aoi[2];
         break;
       case '(':
         aoi = parseContinuedPiece(paramString, j, '(', i);
-        obj = new Water(world.nextID(EntityType.Water), world, world.cache, aoi[0], -25, aoi[1], 2);
+        obj = new Water(world.nextID(EntityType.Water), world, world.cache, aoi[0] + aoi[1] / 2, -25, aoi[1], 2);
+        console.log(aoi[0], aoi[1])
         //obj.setData(world.cache, ground);
         world.waters.push(obj);
         j = aoi[2];
         break;
       case ')':
         aoi = parseContinuedPiece(paramString, j, ')', i);
-        obj = new Water(world.nextID(EntityType.Water), world, world.cache, aoi[0], -25, aoi[1], 3);
+        obj = new Water(world.nextID(EntityType.Water), world, world.cache, aoi[0] + aoi[1] / 2, -25, aoi[1], 3);
+        console.log(aoi[0], aoi[1])
         //obj.setData(world.cache, ground);
         world.waters.push(obj);
         j = aoi[2];

@@ -12,7 +12,7 @@ export class Water extends SolidEntity {
   public x: number;
   public y: number;
   public width: number;
-  public direction: FacingDirection;
+  public subType: number;
 
   public constructor(id: number, world: GameWorld, cache: Cache, t_x: number = 0, t_y: number = 0, t_width: number = 30000, t_subType: number = FacingDirection.Right) {
     super(id, world, -1);
@@ -20,7 +20,7 @@ export class Water extends SolidEntity {
       x: t_x,
       y: t_y,
       width: t_width,
-      direction: t_subType
+      subType: t_subType
     });
   }
 
@@ -34,7 +34,7 @@ export class Water extends SolidEntity {
       x: this.x,
       y: this.y,
       width: this.width,
-      direction: this.direction
+      subType: this.subType
     };
   }
 
@@ -61,7 +61,7 @@ export const waterSchema: GameObjectSchema = {
     { name: "x", intType: IntType.Int16 },
     { name: "y", intType: IntType.Int16 },
     { name: "width", intType: IntType.Uint16 },
-    { name: "direction", intType: IntType.Uint8 }
+    { name: "subType", intType: IntType.Uint8 }
   ],
   booleans: [],
   strings: []

@@ -1,8 +1,9 @@
 import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
-import { DrawLayer } from "../constants";
+import { DrawLayer, WaterColor } from "../constants";
 import { Terrain } from "../../../../dogfight/src/constants";
 import { getGroundRect } from "../../../../dogfight/src/entities/Ground";
+import { WATER_HEIGHT } from "./water";
 
 export class GroundSprite extends GameSprite {
   public x: number;
@@ -15,13 +16,11 @@ export class GroundSprite extends GameSprite {
   private container: PIXI.Container;
 
   private ground: PIXI.TilingSprite;
-  private beachLeft: PIXI.Sprite;
-  private beachRight: PIXI.Sprite;
-  private desertLeft: PIXI.Texture;
-  private desertRight: PIXI.Texture;
   private textureGround: PIXI.Texture
   private textureDesert: PIXI.Texture
 
+  private color: WaterColor;
+  private water: PIXI.Graphics;
   private debug: PIXI.Graphics;
   private once: boolean = true;
 
@@ -31,17 +30,15 @@ export class GroundSprite extends GameSprite {
     this.y = 0;
     this.terrain = Terrain.Normal;
     this.width = 500;
+    this.color = WaterColor.Normal;
 
     this.spritesheet = spritesheet;
 
     this.container = new PIXI.Container();
+    this.water = new PIXI.Graphics();
     this.debug = new PIXI.Graphics();
     this.debug.zIndex = DrawLayer.Ground;
 
-    this.beachLeft = new PIXI.Sprite(spritesheet.textures["beach-l.gif"]);
-    this.beachRight = new PIXI.Sprite(spritesheet.textures["beach-l.gif"]);
-    this.desertLeft = (spritesheet.textures["beach-l_desert.gif"]);
-    this.desertRight = (spritesheet.textures["beach-l_desert.gif"]);
 
     this.textureGround = spritesheet.textures["ground1.gif"];
     this.textureDesert = spritesheet.textures["groundDesert.gif"];
@@ -49,6 +46,7 @@ export class GroundSprite extends GameSprite {
     this.ground = new PIXI.TilingSprite(this.textureGround);
     this.ground.height = this.textureGround.height;
 
+    this.container.addChild(this.water);
     this.container.addChild(this.ground);
     //this.container.addChild(this.beachLeft);
     //this.container.addChild(this.beachRight);
@@ -71,12 +69,19 @@ export class GroundSprite extends GameSprite {
   }
 
   public redraw(): void {
-    if (this.once && this.terrain == Terrain.Desert) {
+    if (this.terrain == Terrain.Desert) {
       this.ground.texture = this.textureDesert;
-      this.beachLeft.texture = this.desertLeft;
-      this.beachRight.texture = this.desertRight;
-      this.once = false;
+      this.color = WaterColor.Desert
     }
+    else {
+      this.ground.texture = this.textureGround;
+    }
+    // create water
+    this.water.y = +10;
+    this.water.clear();
+    this.water.beginFill(this.color);
+    this.water.drawRect(0, 0, this.width, WATER_HEIGHT);
+    this.water.endFill();
     this.ground.width = this.width;
     //this.beachRight.scale.x = -1;
     //this.beachLeft.position.x = 0;

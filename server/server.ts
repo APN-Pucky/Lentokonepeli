@@ -10,7 +10,7 @@ import { decodePacket, encodePacket } from "../dogfight/src/network/encode";
 import { InputChange, InputKey } from "../dogfight/src/input";
 import { GameWorld, } from "../dogfight/src/world/world";
 import { requestTakeoff } from "../dogfight/src/world/takeoff";
-import { bunkers, classic2, katala, loadMap, loadStringMap, london } from "../dogfight/src/world/map";
+import { bunkers, classic2, desert, katala, loadMap, loadStringMap, london } from "../dogfight/src/world/map";
 import { MAP_CLASSIC_2 } from "../dogfight/src/maps/classic2";
 import { MAP_CLASSIC } from "../dogfight/src/maps/classic";
 import { isNameValid } from "../dogfight/src/validation";
@@ -37,7 +37,7 @@ loadImages().then((img) => {
   // Initialize game world.
   const world = new GameWorld(img);
   //loadMap(world, MAP_CLASSIC_2);
-  loadStringMap(world, katala)
+  loadStringMap(world, desert)
 
 
   // Game loop timing variables

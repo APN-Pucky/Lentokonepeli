@@ -5,14 +5,14 @@ import { FacingDirection } from "../../../../dogfight/src/constants";
 import { getWaterRect } from "../../../../dogfight/src/entities/Water";
 
 const WAVE_PHASE_TIME = 200; // Milliseconds
-const WATER_HEIGHT = 10000;
+export const WATER_HEIGHT = 10000;
 const WAVE_TEXTURE_STR = "wave-l_N.gif";
 
 export class WaterSprite extends GameSprite {
   public x: number;
   public y: number;
   public width: number;
-  public direction: FacingDirection;
+  public subType: number;
 
   private spritesheet: PIXI.Spritesheet;
 
@@ -31,7 +31,7 @@ export class WaterSprite extends GameSprite {
     this.x = 0;
     this.y = 0;
     this.width = 500;
-    this.direction = FacingDirection.Right;
+    this.subType = FacingDirection.Right;
 
     this.color = WaterColor.Normal;
     this.wavePhase = 1;
@@ -75,6 +75,9 @@ export class WaterSprite extends GameSprite {
   }
 
   public redraw(): void {
+    if (this.subType == 2 || this.subType == 3) {
+      this.color = WaterColor.Desert
+    }
     // create water
     this.water.clear();
     this.water.beginFill(this.color);
@@ -83,10 +86,15 @@ export class WaterSprite extends GameSprite {
     this.waves.width = this.width;
 
     // set wave directions
-    if (this.direction == FacingDirection.Right) {
+    if (this.subType == 1 || this.subType == 2) {
       this.waves.scale.x = -1;
       this.waves.position.x = this.waves.width;
     }
+    else {
+      this.waves.scale.x = 1;
+      this.waves.position.x = 0;
+    }
+
 
     // center water.
     const halfWidth = Math.round(this.container.width / 2);
