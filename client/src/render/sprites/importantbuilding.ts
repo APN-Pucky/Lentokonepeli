@@ -26,7 +26,6 @@ export class ImportantBuildingSprite extends GameSprite {
     this.y = 0;
     this.buildingType = 0;
     this.health = 255;
-    console.log("CREATED");
 
     this.spritesheet = spritesheet;
 

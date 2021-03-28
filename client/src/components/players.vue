@@ -5,10 +5,10 @@
         <tr>
           <th>{{ lang.team }}</th>
           <th>{{ lang.name }}</th>
-          <th>S{{ lang.score }}</th>
-          <th>K{{ lang.frags }}</th>
-          <th>D{{ lang.deaths }}</th>
-          <th>P{{ lang.precision}}</th>
+          <th>{{ lang.score }}</th>
+          <th>{{ lang.frags}}</th>
+          <th>{{ lang.deaths }}</th>
+          <th>{{ lang.precision }}</th>
           <th :title="lang.pingDesc">{{ lang.ping }}</th>
         </tr>
       </thead>
@@ -67,6 +67,10 @@ export default Vue.extend({
         name: Localizer.get("name"),
         team: Localizer.get("team"),
         ping: Localizer.get("ping"),
+        frags: Localizer.get("frags"),
+        deaths: Localizer.get("deaths"),
+        score: Localizer.get("score"),
+        precision: Localizer.get("precision"),
         pingDesc: Localizer.get("pingDescription")
       };
     },

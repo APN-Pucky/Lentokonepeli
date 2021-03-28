@@ -253,9 +253,7 @@ export class GameClient {
   private processEntry(entry: CacheEntry, id: string): void {
     const { type, ...data } = entry;
 
-    if (type == EntityType.ImportantBuilding) {
-      console.log("hello k");
-    }
+   
     // If the update data is empty, that is a signal
     // that the object has been deleted in the engine.
     if (Object.keys(data).length === 0) {

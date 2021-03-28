@@ -1,18 +1,18 @@
 import Cookies from "js-cookie";
 import { English } from "./english";
-import { Finnish } from "./finnish";
+//import { Finnish } from "./finnish";
 import { Translation } from "./translation";
 import { German } from "./german";
 
 export enum Language {
   English = "en",
-  Finnish = "fi",
+  //Finnish = "fi",
   German = "de"
 }
 
 export const Languages = {
   [Language.English]: English,
-  [Language.Finnish]: Finnish,
+  //[Language.Finnish]: Finnish,
   [Language.German]: German
 };
 

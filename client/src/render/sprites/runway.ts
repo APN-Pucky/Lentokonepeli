@@ -23,7 +23,6 @@ export class RunwaySprite extends GameSprite {
   public constructor(spritesheet: PIXI.Spritesheet) {
     super();
 
-    console.log("CREATED runway");
     this.x = 0;
     this.y = 0;
     this.direction = FacingDirection.Right;
