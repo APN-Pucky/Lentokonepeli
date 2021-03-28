@@ -24,6 +24,7 @@ import { ExplosionSprite } from "./sprites/explosion";
 import { BulletSprite } from "./sprites/bullet";
 import { BombSprite } from "./sprites/bomb";
 import { CoastSprite } from "./sprites/coast";
+import { ImportantBuildingSprite } from "./sprites/importantbuilding";
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
@@ -200,6 +201,8 @@ export class GameRenderer {
         return new HillSprite(this.spriteSheet, this.entityContainer);
       case EntityType.Runway:
         return new RunwaySprite(this.spriteSheet);
+      case EntityType.ImportantBuilding:
+        return new ImportantBuildingSprite(this.spriteSheet);
       case EntityType.Player:
         return new PlayerSprite(this.spriteSheet);
       case EntityType.Trooper:

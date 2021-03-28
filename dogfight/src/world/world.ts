@@ -6,6 +6,7 @@ import { Bomb } from "../entities/Bomb";
 import { Ground } from "../entities/Ground";
 import { Hill } from "../entities/Hill";
 import { Runway } from "../entities/Runway";
+import { ImportantBuilding } from "../entities/ImportantBuilding";
 import { BackgroundItem } from "../entities/BackgroundItem";
 import { Man } from "../entities/Man";
 import { Water } from "../entities/Water";
@@ -49,7 +50,8 @@ export class GameWorld {
   public coasts: Coast[];
   public hills: Hill[];
   public runways: Runway[];
-  public towers: BackgroundItem[];
+  public importantBuildings: ImportantBuilding[];
+  public backgrounditem: BackgroundItem[];
   public troopers: Man[];
   public planes: Plane[];
   public waters: Water[];
@@ -65,6 +67,7 @@ export class GameWorld {
     [EntityType.Coast]: "coasts",
     [EntityType.Hill]: "hills",
     [EntityType.Runway]: "runways",
+    [EntityType.ImportantBuilding]: "importantbuildings",
     [EntityType.BackgroundItem]: "towers",
     [EntityType.Trooper]: "troopers",
     [EntityType.Water]: "waters",
@@ -97,7 +100,7 @@ export class GameWorld {
 
 
   public getEntities(): Entity[][] {
-    return [this.planes, this.troopers, this.bombs, this.bullets, this.runways, this.grounds,this.coasts, this.waters, this.players, this.towers, this.hills, this.flags, this.explosions];
+    return [this.planes, this.troopers, this.bombs, this.bullets, this.runways, this.importantBuildings, this.grounds, this.coasts, this.waters, this.players, this.backgrounditem, this.hills, this.flags, this.explosions];
   }
   public clearCache(): void {
     this.cache = {};
@@ -115,7 +118,8 @@ export class GameWorld {
     this.coasts = [];
     this.hills = [];
     this.runways = [];
-    this.towers = [];
+    this.importantBuildings = [];
+    this.backgrounditem = [];
     this.troopers = [];
     this.waters = [];
     this.planes = [];
@@ -344,7 +348,8 @@ export class GameWorld {
       this.coasts,
       this.hills,
       this.runways,
-      this.towers,
+      this.importantBuildings,
+      this.backgrounditem,
       this.waters,
       this.planes,
       this.explosions,

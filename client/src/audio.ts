@@ -32,6 +32,13 @@ export class AudioManager {
     bullet.play();
   }
 
+  public playBlink(): void {
+    const bullet = new Howl({
+      src: ["assets/audio/hit.mp3", "assets/audio/hit.wav"]
+    });
+    bullet.play();
+  }
+
   public playBomb(): void {
     const bomb = new Howl({
       src: ["assets/audio/bombdrop.mp3", "assets/audio/bombdrop.wav"]

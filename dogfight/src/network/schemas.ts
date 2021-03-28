@@ -13,6 +13,7 @@ import { runwaySchema } from "../entities/Runway";
 import { backgroundItemSchema } from "../entities/BackgroundItem";
 import { waterSchema } from "../entities/Water";
 import { coastSchema } from "../entities/Coast";
+import { importantBuildingSchema } from "../entities/ImportantBuilding";
 
 export const schemaTypes = {
   [EntityType.Plane]: planeSchema,
@@ -20,6 +21,7 @@ export const schemaTypes = {
   [EntityType.Hill]: hillSchema,
   [EntityType.Flag]: flagSchema,
   [EntityType.Runway]: runwaySchema,
+  [EntityType.ImportantBuilding]: importantBuildingSchema,
   [EntityType.BackgroundItem]: backgroundItemSchema,
   [EntityType.Trooper]: trooperSchema,
   [EntityType.Player]: playerSchema,

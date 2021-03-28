@@ -14,21 +14,23 @@ import { GameWorld } from "./world/world";
  * These could be physical entities, or just containers
  * for game information.
  */
+
 export enum EntityType {
   None,
-  Ground, // 13
-  Water, // 28
-  Runway, // 16
+  Ground,
+  Water,
+  Runway,
   Flag,
-  BackgroundItem, // 42 ?!
+  BackgroundItem,
   Hill,
-  Plane,  //30,31,32,33,34,35
-  Trooper,//18 
+  Plane,
+  Trooper,
   Player,
-  Explosion,// 27
-  Bullet, // 12
-  Bomb, // 17
+  Explosion,
+  Bullet,
+  Bomb,
   Coast,
+  ImportantBuilding // Update our variable in the object, and the cache.
 }
 
 type sendableData = number | string | boolean;

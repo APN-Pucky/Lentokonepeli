@@ -8,6 +8,7 @@ import { Water } from "../entities/Water";
 import { EntityType } from "../entity";
 import { FacingDirection, Terrain } from "../constants";
 import { Coast } from "../entities/Coast";
+import { ImportantBuilding } from "../entities/ImportantBuilding";
 
 /**
  * A declaritive object that describes a level.
@@ -69,7 +70,21 @@ export let jungle: string[] = [
   "([_____])([________])(([____])([_______]))([_____])",
 ]
 
-export let maps = [katala, london, bunkers, classic2, desert, africa, jungle];
+export let sahara: string[] = [
+  "................S........................S.......S.....S..S..........................................S...............",
+  ".............D...R..................................................................................d................",
+  "PP...ppp...R..F.................................................................................l..f..l.....PP...ppP.",
+  "__])[_________________________________________________________________________________________________________]([____",
+]
+
+export let berlin: string[] = [
+  "....................................................................H...H...",
+  "FFF..TF.....tF..T.TF...TF...T..F..t..t..t..FFF..............................",
+  ".......R..I...R.....R........I........................................f.l...",
+  "###############################################>//////////////////<#######>/",
+]
+
+export let maps = [katala, london, bunkers, classic2, desert, africa, jungle, berlin, sahara];
 
 export function loadMap(world: GameWorld, map: GameMap): void {
   map.grounds.forEach((ground): void => {
@@ -99,7 +114,7 @@ export function loadMap(world: GameWorld, map: GameMap): void {
       world.cache
     );
     obj.setData(world.cache, tower);
-    world.towers.push(obj);
+    world.backgrounditem.push(obj);
   });
   map.waters.forEach((water): void => {
     const obj = new Water(world.nextID(EntityType.Water), world, world.cache);
@@ -220,27 +235,27 @@ export function parseLevelLayer(world: GameWorld, paramString: string): void {
         break;
       case "T":
         obj = new BackgroundItem(world.nextID(EntityType.BackgroundItem), world, world.cache, i + j * 100 + 50, 0, 0)
-        world.towers.push(obj);
+        world.backgrounditem.push(obj);
         break;
       case "t":
         obj = new BackgroundItem(world.nextID(EntityType.BackgroundItem), world, world.cache, i + j * 100 + 50, 0, 1)
-        world.towers.push(obj);
+        world.backgrounditem.push(obj);
         break;
       case "D":
         obj = new BackgroundItem(world.nextID(EntityType.BackgroundItem), world, world.cache, i + j * 100 + 50, 0, 2)
-        world.towers.push(obj);
+        world.backgrounditem.push(obj);
         break;
       case "d":
         obj = new BackgroundItem(world.nextID(EntityType.BackgroundItem), world, world.cache, i + j * 100 + 50, 0, 3)
-        world.towers.push(obj);
+        world.backgrounditem.push(obj);
         break;
       case "P":
         obj = new BackgroundItem(world.nextID(EntityType.BackgroundItem), world, world.cache, i + j * 100 + 50, 0, 4)
-        world.towers.push(obj);
+        world.backgrounditem.push(obj);
         break;
       case "p":
         obj = new BackgroundItem(world.nextID(EntityType.BackgroundItem), world, world.cache, i + j * 100 + 50, 0, 5)
-        world.towers.push(obj);
+        world.backgrounditem.push(obj);
         break;
       case "F":
         obj = new Flag(world.nextID(EntityType.BackgroundItem), world, world.cache, i + j * 100 + 50 /* - flag width */, 0, 0)
@@ -249,6 +264,14 @@ export function parseLevelLayer(world: GameWorld, paramString: string): void {
       case "f":
         obj = new Flag(world.nextID(EntityType.BackgroundItem), world, world.cache, i + j * 100 + 50 /* - flag width */, 0, 1)
         world.flags.push(obj);
+        break;
+      case "I":
+        obj = new ImportantBuilding(world.nextID(EntityType.ImportantBuilding), world, world.cache, i + j * 100 + 50, 0 + 7, 0, 0)
+        world.importantBuildings.push(obj);
+        break;
+      case "i":
+        obj = new ImportantBuilding(world.nextID(EntityType.ImportantBuilding), world, world.cache, i + j * 100 + 50, 0 + 7, 1, 1)
+        world.importantBuildings.push(obj);
         break;
       default:
         console.log("def = " + paramString.charAt(0))

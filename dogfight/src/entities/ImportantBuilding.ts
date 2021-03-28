@@ -9,53 +9,39 @@ import { GameWorld } from "../world/world";
 import { GameObjectSchema, IntType } from "../network/types";
 
 
-const RESERVE_TAKEOFF_LANDING_DELAY = 1000;
-const RESERVE_LANDING_TAKEOFF_DELAY = 2000;
-const RESERVE_LANDING_LANDING_DELAY = 1000;
-const RESERVE_TAKEOFF_TAKEOFF_DELAY = 1000;
-const TAKEOFF = 1;
-const LANDING = 1;
-const HEALTH_MAX = 1530;
+const HEALTH_MAX = 350;
 const HEALTH_TIMER_MAX = 50;
 
-
-export class Runway extends SolidEntity {
-  public type = EntityType.Runway;
+export class ImportantBuilding extends SolidEntity {
+  public type = EntityType.ImportantBuilding;
 
   public x: number;
   public y: number;
-  public direction: FacingDirection;
+  public buildingType: number;
   public team: Team;
   public health: number;
-
-  public lastReserve: number;
-  public reserveTimer: number;
   public healthTimer: number;
-  private playersInside = [];
-
 
   public image;
   public imageWidth;
   public imageHeight;
 
-  public yOffset = 7; // TODO why do we need a offset for the hitbox of the runway?!?!?!?!?
 
   private localhealth = HEALTH_MAX;
 
-  public constructor(id: number, world: GameWorld, cache: Cache, team: number, x: number, y: number, direction: number) {
+  public constructor(id: number, world: GameWorld, cache: Cache, x: number, y: number, team: number, buildingType: number) {
     super(id, world, team);
-    this.image = [world.getImage("runway.gif"), world.getImage("runway2.gif")];
+    this.image = [world.getImage("headquarter_germans.gif"), world.getImage("headquarter_raf.gif")];
     this.imageWidth = [this.image[0].width, this.image[1].width];
     this.imageHeight = [this.image[0].height, this.image[1].height];
     this.localhealth = HEALTH_MAX;
     this.setData(cache, {
       x: x,
       y: y,
-      direction: direction, //FacingDirection.Right,
+      buildingType: buildingType, //FacingDirection.Right,
       team: team, //Team.Centrals,
       health: 255
     });
-
     //console.log(this.getCollisionBounds());
 
   }
@@ -68,81 +54,22 @@ export class Runway extends SolidEntity {
   }
 
   public getCollisionBounds(): Rectangle {
-    return new Rectangle(this.x, this.y + this.yOffset, this.imageWidth[1 - this.direction], this.imageHeight[1 - this.direction]);
+    return new Rectangle(this.x, this.y, this.imageWidth[this.buildingType], this.imageHeight[this.buildingType]);
   }
   public getCollisionImage() {
-    return this.image[1 - this.direction];
+    return this.image[this.buildingType];
   }
 
   public getImage() {
-    return this.image[1 - this.direction];
+    return this.image[this.buildingType];
   }
 
-  public getLandableWidth(): number {
-    return (this.imageWidth[1 - this.direction] - 65);
-  }
   public getHealth() {
     return this.localhealth;
   }
   public setHealth(health: number) {
     this.localhealth = health;
     this.set(this.world.cache, "health", Math.round(this.localhealth / HEALTH_MAX * 255));
-  }
-
-  public getLandableX(): number {
-    if (this.direction == 1) {
-      return 65 + this.x - this.getImageWidth(0) / 2;
-    }
-    return this.x - this.getImageWidth(0) / 2;
-  }
-  public getLandableY(): number {
-    return -23 + this.y + this.getImageHeight(0) / 2 + this.yOffset;
-  }
-  public getStartX(): number {
-    if (this.direction == 1) {
-      return 15 + this.x - this.getImageWidth(0) / 2;
-    }
-    return this.x + 230 - this.getImageWidth(0) / 2;
-  }
-  public getStartY(): number {
-    return this.getLandableY();
-  }
-  public getDirection(): number {
-    return this.direction;
-  }
-
-  /**
-   * TODO synchronized?!?!?
-   * @param paramInt LANDING or TAKEOFF request
-   */
-  public reserveFor(paramInt: number): boolean {
-    let l1 = Date.now();
-    let l2 = 0;
-    switch (paramInt) {
-      case 2:
-        if (this.lastReserve == 2) {
-          l2 = 1000;
-        } else {
-          l2 = 1000;
-        }
-        break;
-      case 1:
-        if (this.lastReserve == 2) {
-          l2 = 2000;
-        } else {
-          l2 = 1000;
-        }
-        break;
-    }
-    if (this.reserveTimer + l2 > l1) {
-      return false;
-    }
-    if (this.localhealth <= 0) {
-      return false;
-    }
-    this.reserveTimer = l1;
-    this.lastReserve = paramInt;
-    return true;
   }
 
   public run(): void {
@@ -167,7 +94,7 @@ export class Runway extends SolidEntity {
         break;
       case EntityType.Bullet:
         let b: Bullet = paramSolidEntity as Bullet;
-        this.setHealth(this.getHealth() - (4.0 * b.getDamageFactor()));
+        this.setHealth(this.getHealth() - (3.0 * b.getDamageFactor()));
         break;
       case EntityType.Explosion:
         this.setHealth(this.getHealth() - 17);
@@ -178,18 +105,6 @@ export class Runway extends SolidEntity {
     if (this.getHealth() <= 0) {
       this.setHealth(0);
       this.destroyed(paramSolidEntity.getTeam());
-    }
-    this.setChanged(true);
-  }
-
-  public planeCrash(): void {
-    if (this.localhealth <= 0) {
-      return;
-    }
-    this.setHealth(this.getHealth() - 17);
-    if (this.getHealth() <= 0) {
-      this.setHealth(0);
-      this.destroyed(this.getTeam());
     }
     this.setChanged(true);
   }
@@ -225,41 +140,27 @@ export class Runway extends SolidEntity {
     return this.localhealth > 0;
   }
 
-  public addPlayerInside(pi: PlayerInfo): void {
-    if (!this.isAlive()) {
-      console.log("Tryied to join dead runway");
-    }
-    else {
-      this.playersInside.push(pi);
-    }
-  }
-
-  public removePlayerInside(pi: PlayerInfo): void {
-    const index = this.playersInside.indexOf(pi, 0);
-    if (index > -1) {
-      this.playersInside.splice(index, 1);
-    }
-  }
 
   public getState(): CacheEntry {
+    console.log("got ib")
     return {
       type: this.type,
       x: this.x,
       y: this.y,
-      direction: this.direction,
-      team: this.team,
-      health: this.health
+      buildingType: this.buildingType,
+      health: this.health,
+      team: this.team
     };
   }
 }
 
-export const runwaySchema: GameObjectSchema = {
+export const importantBuildingSchema: GameObjectSchema = {
   numbers: [
     { name: "x", intType: IntType.Int16 },
     { name: "y", intType: IntType.Int16 },
-    { name: "direction", intType: IntType.Uint8 },
-    { name: "team", intType: IntType.Uint8 },
-    { name: "health", intType: IntType.Uint8 }
+    { name: "buildingType", intType: IntType.Uint8 },
+    { name: "health", intType: IntType.Uint8 },
+    { name: "team", intType: IntType.Uint8 }
   ],
   booleans: [],
   strings: []

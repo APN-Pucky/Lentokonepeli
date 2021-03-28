@@ -252,6 +252,10 @@ export class GameClient {
 
   private processEntry(entry: CacheEntry, id: string): void {
     const { type, ...data } = entry;
+
+    if (type == EntityType.ImportantBuilding) {
+      console.log("hello k");
+    }
     // If the update data is empty, that is a signal
     // that the object has been deleted in the engine.
     if (Object.keys(data).length === 0) {
@@ -310,6 +314,7 @@ export class GameClient {
       object.health = 0; // in order to create dark smoke
       data["health"] = 0;
     }
+
 
     this.renderer.updateSprite(type, id, data);
 

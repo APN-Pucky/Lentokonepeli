@@ -20,6 +20,9 @@ import { dragrunway } from "./dragrunway";
 import { Runway } from "../../dogfight/src/entities/Runway";
 import { CoastSprite } from "../src/render/sprites/coast";
 import { Coast } from "../../dogfight/src/entities/Coast";
+import { ImportantBuildingSprite } from "../src/render/sprites/importantbuilding";
+import { isBigIntLiteral } from "typescript";
+import { ImportantBuilding } from "../../dogfight/src/entities/ImportantBuilding";
 
 console.log("collision script");
 
@@ -37,7 +40,7 @@ const bullet = new PointSprite();
 let plane, runway;
 let trooper;
 let gw;
-let coast;
+let coast, ib;
 rect2.sprite.alpha = 0;
 function updateCollisions(): void {
   if (isRectangleCollision(rect1.rectObj, rect2.rectObj)) {
@@ -60,6 +63,7 @@ function updateCollisions(): void {
   }
 
   let ccoast = new Coast(1000, gw, gw.cache, coast.x, -coast.y, coast.subType);
+  let iib = new ImportantBuilding(1200, gw, gw.cache, ib.x, -ib.y, 0, ib.buildingType);
   let pi = new PlayerInfo(2, gw, gw.cache);
   let p = new Plane(0, gw, gw.cache, plane.planeType, pi, 1, null);
   p.setPos(gw.cache, plane.x, -plane.y);
@@ -72,7 +76,8 @@ function updateCollisions(): void {
   if (p.checkCollisionWith2(b) || p.checkCollisionWith2(t) || t.checkCollisionWith2(b)
     || b.checkCollisionWith2(r)
     || p.checkCollisionWith2(r) || t.checkCollisionWith2(r)
-    || p.checkCollisionWith2(ccoast)) {
+    || p.checkCollisionWith2(ccoast)
+    || iib.checkCollisionWith2(t)) {
     bullet.sprite.scale.set(2);
     //console.log("hit");
   }
@@ -96,6 +101,7 @@ function init(): void {
   plane.direction = 0 * 64 / 2 + 0 * 64;
   plane.setDirection();
   coast = new CoastSprite(spriteSheet);
+  ib = new ImportantBuildingSprite(spriteSheet);
   for (const a of coast.renderables) { addRenderable(a) }
 
   //addRenderable(rect1.getContainer());
@@ -114,10 +120,14 @@ function init(): void {
     addRenderable(a);
     //break;
   }
+  for (const a of ib.renderables) {
+    addRenderable(a);
+  }
   plane.update({ planeType: PlaneType.Salmson });
   trooper.update({ state: TrooperState.Parachuting });
   runway.update({ direction: 1 });
   coast.update({ x: 250, y: -100, subType: 2 });
+  ib.update({ x: 350, y: -100, buildingType: 1 });
   plane.setCollisionCallback(updateCollisions);
   trooper.setCollisionCallback(updateCollisions);
   //rect1.setCollisionCallback(updateCollisions);

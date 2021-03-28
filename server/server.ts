@@ -38,7 +38,7 @@ loadImages().then((img) => {
   const world = new GameWorld(img);
   //loadMap(world, MAP_CLASSIC_2);
   loadStringMap(world,
-    // jungle, 
+    //desert ,
     maps[Math.floor(Math.random() * Math.floor(maps.length))]
   )
 
