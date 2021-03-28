@@ -6,6 +6,7 @@ import { GameWorld } from "../world/world";
 import { teamPlanes, Plane, PlaneType } from "./Plane";
 import { Ownable } from "../ownable";
 import { Man } from "./Man";
+import { GameObjectSchema, IntType } from "../network/types";
 
 export enum PlayerStatus {
   Playing,
@@ -311,3 +312,23 @@ export class PlayerInfo extends Entity {
     };
   }
 }
+
+export const playerSchema: GameObjectSchema = {
+  numbers: [
+    { name: "team", intType: IntType.Uint8 },
+    { name: "controlType", intType: IntType.Uint8 },
+    { name: "controlID", intType: IntType.Uint16 },
+    { name: "ping", intType: IntType.Uint16 },
+    { name: "status", intType: IntType.Uint8 },
+    { name: "fuel", intType: IntType.Uint8 },
+    { name: "ammo", intType: IntType.Uint8 },
+    { name: "health", intType: IntType.Uint8 },
+    { name: "bombs", intType: IntType.Uint8 },
+    { name: "frags", intType: IntType.Int16 },
+    { name: "score", intType: IntType.Int16 },
+    { name: "deaths", intType: IntType.Int16 },
+    { name: "precision", intType: IntType.Uint8 },
+  ],
+  booleans: [],
+  strings: ["name"]
+};

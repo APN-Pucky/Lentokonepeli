@@ -106,6 +106,10 @@ export async function loadImages(path = "./dist/assets/images/images.png") {
       console.log(res)
     })
 
+    if (key.startsWith("beach-l")) {
+      images[key.replace("beach-l", "beach-r")] = image2.clone().flip(true, false);
+    }
+
     //image3 = image3.crop(info.x, info.y, info.w, info.h);
     if ([
       "bomb.gif",

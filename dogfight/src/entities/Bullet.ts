@@ -12,6 +12,7 @@ import { Runway } from "./Runway";
 import { OwnableSolidEntity } from "./OwnableSolidEntity";
 import { Tower } from "./tower";
 import { Bomb } from "./Bomb";
+import { GameObjectSchema, IntType } from "../network/types";
 
 export const bulletGlobals = {
   speed: 400,
@@ -184,3 +185,15 @@ export class Bullet extends OwnableSolidEntity {
     };
   }
 }
+export const bulletSchema: GameObjectSchema = {
+  numbers: [
+    { name: "x", intType: IntType.Int16 },
+    { name: "y", intType: IntType.Int16 },
+    { name: "clientVX", intType: IntType.Int16 },
+    { name: "clientVY", intType: IntType.Int16 },
+    { name: "age", intType: IntType.Uint16 }
+  ],
+  booleans: [],
+  strings: []
+};
+

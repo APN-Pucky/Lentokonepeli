@@ -1,6 +1,7 @@
 import { Terrain } from "../constants";
 import { Entity, EntityType } from "../entity";
 import { CacheEntry, Cache } from "../network/cache";
+import { GameObjectSchema, IntType } from "../network/types";
 import { RectangleBody, Rectangle } from "../physics/rectangle";
 import { GameWorld } from "../world/world";
 import { SolidEntity } from "./SolidEntity";
@@ -39,7 +40,19 @@ export class Ground extends SolidEntity {
       terrain: this.terrain
     };
   }
+
 }
+
+export const groundSchema: GameObjectSchema = {
+  numbers: [
+    { name: "x", intType: IntType.Int16 },
+    { name: "y", intType: IntType.Int16 },
+    { name: "width", intType: IntType.Uint16 },
+    { name: "terrain", intType: IntType.Uint8 }
+  ],
+  booleans: [],
+  strings: []
+};
 
 export function getGroundRect(
   x: number,

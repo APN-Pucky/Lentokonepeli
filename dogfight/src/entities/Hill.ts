@@ -1,6 +1,7 @@
 import { Terrain } from "../constants";
 import { Entity, EntityType } from "../entity";
 import { Cache, CacheEntry } from "../network/cache";
+import { GameObjectSchema, IntType } from "../network/types";
 import { GameWorld } from "../world/world";
 
 export class Hill extends Entity {
@@ -27,3 +28,12 @@ export class Hill extends Entity {
     };
   }
 }
+export const hillSchema: GameObjectSchema = {
+  numbers: [
+    { name: "x", intType: IntType.Int16 },
+    { name: "y", intType: IntType.Int16 },
+    { name: "terrain", intType: IntType.Uint8 }
+  ],
+  booleans: [],
+  strings: []
+};

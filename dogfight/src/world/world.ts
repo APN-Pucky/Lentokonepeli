@@ -24,6 +24,7 @@ import { processExplosions } from "./explosion";
 import { processTroopers } from "./trooper";
 import { Ownable } from "../ownable";
 import { BufferedImage } from "../BufferedImage";
+import { Coast } from "../entities/Coast";
 
 
 
@@ -45,6 +46,7 @@ export class GameWorld {
   public players: PlayerInfo[];
   public flags: Flag[];
   public grounds: Ground[];
+  public coasts: Coast[];
   public hills: Hill[];
   public runways: Runway[];
   public towers: Tower[];
@@ -60,6 +62,7 @@ export class GameWorld {
     [EntityType.Player]: "players",
     [EntityType.Flag]: "flags",
     [EntityType.Ground]: "grounds",
+    [EntityType.Coast]: "coasts",
     [EntityType.Hill]: "hills",
     [EntityType.Runway]: "runways",
     [EntityType.ControlTower]: "towers",
@@ -94,7 +97,7 @@ export class GameWorld {
 
 
   public getEntities(): Entity[][] {
-    return [this.planes, this.troopers, this.bombs, this.bullets, this.runways, this.grounds, this.waters, this.players, this.towers, this.hills, this.flags, this.explosions];
+    return [this.planes, this.troopers, this.bombs, this.bullets, this.runways, this.grounds,this.coasts, this.waters, this.players, this.towers, this.hills, this.flags, this.explosions];
   }
   public clearCache(): void {
     this.cache = {};
@@ -109,6 +112,7 @@ export class GameWorld {
     this.players = [];
     this.flags = [];
     this.grounds = [];
+    this.coasts = [];
     this.hills = [];
     this.runways = [];
     this.towers = [];
@@ -337,6 +341,7 @@ export class GameWorld {
       this.players,
       this.flags,
       this.grounds,
+      this.coasts,
       this.hills,
       this.runways,
       this.towers,
@@ -345,7 +350,7 @@ export class GameWorld {
       this.explosions,
       this.troopers,
       this.bombs,
-      this.bullets
+      this.bullets,
     ];
     const cache: Cache = {};
     for (const obj in objects) {

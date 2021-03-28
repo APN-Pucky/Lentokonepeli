@@ -21,6 +21,7 @@ import { BufferedImage } from "../BufferedImage";
 import { isRectangleCollision } from "../physics/collision";
 import { OwnableSolidEntity } from "./OwnableSolidEntity";
 import { Explosion } from "./Explosion";
+import { GameObjectSchema, IntType } from "../network/types";
 
 // deprecated
 export const infoHUD = {
@@ -1209,6 +1210,21 @@ export class Plane extends OwnableSolidEntity {
   }
 }
 
+export const planeSchema: GameObjectSchema = {
+  numbers: [
+    { name: "x", intType: IntType.Int16 },
+    { name: "y", intType: IntType.Int16 },
+    { name: "planeType", intType: IntType.Uint8 },
+    { name: "team", intType: IntType.Uint8 },
+    { name: "direction", intType: IntType.Uint8 },
+    //{ name: "health", intType: IntType.Uint8 },
+    //{ name: "fuel", intType: IntType.Uint8 },
+    //{ name: "ammo", intType: IntType.Uint8 },
+    //{ name: "bombs", intType: IntType.Uint8 }
+  ],
+  booleans: ["flipped", "motorOn"],
+  strings: []
+};
 export function getPlaneRect(
   x: number,
   y: number,

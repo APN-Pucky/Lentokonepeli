@@ -1,6 +1,7 @@
 import { FacingDirection, Team, Terrain } from "../constants";
 import { Entity, EntityType } from "../entity";
 import { Cache, CacheEntry } from "../network/cache";
+import { GameObjectSchema, IntType } from "../network/types";
 import { GameWorld } from "../world/world";
 
 //TODO
@@ -32,3 +33,13 @@ export class Tower extends Entity {
     };
   }
 }
+export const towerSchema: GameObjectSchema = {
+  numbers: [
+    { name: "x", intType: IntType.Int16 },
+    { name: "y", intType: IntType.Int16 },
+    { name: "direction", intType: IntType.Uint8 },
+    { name: "terrain", intType: IntType.Uint8 }
+  ],
+  booleans: [],
+  strings: []
+};

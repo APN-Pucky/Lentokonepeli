@@ -1,6 +1,7 @@
 import { Team } from "../constants";
 import { Entity, EntityType } from "../entity";
 import { CacheEntry, Cache } from "../network/cache";
+import { GameObjectSchema, IntType } from "../network/types";
 import { GameWorld } from "../world/world";
 
 export class Flag extends Entity {
@@ -27,3 +28,13 @@ export class Flag extends Entity {
     };
   }
 }
+
+export const flagSchema: GameObjectSchema = {
+  numbers: [
+    { name: "x", intType: IntType.Int16 },
+    { name: "y", intType: IntType.Int16 },
+    { name: "team", intType: IntType.Uint8 }
+  ],
+  booleans: [],
+  strings: []
+};

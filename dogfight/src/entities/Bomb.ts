@@ -11,6 +11,7 @@ import { BufferedImage } from "../BufferedImage";
 import { Runway } from "./Runway";
 import { Plane } from "./Plane";
 import { OwnableSolidEntity } from "./OwnableSolidEntity";
+import { GameObjectSchema, IntType } from "../network/types";
 
 export const bombGlobals = {
   gravity: 425,
@@ -178,6 +179,16 @@ export class Bomb extends OwnableSolidEntity {
   }
 }
 
+export const bombSchema: GameObjectSchema = {
+  numbers: [
+    { name: "x", intType: IntType.Int16 },
+    { name: "y", intType: IntType.Int16 },
+    { name: "age", intType: IntType.Uint16 },
+    { name: "direction", intType: IntType.Uint8 }
+  ],
+  booleans: [],
+  strings: []
+};
 export function getBombRect(
   x: number,
   y: number,

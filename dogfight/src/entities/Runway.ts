@@ -6,6 +6,7 @@ import { Rectangle } from "../physics/rectangle";
 import { Bullet } from "./Bullet";
 import { PlayerInfo } from "./PlayerInfo";
 import { GameWorld } from "../world/world";
+import { GameObjectSchema, IntType } from "../network/types";
 
 
 const RESERVE_TAKEOFF_LANDING_DELAY = 1000;
@@ -251,3 +252,15 @@ export class Runway extends SolidEntity {
     };
   }
 }
+
+export const runwaySchema: GameObjectSchema = {
+  numbers: [
+    { name: "x", intType: IntType.Int16 },
+    { name: "y", intType: IntType.Int16 },
+    { name: "direction", intType: IntType.Uint8 },
+    { name: "team", intType: IntType.Uint8 },
+    { name: "health", intType: IntType.Uint8 }
+  ],
+  booleans: [],
+  strings: []
+};

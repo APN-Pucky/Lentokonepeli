@@ -8,6 +8,7 @@ import { PlayerInfo } from "./PlayerInfo";
 import { SolidEntity } from "./SolidEntity";
 import { BufferedImage } from "../BufferedImage";
 import { Rectangle } from "../physics/rectangle";
+import { GameObjectSchema, IntType } from "../network/types";
 
 export const explosionGlobals = {
   duration: 500, // damage duration in milliseconds
@@ -106,3 +107,12 @@ export class Explosion extends OwnableSolidEntity {
     };
   }
 }
+
+export const explosionSchema: GameObjectSchema = {
+  numbers: [
+    { name: "x", intType: IntType.Int16 },
+    { name: "y", intType: IntType.Int16 }
+  ],
+  booleans: [],
+  strings: []
+};

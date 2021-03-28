@@ -1,6 +1,7 @@
 import { FacingDirection } from "../constants";
 import { Entity, EntityType } from "../entity";
 import { Cache, CacheEntry } from "../network/cache";
+import { GameObjectSchema, IntType } from "../network/types";
 import { RectangleBody, Rectangle } from "../physics/rectangle";
 import { GameWorld } from "../world/world";
 import { SolidEntity } from "./SolidEntity";
@@ -54,3 +55,14 @@ export function getWaterRect(
     }
   };
 }
+
+export const waterSchema: GameObjectSchema = {
+  numbers: [
+    { name: "x", intType: IntType.Int16 },
+    { name: "y", intType: IntType.Int16 },
+    { name: "width", intType: IntType.Uint16 },
+    { name: "direction", intType: IntType.Uint8 }
+  ],
+  booleans: [],
+  strings: []
+};

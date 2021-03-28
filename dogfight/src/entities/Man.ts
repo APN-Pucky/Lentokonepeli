@@ -15,6 +15,7 @@ import { Bullet } from "./Bullet";
 import { Bomb } from "./Bomb";
 import { Plane } from "./Plane";
 import { BufferedImage } from "../BufferedImage";
+import { GameObjectSchema, IntType } from "../network/types";
 
 
 
@@ -479,6 +480,20 @@ export class Man extends OwnableSolidEntity {
   }
 }
 
+export const trooperSchema: GameObjectSchema = {
+  numbers: [
+    { name: "x", intType: IntType.Int16 },
+    { name: "y", intType: IntType.Int16 },
+    { name: "health", intType: IntType.Uint8 },
+    { name: "state", intType: IntType.Uint8 },
+    { name: "direction", intType: IntType.Uint8 },
+    //{ name: "ammo", intType: IntType.Uint8 },
+    //{ name: "bombs", intType: IntType.Uint8 },
+    { name: "team", intType: IntType.Uint8 }
+  ],
+  booleans: [],
+  strings: []
+};
 export function getTrooperRect(
   x: number,
   y: number,

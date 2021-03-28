@@ -1,153 +1,18 @@
 import { IntType, GameObjectSchema } from "./types";
 import { EntityType } from "../entity";
-
-const planeSchema: GameObjectSchema = {
-  numbers: [
-    { name: "x", intType: IntType.Int16 },
-    { name: "y", intType: IntType.Int16 },
-    { name: "planeType", intType: IntType.Uint8 },
-    { name: "team", intType: IntType.Uint8 },
-    { name: "direction", intType: IntType.Uint8 },
-    //{ name: "health", intType: IntType.Uint8 },
-    //{ name: "fuel", intType: IntType.Uint8 },
-    //{ name: "ammo", intType: IntType.Uint8 },
-    //{ name: "bombs", intType: IntType.Uint8 }
-  ],
-  booleans: ["flipped", "motorOn"],
-  strings: []
-};
-
-const flagSchema: GameObjectSchema = {
-  numbers: [
-    { name: "x", intType: IntType.Int16 },
-    { name: "y", intType: IntType.Int16 },
-    { name: "team", intType: IntType.Uint8 }
-  ],
-  booleans: [],
-  strings: []
-};
-
-const hillSchema: GameObjectSchema = {
-  numbers: [
-    { name: "x", intType: IntType.Int16 },
-    { name: "y", intType: IntType.Int16 },
-    { name: "terrain", intType: IntType.Uint8 }
-  ],
-  booleans: [],
-  strings: []
-};
-
-const groundSchema: GameObjectSchema = {
-  numbers: [
-    { name: "x", intType: IntType.Int16 },
-    { name: "y", intType: IntType.Int16 },
-    { name: "width", intType: IntType.Uint16 },
-    { name: "terrain", intType: IntType.Uint8 }
-  ],
-  booleans: [],
-  strings: []
-};
-
-const playerSchema: GameObjectSchema = {
-  numbers: [
-    { name: "team", intType: IntType.Uint8 },
-    { name: "controlType", intType: IntType.Uint8 },
-    { name: "controlID", intType: IntType.Uint16 },
-    { name: "ping", intType: IntType.Uint16 },
-    { name: "status", intType: IntType.Uint8 },
-    { name: "fuel", intType: IntType.Uint8 },
-    { name: "ammo", intType: IntType.Uint8 },
-    { name: "health", intType: IntType.Uint8 },
-    { name: "bombs", intType: IntType.Uint8 },
-    { name: "frags", intType: IntType.Int16 },
-    { name: "score", intType: IntType.Int16 },
-    { name: "deaths", intType: IntType.Int16 },
-    { name: "precision", intType: IntType.Uint8 },
-  ],
-  booleans: [],
-  strings: ["name"]
-};
-
-const runwaySchema: GameObjectSchema = {
-  numbers: [
-    { name: "x", intType: IntType.Int16 },
-    { name: "y", intType: IntType.Int16 },
-    { name: "direction", intType: IntType.Uint8 },
-    { name: "team", intType: IntType.Uint8 },
-    { name: "health", intType: IntType.Uint8 }
-  ],
-  booleans: [],
-  strings: []
-};
-
-const towerSchema: GameObjectSchema = {
-  numbers: [
-    { name: "x", intType: IntType.Int16 },
-    { name: "y", intType: IntType.Int16 },
-    { name: "direction", intType: IntType.Uint8 },
-    { name: "terrain", intType: IntType.Uint8 }
-  ],
-  booleans: [],
-  strings: []
-};
-
-const trooperSchema: GameObjectSchema = {
-  numbers: [
-    { name: "x", intType: IntType.Int16 },
-    { name: "y", intType: IntType.Int16 },
-    { name: "health", intType: IntType.Uint8 },
-    { name: "state", intType: IntType.Uint8 },
-    { name: "direction", intType: IntType.Uint8 },
-    //{ name: "ammo", intType: IntType.Uint8 },
-    //{ name: "bombs", intType: IntType.Uint8 },
-    { name: "team", intType: IntType.Uint8 }
-  ],
-  booleans: [],
-  strings: []
-};
-
-const waterSchema: GameObjectSchema = {
-  numbers: [
-    { name: "x", intType: IntType.Int16 },
-    { name: "y", intType: IntType.Int16 },
-    { name: "width", intType: IntType.Uint16 },
-    { name: "direction", intType: IntType.Uint8 }
-  ],
-  booleans: [],
-  strings: []
-};
-
-const explosionSchema: GameObjectSchema = {
-  numbers: [
-    { name: "x", intType: IntType.Int16 },
-    { name: "y", intType: IntType.Int16 }
-  ],
-  booleans: [],
-  strings: []
-};
-
-const bulletSchema: GameObjectSchema = {
-  numbers: [
-    { name: "x", intType: IntType.Int16 },
-    { name: "y", intType: IntType.Int16 },
-    { name: "clientVX", intType: IntType.Int16 },
-    { name: "clientVY", intType: IntType.Int16 },
-    { name: "age", intType: IntType.Uint16 }
-  ],
-  booleans: [],
-  strings: []
-};
-
-const bombSchema: GameObjectSchema = {
-  numbers: [
-    { name: "x", intType: IntType.Int16 },
-    { name: "y", intType: IntType.Int16 },
-    { name: "age", intType: IntType.Uint16 },
-    { name: "direction", intType: IntType.Uint8 }
-  ],
-  booleans: [],
-  strings: []
-};
+import { Ground, groundSchema } from "../entities/Ground";
+import { Plane, planeSchema } from "../entities/Plane";
+import { bombSchema } from "../entities/Bomb";
+import { bulletSchema } from "../entities/Bullet";
+import { explosionSchema } from "../entities/Explosion";
+import { flagSchema } from "../entities/flag";
+import { hillSchema } from "../entities/Hill";
+import { trooperSchema } from "../entities/Man";
+import { playerSchema } from "../entities/PlayerInfo";
+import { runwaySchema } from "../entities/Runway";
+import { towerSchema } from "../entities/tower";
+import { waterSchema } from "../entities/Water";
+import { coastSchema } from "../entities/Coast";
 
 export const schemaTypes = {
   [EntityType.Plane]: planeSchema,
@@ -161,5 +26,6 @@ export const schemaTypes = {
   [EntityType.Water]: waterSchema,
   [EntityType.Explosion]: explosionSchema,
   [EntityType.Bullet]: bulletSchema,
-  [EntityType.Bomb]: bombSchema
+  [EntityType.Bomb]: bombSchema,
+  [EntityType.Coast]: coastSchema,
 };

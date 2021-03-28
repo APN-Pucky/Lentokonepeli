@@ -1,4 +1,5 @@
 import { Cache, CacheEntry } from "./network/cache";
+import { GameObjectSchema } from "./network/types";
 import { GameWorld } from "./world/world";
 
 /**
@@ -27,6 +28,7 @@ export enum EntityType {
   Explosion,// 27
   Bullet, // 12
   Bomb, // 17
+  Coast,
 }
 
 type sendableData = number | string | boolean;
