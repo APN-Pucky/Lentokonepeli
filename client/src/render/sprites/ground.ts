@@ -50,8 +50,8 @@ export class GroundSprite extends GameSprite {
     this.ground.height = this.textureGround.height;
 
     this.container.addChild(this.ground);
-    this.container.addChild(this.beachLeft);
-    this.container.addChild(this.beachRight);
+    //this.container.addChild(this.beachLeft);
+    //this.container.addChild(this.beachRight);
 
     this.container.zIndex = DrawLayer.Ground;
 
@@ -78,11 +78,11 @@ export class GroundSprite extends GameSprite {
       this.once = false;
     }
     this.ground.width = this.width;
-    this.beachRight.scale.x = -1;
-    this.beachLeft.position.x = 0;
-    this.ground.position.x = this.beachLeft.width;
-    this.beachRight.position.x =
-      this.ground.position.x + this.ground.width + this.beachRight.width;
+    //this.beachRight.scale.x = -1;
+    //this.beachLeft.position.x = 0;
+    //this.ground.position.x = this.beachLeft.width;
+    //this.beachRight.position.x =
+    //  this.ground.position.x + this.ground.width + this.beachRight.width;
     // center ground
     const halfWidth = Math.round(this.container.width / 2);
     this.container.x = this.x - halfWidth;

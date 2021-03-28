@@ -4,15 +4,13 @@ import { EntityType } from "../../../dogfight/src/entity";
 export abstract class GameSprite {
   public id: number;
   public type: EntityType;
-  public renderables: PIXI.Container[] = [];
-  public renderablesDebug: PIXI.Container[] = [];
+  public renderables: PIXI.Container[]=[];
+  public renderablesDebug: PIXI.Container[]=[];
 
-  /*
   public constructor() {
-    //this.renderables = [];
-    //this.renderablesDebug = [];
+    this.renderables = [];
+    this.renderablesDebug = [];
   }
-  */
 
   /**
    * Updates a game object's display after new property changes.

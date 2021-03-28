@@ -7,15 +7,10 @@ import { RectangleBody, Rectangle } from "../physics/rectangle";
 import { GameWorld } from "../world/world";
 import { SolidEntity } from "./SolidEntity";
 
-export interface Coastlike {
-  x: number;
-  y: number;
-  subType: number;
-}
 
-export class Coast extends SolidEntity implements Coastlike {
+export class Coast extends SolidEntity {
   public type = EntityType.Coast;
-  //public x: number;
+  public x: number;
   public y: number;
   public subType: number;
   public images;

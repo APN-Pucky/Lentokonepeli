@@ -23,6 +23,7 @@ import { PlayerInfos } from "./entities/playerInfos";
 import { ExplosionSprite } from "./sprites/explosion";
 import { BulletSprite } from "./sprites/bullet";
 import { BombSprite } from "./sprites/bomb";
+import { CoastSprite } from "./sprites/coast";
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
@@ -189,6 +190,8 @@ export class GameRenderer {
         return new FlagSprite(this.spriteSheet);
       case EntityType.Ground:
         return new GroundSprite(this.spriteSheet);
+      case EntityType.Coast:
+        return new CoastSprite(this.spriteSheet);
       case EntityType.Water:
         return new WaterSprite(this.spriteSheet);
       case EntityType.ControlTower:

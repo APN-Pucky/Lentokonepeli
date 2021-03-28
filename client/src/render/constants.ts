@@ -8,6 +8,7 @@ export enum DrawLayer {
   Flag = -70,
   ControlTower = -60,
   Ground = -50,
+  Coast = -50,
   RunwayBack = -10,
   LightSmoke = -7,
   Plane = -5,

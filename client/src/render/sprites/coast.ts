@@ -13,7 +13,7 @@ export class CoastSprite extends GameSprite {
 
   private container: PIXI.Container;
 
-  private tower: PIXI.Sprite;
+  private beach: PIXI.Sprite;
 
   //private towerWidth: number;
 
@@ -29,40 +29,55 @@ export class CoastSprite extends GameSprite {
 
     this.container = new PIXI.Container();
 
-    const tex: PIXI.Texture = spritesheet.textures["controlTower.gif"];
-    this.tower = new PIXI.Sprite(tex);
-    this.tower.position.y = -tex.height;
+    const tex: PIXI.Texture = spritesheet.textures["beach-l.gif"];
+    this.beach = new PIXI.Sprite(tex);
+    this.beach.position.y = -tex.height;
 
-    this.container.addChild(this.tower);
-    this.container.zIndex = DrawLayer.ControlTower;
+    this.container.addChild(this.beach);
+    this.container.zIndex = DrawLayer.Coast;
 
     this.renderables.push(this.container);
   }
 
   public redraw(): void {
     // orient properly
-    if (this.direction == FacingDirection.Left) {
-      this.tower.scale.x = -1;
-      this.tower.position.x = this.towerWidth;
+    if (this.subType == 1 || this.subType == 3) {
+      this.beach.scale.x = -1;
+      this.beach.position.x = this.container.width;
+      //this.beach.position.x = 0;
     } else {
-      this.tower.scale.x = 1;
-      this.tower.position.x = 0;
+      this.beach.scale.x = 1;
+      this.beach.position.x = 0;
     }
     // update terrain
-    const tex =
-      this.terrain == Terrain.Normal
-        ? "controlTower.gif"
-        : "controlTowerDesert.gif";
+    let tex: string;
+    switch (this.subType) {
+      case 0:
+        tex = "beach-l.gif";
+        break;
+      case 1:
+        tex = "beach-l.gif";
+        break;
+      case 2:
+        tex = "beach-l_desert.gif";
+        break;
+      case 3:
+        tex = "beach-l_desert.gif";
+        break;
+    }
 
-    this.tower.texture = this.spritesheet.textures[tex];
+    this.beach.texture = this.spritesheet.textures[tex];
 
+    ///*
     // center tower
     const halfWidth = Math.round(this.container.width / 2);
     this.container.x = this.x - halfWidth;
 
     // update height
     const offset = 5;
-    this.container.position.y = -this.y + offset;
+    this.container.position.y = this.y + Math.round(this.container.height / 2);
+    //this.container.position.x = this.x;
+    //*/
   }
 
   public destroy(): void {

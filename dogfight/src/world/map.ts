@@ -7,6 +7,7 @@ import { Tower } from "../entities/tower";
 import { Water } from "../entities/Water";
 import { EntityType } from "../entity";
 import { FacingDirection, Terrain } from "../constants";
+import { Coast } from "../entities/Coast";
 
 /**
  * A declaritive object that describes a level.
@@ -140,39 +141,55 @@ export function parseLevelLayer(world: GameWorld, paramString: string): void {
         j = aoi[2];
         break;
       case '<':
+        obj = new Coast(world.nextID(EntityType.Coast), world, world.cache, (i + (j + 1) * 100) - world.getImage("beach-l.gif").width / 2, -world.getImage("beach-l.gif").height / 2, 0);
+        //obj.setData(world.cache, hill);
+        world.coasts.push(obj);
+        break;
       //k = (j+1)*100 - coast image width
       case '>':
+        obj = new Coast(world.nextID(EntityType.Coast), world, world.cache, (i + (j) * 100) + world.getImage("beach-l.gif").width / 2, -world.getImage("beach-l.gif").height / 2, 1);
+        //obj.setData(world.cache, hill);
+        world.coasts.push(obj);
+        break;
       case '[':
+        obj = new Coast(world.nextID(EntityType.Coast), world, world.cache, (i + (j + 1) * 100) - world.getImage("beach-l_desert.gif").width / 2, -world.getImage("beach-l_desert.gif").height / 2, 2);
+        //obj.setData(world.cache, hill);
+        world.coasts.push(obj);
+        break;
       case ']':
+        obj = new Coast(world.nextID(EntityType.Coast), world, world.cache, (i + (j) * 100) + world.getImage("beach-l_desert.gif").width / 2, -world.getImage("beach-l_desert.gif").height / 2, 3);
+        //obj.setData(world.cache, hill);
+        world.coasts.push(obj);
+        break;
       case '.':
         break;
       case 'H':
-        obj = new Hill(world.nextID(EntityType.Hill), world, world.cache, (i + j * 100 + 50) * 8 / 10, 0, 0);
+        obj = new Hill(world.nextID(EntityType.Hill), world, world.cache, (i + j * 100 - 6 * 50) * 8 / 10, 40 - 25, 0);
         //obj.setData(world.cache, hill);
         world.hills.push(obj);
         break;
       case 'S':
-        obj = new Hill(world.nextID(EntityType.Hill), world, world.cache, (i + j * 100 + 50) * 8 / 10, 0, 1);
+        obj = new Hill(world.nextID(EntityType.Hill), world, world.cache, (i + j * 100 - 6 * 50) * 8 / 10, 45 - 25, 1);
         //obj.setData(world.cache, hill);
         world.hills.push(obj);
         break;
       case 'L':
-        obj = new Runway(world.nextID(EntityType.Runway), world, world.cache, 0, i + j * 100 + 50 /*- world.getImage("runway.gif").width / 2*/, 0, 0);
+        obj = new Runway(world.nextID(EntityType.Runway), world, world.cache, 0, i + j * 100 + 50 - 4/*- world.getImage("runway.gif").width / 2*/, 0, 0);
         //obj.setData(world.cache, runway);
         world.runways.push(obj);
         break;
       case 'R':
-        obj = new Runway(world.nextID(EntityType.Runway), world, world.cache, 0, i + j * 100 + 50 /*- world.getImage("runway2.gif").width / 2*/, 0, 1);
+        obj = new Runway(world.nextID(EntityType.Runway), world, world.cache, 0, i + j * 100 + 50 + 4/*- world.getImage("runway2.gif").width / 2*/, 0, 1);
         //obj.setData(world.cache, runway);
         world.runways.push(obj);
         break;
       case 'l':
-        obj = new Runway(world.nextID(EntityType.Runway), world, world.cache, 1, i + j * 100 + 50 /*- world.getImage("runway.gif").width / 2*/, 0, 0);
+        obj = new Runway(world.nextID(EntityType.Runway), world, world.cache, 1, i + j * 100 + 50 - 4/*- world.getImage("runway.gif").width / 2*/, 0, 0);
         //obj.setData(world.cache, runway);
         world.runways.push(obj);
         break;
       case 'r':
-        obj = new Runway(world.nextID(EntityType.Runway), world, world.cache, 1, i + j * 100 + 50 /*- world.getImage("runway2.gif").width / 2*/, 0, 1);
+        obj = new Runway(world.nextID(EntityType.Runway), world, world.cache, 1, i + j * 100 + 50 + 4/*- world.getImage("runway2.gif").width / 2*/, 0, 1);
         //obj.setData(world.cache, runway);
         world.runways.push(obj);
         break;
