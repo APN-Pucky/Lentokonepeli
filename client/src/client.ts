@@ -253,7 +253,7 @@ export class GameClient {
   private processEntry(entry: CacheEntry, id: string): void {
     const { type, ...data } = entry;
 
-   
+
     // If the update data is empty, that is a signal
     // that the object has been deleted in the engine.
     if (Object.keys(data).length === 0) {
@@ -278,6 +278,10 @@ export class GameClient {
         }
       }
     }
+    else if (type == EntityType.ImportantBuilding || type == EntityType.Runway) {
+      this.audio.playBlink();
+    }
+
     const object = this.gameObjects[type][id];
 
     // Otherwise, update the properties

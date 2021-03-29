@@ -12,6 +12,9 @@ export class RunwaySprite extends GameSprite {
   public team: Team;
   public health: number;
 
+  public lastHealth: number;
+  public blinkTime: number;
+
   private spritesheet: PIXI.Spritesheet;
 
   public runway: PIXI.Sprite;
@@ -66,7 +69,32 @@ export class RunwaySprite extends GameSprite {
       this.runway.texture = this.spritesheet.textures[tex];
       this.backpart.visible = this.health > 0;
     }
+    if (this.health > 0) {
+      if (this.health < this.lastHealth) {
+        this.blinkTime = Date.now();
+      }
+      this.lastHealth = this.health;
+      if (this.blinkTime + 100 > Date.now()) {
+        //playBlinkSound();
+        //this.nofilter = this.importantbuilding.filters;
+        let filter = new PIXI.filters.ColorMatrixFilter();
+        filter.matrix = [
+          10, 10, 10, 10,
+          10, 10, 10, 10,
+          10, 10, 10, 10,
+          -1, -1, -1, 1
+        ];
+        this.runway.filters = [filter];
+        this.backpart.filters = [filter];
+        //console.log("active");
+        setTimeout(() => { this.redraw() }, 100);
+      }
+      else {
+        this.runway.filters = 'null';
+        this.backpart.filters = 'null';
 
+      }
+    }
     // center runway on x
     const halfWidth = Math.round(this.runway.width / 2);
     this.runway.x = this.x - halfWidth;

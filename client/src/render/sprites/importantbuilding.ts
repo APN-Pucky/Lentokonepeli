@@ -12,6 +12,10 @@ export class ImportantBuildingSprite extends GameSprite {
   public health: number;
   public team: number;
 
+  public lastHealth: number;
+  public blinkTime: number;
+  private nofilter;
+
   private spritesheet: PIXI.Spritesheet;
 
   public importantbuilding: PIXI.Sprite;
@@ -54,7 +58,30 @@ export class ImportantBuildingSprite extends GameSprite {
       const tex = this.health > 0 ? "headquarter_raf.gif" : "headquarter_broke.gif";
       this.importantbuilding.texture = this.spritesheet.textures[tex];
     }
+    if (this.health > 0) {
+      if (this.health < this.lastHealth) {
+        this.blinkTime = Date.now();
+      }
+      this.lastHealth = this.health;
+      if (this.blinkTime + 100 > Date.now()) {
+        //playBlinkSound();
+        //this.nofilter = this.importantbuilding.filters;
+        let filter = new PIXI.filters.ColorMatrixFilter();
+        filter.matrix = [
+          10, 10, 10, 10,
+          10, 10, 10, 10,
+          10, 10, 10, 10,
+          -1, -1, -1, 1
+        ];
+        this.importantbuilding.filters = [filter];
+        //console.log("active");
+        setTimeout(() => { this.redraw() }, 100);
+      }
+      else {
+        this.importantbuilding.filters = 'null';
 
+      }
+    }
     // center runway on x
     const halfWidth = Math.round(this.importantbuilding.width / 2);
     this.importantbuilding.x = this.x - halfWidth;
