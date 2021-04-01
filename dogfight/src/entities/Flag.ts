@@ -10,7 +10,7 @@ export class Flag extends Entity {
   public y: number;
   public team: Team;
 
-  public constructor(id: number, world: GameWorld, cache: Cache, t_x = 0, t_y = 0, t_team = Team.Centrals) {
+  public constructor(world: GameWorld, t_x = 0, t_y = 0, t_team = Team.Centrals, type = EntityType.Flag, id: number = world.nextID(type), cache: Cache = world.cache) {
     super(id, world);
     this.setData(cache, {
       x: t_x,
@@ -26,6 +26,16 @@ export class Flag extends Entity {
       y: this.y,
       team: this.team
     };
+  }
+
+  public static getImage(world: GameWorld) {
+    return world.getImage("flag_ger_1.gif")
+  }
+  public static getImageWidth(world: GameWorld): number {
+    return Flag.getImage(world,).width;
+  }
+  public static getImageHeight(world: GameWorld): number {
+    return Flag.getImage(world,).height;
   }
 }
 

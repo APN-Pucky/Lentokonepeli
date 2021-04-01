@@ -7,24 +7,26 @@ import {
   FrameStatus,
   planeImageIDs,
   frameTextureString,
-  flipAnimation
+  flipAnimation, Plane
 } from "../../../../dogfight/src/entities/Plane";
 import { directionToRadians } from "../../../../dogfight/src/physics/helpers";
 import { Vec2d, setSize } from "../../../../dogfight/src/physics/vector";
+import { spriteSheet } from "../textures";
+import { GameWorld } from "../../../../dogfight/src/world/world";
 
 
 // How long smoke stays on the screen, in milliseconds.
 const SMOKE_DURATION = 200;
 const BLACK_SMOKE_DURATION = 300;
 
-export class PlaneSprite extends GameSprite {
-  public x: number;
-  public y: number;
-  public health: number;
-  public direction: number;
-  public planeType: PlaneType;
-  public flipped: boolean;
-  public motorOn: boolean = true;
+export class PlaneSprite extends GameSprite<Plane> {
+  //public x: number;
+  //public y: number;
+  //public health: number;
+  //public direction: number;
+  //public planeType: PlaneType;
+  //public flipped: boolean;
+  //public motorOn: boolean = true;
 
   private flipFrame: number = 0;
   private lastFlipState: boolean = undefined;
@@ -33,7 +35,7 @@ export class PlaneSprite extends GameSprite {
   private frameStatus: FrameStatus;
 
   protected container: PIXI.Container;
-  private spritesheet: PIXI.Spritesheet;
+  //private spritesheet: PIXI.Spritesheet;
 
   protected plane: PIXI.Sprite;
 
@@ -43,19 +45,19 @@ export class PlaneSprite extends GameSprite {
   private darkSmoke: PIXI.Container;
   private darkSmokeTimeout: number;
 
-  private debug: PIXI.Graphics;
+  //private debug: PIXI.Graphics;
 
-  public constructor(spritesheet: PIXI.Spritesheet) {
-    super();
+  public constructor(spritesheet: PIXI.Spritesheet, world: GameWorld = new GameWorld(spriteSheet.textures)) {
+    super(spriteSheet, Plane, world);
 
     this.frameStatus = FrameStatus.Normal;
 
-    this.x = 0;
-    this.y = 0;
-    this.health = 255;
-    this.direction = 0;
-    this.planeType = PlaneType.Albatros;
-    this.flipped = false;
+    //this.x = 0;
+    //this.y = 0;
+    //this.health = 255;
+    //this.direction = 0;
+    //this.planeType = PlaneType.Albatros;
+    //this.flipped = false;
 
     this.spritesheet = spritesheet;
 
@@ -66,6 +68,7 @@ export class PlaneSprite extends GameSprite {
 
     this.plane = new PIXI.Sprite();
     this.plane.anchor.set(0.5);
+    //this.plane.anchor.set(0);
 
     this.container.zIndex = DrawLayer.Plane;
     this.lightSmoke.zIndex = DrawLayer.LightSmoke;
@@ -87,35 +90,37 @@ export class PlaneSprite extends GameSprite {
   }
 
   private setDirection(): void {
-    this.plane.rotation = directionToRadians(this.direction) * -1;
+    this.plane.rotation = directionToRadians(this.entity.direction) * 1;
   }
 
   private setPlaneTexture(): void {
-    const number = planeImageIDs[this.planeType];
+    const number = planeImageIDs[this.entity.planeType];
     const frameStr = frameTextureString[this.frameStatus];
     const textureString = frameStr.replace("X", number.toString());
     this.plane.texture = this.spritesheet.textures[textureString];
+    this.plane.x = this.plane.texture.width / 2;
+    this.plane.y = this.plane.texture.height / 2;
   }
 
   private handleFlip(): void {
-    const value = this.flipped ? -1 : 1;
+    const value = this.entity.flipped ? -1 : 1;
     this.plane.scale.y = value;
     // If our initial flip isn't set yet, we don't want to animate..
-    if (this.flipped === undefined) {
+    if (this.entity.flipped === undefined) {
       return;
     }
     if (this.lastFlipState === undefined) {
-      this.lastFlipState = this.flipped;
+      this.lastFlipState = this.entity.flipped;
     }
     // check to see if the plane has flipped
-    if (this.flipped != this.lastFlipState) {
+    if (this.entity.flipped != this.lastFlipState) {
       // perform the flip animation.
       if (this.animatingFlip == false) {
         this.animatingFlip = true;
         this.flipFrame = 0;
         this.animateFlip();
       }
-      this.lastFlipState = this.flipped;
+      this.lastFlipState = this.entity.flipped;
     }
   }
 
@@ -141,28 +146,28 @@ export class PlaneSprite extends GameSprite {
     this.handleFlip();
     this.setPlaneTexture();
     this.setDirection();
-    this.drawDebug();
-    this.container.position.set(this.x, this.y);
+    this.container.position.set(this.entity.x, this.entity.y);
   }
 
-  private drawDebug(): void {
+  ///*
+  private redrawDebug(): void {
     // debug
     this.debug.clear();
     this.debug.beginFill(0xff00ff);
-    const rect = getPlaneRect(this.x, this.y, this.direction, this.planeType);
+    const rect = getPlaneRect(this.entity.x, this.entity.y, this.entity.direction, this.entity.planeType);
     const halfW = rect.width / 2;
     const halfH = rect.height / 2;
     this.debug.lineStyle(1, 0xff00ff);
     this.debug.beginFill(0x000000, 0);
-    this.debug.drawRect(-halfW, -halfH, rect.width, rect.height);
+    this.debug.drawRect(0, 0, rect.width, rect.height);
     this.debug.drawCircle(0, 0, 2);
-    this.debug.rotation = directionToRadians(this.direction) * -1;
-    this.debug.position.set(this.x, this.y);
+    //this.debug.rotation = directionToRadians(this.entity.direction) * -1;
+    this.debug.position.set(this.entity.x, this.entity.y);
     this.debug.endFill();
   }
 
   private createLightSmoke(): void {
-    if (this.motorOn == false) {
+    if (this.entity.motorOn == false) {
       return;
     }
     const smoketex = this.spritesheet.textures["smoke1.gif"];
@@ -179,7 +184,7 @@ export class PlaneSprite extends GameSprite {
   }
 
   public createDarkSmoke(): void {
-    const percentage = this.health / 255;
+    const percentage = this.entity.health / 255;
 
     // how often black smoke should appear, in milliseconds.
     let smokeFrequency = 300;
@@ -216,8 +221,8 @@ export class PlaneSprite extends GameSprite {
 
   private getSmokePosition(center: boolean): Vec2d {
     // direction = 0 -> 256   2^8
-    const radians = directionToRadians(this.direction);
-    const halfWidth = Math.round(this.plane.width / 2);
+    const radians = directionToRadians(this.entity.direction);
+    const halfWidth = 0 * Math.round(this.plane.width / 2);
     const offset = Math.round(halfWidth / 6);
 
     const r = halfWidth + offset;
@@ -226,11 +231,11 @@ export class PlaneSprite extends GameSprite {
     const deltaY = r * Math.sin(theta);
     let newX: number, newY: number;
     if (center) {
-      newX = this.x;
-      newY = this.y;
+      newX = this.entity.x;
+      newY = this.entity.y;
     } else {
-      newX = this.x - deltaX;
-      newY = this.y - deltaY;
+      newX = this.entity.x - deltaX;
+      newY = this.entity.y - deltaY;
     }
     return { x: newX, y: newY };
   }

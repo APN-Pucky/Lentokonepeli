@@ -1,3 +1,5 @@
+import { SCALE_FACTOR } from "../../dogfight/src/constants";
+import { GameWorld } from "../../dogfight/src/world/world";
 import { PlaneSprite } from "../src/render/sprites/plane";
 import { TrooperSprite } from "../src/render/sprites/trooper";
 import { Draggable, Renderable } from "./helper";
@@ -9,10 +11,10 @@ import {
 } from "./helper";
 
 export class dragtrooper extends TrooperSprite implements Draggable, Renderable {
-  public constructor(s) {
-    super(s)
-    this.x = 150;
-    this.y = 150;
+  public constructor(s, world: GameWorld) {
+    super(s, world)
+    this.entity.x = 150;
+    this.entity.y = 150;
     this.sprite = this.container;
     this.sprite.interactive = true;
     this.sprite.buttonMode = true;
@@ -25,8 +27,10 @@ export class dragtrooper extends TrooperSprite implements Draggable, Renderable 
   sprite: PIXI.Container;
   eventData: any;
   setPosition(newX: number, newY: number) {
-    this.x = newX;
-    this.y = newY;
+    this.entity.x = newX;
+    this.entity.localX = newX * SCALE_FACTOR;
+    this.entity.y = newY;
+    this.entity.localY = newY * SCALE_FACTOR;
     this.redraw();
     //console.log("move?");
     this.callback();

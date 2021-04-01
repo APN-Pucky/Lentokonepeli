@@ -1,14 +1,15 @@
 import { GameWorld } from "./world";
 import { Ground } from "../entities/Ground";
-import { Flag } from "../entities/flag";
+import { Flag } from "../entities/Flag";
 import { Hill } from "../entities/Hill";
 import { Runway } from "../entities/Runway";
 import { BackgroundItem } from "../entities/BackgroundItem";
 import { Water } from "../entities/Water";
 import { EntityType } from "../entity";
 import { FacingDirection, Terrain } from "../constants";
-import { Coast } from "../entities/Coast";
+import { Coast, coastSchema } from "../entities/Coast";
 import { ImportantBuilding } from "../entities/ImportantBuilding";
+import { ImportantBuildingSprite } from "../../../client/src/render/sprites/importantbuilding";
 
 /**
  * A declaritive object that describes a level.
@@ -88,36 +89,34 @@ export let maps = [katala, london, bunkers, classic2, desert, africa, jungle, be
 
 export function loadMap(world: GameWorld, map: GameMap): void {
   map.grounds.forEach((ground): void => {
-    const obj = new Ground(world.nextID(EntityType.Ground), world, world.cache);
+    const obj = new Ground(world);
     obj.setData(world.cache, ground);
     world.grounds.push(obj);
   });
   map.flags.forEach((flag): void => {
-    const obj = new Flag(world.nextID(EntityType.Flag), world, world.cache);
+    const obj = new Flag(world);
     obj.setData(world.cache, flag);
     world.flags.push(obj);
   });
   map.hills.forEach((hill): void => {
-    const obj = new Hill(world.nextID(EntityType.Hill), world, world.cache);
+    const obj = new Hill(world);
     obj.setData(world.cache, hill);
     world.hills.push(obj);
   });
   map.runways.forEach((runway): void => {
-    const obj = new Runway(world.nextID(EntityType.Runway), world, world.cache, null, 0, 0, 1);
+    const obj = new Runway(world, null, 0, 0, 1);
     obj.setData(world.cache, runway);
     world.runways.push(obj);
   });
   map.towers.forEach((tower): void => {
     const obj = new BackgroundItem(
-      world.nextID(EntityType.BackgroundItem),
       world,
-      world.cache
     );
     obj.setData(world.cache, tower);
     world.backgrounditem.push(obj);
   });
   map.waters.forEach((water): void => {
-    const obj = new Water(world.nextID(EntityType.Water), world, world.cache);
+    const obj = new Water(world);
     obj.setData(world.cache, water);
     world.waters.push(obj);
   });
@@ -137,7 +136,7 @@ export function parseLevelLayer(world: GameWorld, paramString: string): void {
     switch (paramString.charAt(j)) {
       case '#':
         aoi = parseContinuedPiece(paramString, j, '#', i);
-        obj = new Ground(world.nextID(EntityType.Ground), world, world.cache, aoi[0] + aoi[1] / 2, 0, aoi[1], 0);
+        obj = new Ground(world, aoi[0], 0, aoi[1], 0);
         console.log("# = " + aoi[0]);
         //obj.setData(world.cache, ground);
         world.grounds.push(obj);
@@ -145,28 +144,28 @@ export function parseLevelLayer(world: GameWorld, paramString: string): void {
         break;
       case '_':
         aoi = parseContinuedPiece(paramString, j, '_', i);
-        obj = new Ground(world.nextID(EntityType.Ground), world, world.cache, aoi[0] + aoi[1] / 2, 0, aoi[1], 1);
+        obj = new Ground(world, aoi[0], 0, aoi[1], 1);
         //obj.setData(world.cache, ground);
         world.grounds.push(obj);
         j = aoi[2];
         break;
       case '/':
         aoi = parseContinuedPiece(paramString, j, '/', i);
-        obj = new Water(world.nextID(EntityType.Water), world, world.cache, aoi[0] + aoi[1] / 2, -25, aoi[1], 0);
+        obj = new Water(world, aoi[0], 25, aoi[1], 0);
         //obj.setData(world.cache, ground);
         world.waters.push(obj);
         j = aoi[2];
         break;
       case '\\':
         aoi = parseContinuedPiece(paramString, j, '\\', i);
-        obj = new Water(world.nextID(EntityType.Water), world, world.cache, aoi[0] + aoi[1] / 2, -25, aoi[1], 1);
+        obj = new Water(world, aoi[0], 25, aoi[1], 1);
         //obj.setData(world.cache, ground);
         world.waters.push(obj);
         j = aoi[2];
         break;
       case '(':
         aoi = parseContinuedPiece(paramString, j, '(', i);
-        obj = new Water(world.nextID(EntityType.Water), world, world.cache, aoi[0] + aoi[1] / 2, -25, aoi[1], 2);
+        obj = new Water(world, aoi[0], 25, aoi[1], 2);
         console.log(aoi[0], aoi[1])
         //obj.setData(world.cache, ground);
         world.waters.push(obj);
@@ -174,103 +173,103 @@ export function parseLevelLayer(world: GameWorld, paramString: string): void {
         break;
       case ')':
         aoi = parseContinuedPiece(paramString, j, ')', i);
-        obj = new Water(world.nextID(EntityType.Water), world, world.cache, aoi[0] + aoi[1] / 2, -25, aoi[1], 3);
+        obj = new Water(world, aoi[0], 25, aoi[1], 3);
         console.log(aoi[0], aoi[1])
         //obj.setData(world.cache, ground);
         world.waters.push(obj);
         j = aoi[2];
         break;
       case '<':
-        obj = new Coast(world.nextID(EntityType.Coast), world, world.cache, (i + (j + 1) * 100) - world.getImage("beach-l.gif").width / 2, -world.getImage("beach-l.gif").height / 2, 0);
+        obj = new Coast(world, (i + (j + 1) * 100) - Coast.getImageWidth(world, 0), 0, 0);
         //obj.setData(world.cache, hill);
         world.coasts.push(obj);
         break;
       //k = (j+1)*100 - coast image width
       case '>':
-        obj = new Coast(world.nextID(EntityType.Coast), world, world.cache, (i + (j) * 100) + world.getImage("beach-l.gif").width / 2, -world.getImage("beach-l.gif").height / 2, 1);
+        obj = new Coast(world, (i + (j) * 100), 0, 1);
         //obj.setData(world.cache, hill);
         world.coasts.push(obj);
         break;
       case '[':
-        obj = new Coast(world.nextID(EntityType.Coast), world, world.cache, (i + (j + 1) * 100) - world.getImage("beach-l_desert.gif").width / 2, -world.getImage("beach-l_desert.gif").height / 2, 2);
+        obj = new Coast(world, (i + (j + 1) * 100) - Coast.getImageWidth(world, 2), 0, 2);
         //obj.setData(world.cache, hill);
         world.coasts.push(obj);
         break;
       case ']':
-        obj = new Coast(world.nextID(EntityType.Coast), world, world.cache, (i + (j) * 100) + world.getImage("beach-l_desert.gif").width / 2, -world.getImage("beach-l_desert.gif").height / 2, 3);
+        obj = new Coast(world, (i + (j) * 100), 0, 3);
         //obj.setData(world.cache, hill);
         world.coasts.push(obj);
         break;
       case '.':
         break;
       case 'H':
-        obj = new Hill(world.nextID(EntityType.Hill), world, world.cache, (i + j * 100 - 6 * 50) * 8 / 10, 40 - 25, 0);
+        obj = new Hill(world, (i + j * 100 - 6 * 50) * 8 / 10, 40 - 25, 0);
         //obj.setData(world.cache, hill);
         world.hills.push(obj);
         break;
       case 'S':
-        obj = new Hill(world.nextID(EntityType.Hill), world, world.cache, (i + j * 100 - 6 * 50) * 8 / 10, 45 - 25, 1);
+        obj = new Hill(world, (i + j * 100 - 6 * 50) * 8 / 10, 45 - 25, 1);
         //obj.setData(world.cache, hill);
         world.hills.push(obj);
         break;
       case 'L':
-        obj = new Runway(world.nextID(EntityType.Runway), world, world.cache, 0, i + j * 100 + 50 - 4/*- world.getImage("runway.gif").width / 2*/, 0, 0);
+        obj = new Runway(world, 0, i + j * 100 + 50 - Runway.getImageWidth(world, 0) / 2, -25, 0);
         //obj.setData(world.cache, runway);
         world.runways.push(obj);
         break;
       case 'R':
-        obj = new Runway(world.nextID(EntityType.Runway), world, world.cache, 0, i + j * 100 + 50 + 4/*- world.getImage("runway2.gif").width / 2*/, 0, 1);
+        obj = new Runway(world, 0, i + j * 100 + 50 - Runway.getImageWidth(world, 1) / 2, -25, 1);
         //obj.setData(world.cache, runway);
         world.runways.push(obj);
         break;
       case 'l':
-        obj = new Runway(world.nextID(EntityType.Runway), world, world.cache, 1, i + j * 100 + 50 - 4/*- world.getImage("runway.gif").width / 2*/, 0, 0);
+        obj = new Runway(world, 1, i + j * 100 + 50 - Runway.getImageWidth(world, 0) / 2, -25, 0);
         //obj.setData(world.cache, runway);
         world.runways.push(obj);
         break;
       case 'r':
-        obj = new Runway(world.nextID(EntityType.Runway), world, world.cache, 1, i + j * 100 + 50 + 4/*- world.getImage("runway2.gif").width / 2*/, 0, 1);
+        obj = new Runway(world, 1, i + j * 100 + 50 - Runway.getImageWidth(world, 1) / 2, -25, 1);
         //obj.setData(world.cache, runway);
         world.runways.push(obj);
         break;
       case "T":
-        obj = new BackgroundItem(world.nextID(EntityType.BackgroundItem), world, world.cache, i + j * 100 + 50, 0, 0)
+        obj = new BackgroundItem(world, i + j * 100 + 50, 5, 0)
         world.backgrounditem.push(obj);
         break;
       case "t":
-        obj = new BackgroundItem(world.nextID(EntityType.BackgroundItem), world, world.cache, i + j * 100 + 50, 0, 1)
+        obj = new BackgroundItem(world, i + j * 100 + 50, 5, 1)
         world.backgrounditem.push(obj);
         break;
       case "D":
-        obj = new BackgroundItem(world.nextID(EntityType.BackgroundItem), world, world.cache, i + j * 100 + 50, 0, 2)
+        obj = new BackgroundItem(world, i + j * 100 + 50, 5, 2)
         world.backgrounditem.push(obj);
         break;
       case "d":
-        obj = new BackgroundItem(world.nextID(EntityType.BackgroundItem), world, world.cache, i + j * 100 + 50, 0, 3)
+        obj = new BackgroundItem(world, i + j * 100 + 50, 5, 3)
         world.backgrounditem.push(obj);
         break;
       case "P":
-        obj = new BackgroundItem(world.nextID(EntityType.BackgroundItem), world, world.cache, i + j * 100 + 50, 0, 4)
+        obj = new BackgroundItem(world, i + j * 100 + 50, 5, 4)
         world.backgrounditem.push(obj);
         break;
       case "p":
-        obj = new BackgroundItem(world.nextID(EntityType.BackgroundItem), world, world.cache, i + j * 100 + 50, 0, 5)
+        obj = new BackgroundItem(world, i + j * 100 + 50, 5, 5)
         world.backgrounditem.push(obj);
         break;
       case "F":
-        obj = new Flag(world.nextID(EntityType.BackgroundItem), world, world.cache, i + j * 100 + 50 /* - flag width */, 0, 0)
+        obj = new Flag(world, i + j * 100 + 50 - Flag.getImageWidth(world) / 2, -90, 0)
         world.flags.push(obj);
         break;
       case "f":
-        obj = new Flag(world.nextID(EntityType.BackgroundItem), world, world.cache, i + j * 100 + 50 /* - flag width */, 0, 1)
+        obj = new Flag(world, i + j * 100 + 50 - Flag.getImageWidth(world) / 2, -90, 1)
         world.flags.push(obj);
         break;
       case "I":
-        obj = new ImportantBuilding(world.nextID(EntityType.ImportantBuilding), world, world.cache, i + j * 100 + 50, 0 + 7, 0, 0)
+        obj = new ImportantBuilding(world, 0, 0, i + j * 100 + 50 - ImportantBuilding.getImageWidth(world, 0) / 2, 0 - ImportantBuilding.getImageHeight(world, 0) + 7);
         world.importantBuildings.push(obj);
         break;
       case "i":
-        obj = new ImportantBuilding(world.nextID(EntityType.ImportantBuilding), world, world.cache, i + j * 100 + 50, 0 + 7, 1, 1)
+        obj = new ImportantBuilding(world, 1, 1, i + j * 100 + 50 - ImportantBuilding.getImageWidth(world, 1) / 2, 0 - ImportantBuilding.getImageHeight(world, 1) + 7);
         world.importantBuildings.push(obj);
         break;
       default:
@@ -286,7 +285,7 @@ export function parseContinuedPiece(paramString: string, paramInt1: number, para
   let i: number = 100;
   let j: number = 0;
   if (paramInt1 == 0) {
-    j = 43536;
+    j = -22000;
     i += 22000 + paramInt2;
   }
   else {

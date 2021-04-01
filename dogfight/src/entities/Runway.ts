@@ -42,8 +42,9 @@ export class Runway extends SolidEntity {
 
   private localhealth = HEALTH_MAX;
 
-  public constructor(id: number, world: GameWorld, cache: Cache, team: number, x: number, y: number, direction: number) {
+  public constructor(world: GameWorld, team: number, x: number, y: number, direction: number, type = EntityType.Runway, id: number = world.nextID(type), cache: Cache = world.cache,) {
     super(id, world, team);
+    this.type = type;
     this.image = [world.getImage("runway.gif"), world.getImage("runway2.gif")];
     this.imageWidth = [this.image[0].width, this.image[1].width];
     this.imageHeight = [this.image[0].height, this.image[1].height];
@@ -68,7 +69,7 @@ export class Runway extends SolidEntity {
   }
 
   public getCollisionBounds(): Rectangle {
-    return new Rectangle(this.x, this.y + this.yOffset, this.imageWidth[1 - this.direction], this.imageHeight[1 - this.direction]);
+    return new Rectangle(this.x, this.y , this.imageWidth[1 - this.direction], this.imageHeight[1 - this.direction]);
   }
   public getCollisionImage() {
     return this.image[1 - this.direction];
@@ -91,18 +92,18 @@ export class Runway extends SolidEntity {
 
   public getLandableX(): number {
     if (this.direction == 1) {
-      return 65 + this.x - this.getImageWidth(0) / 2;
+      return 65 + this.x;
     }
-    return this.x - this.getImageWidth(0) / 2;
+    return this.x;
   }
   public getLandableY(): number {
-    return -23 + this.y + this.getImageHeight(0) / 2 + this.yOffset;
+    return 23 + this.y;
   }
   public getStartX(): number {
     if (this.direction == 1) {
-      return 15 + this.x - this.getImageWidth(0) / 2;
+      return 15 + this.x;
     }
-    return this.x + 230 - this.getImageWidth(0) / 2;
+    return this.x + 230;
   }
   public getStartY(): number {
     return this.getLandableY();
@@ -250,6 +251,19 @@ export class Runway extends SolidEntity {
       team: this.team,
       health: this.health
     };
+  }
+  public static getImage(world: GameWorld, i: number) {
+    if (i == 0)
+      return world.getImage("runway.gif")
+    if (i == 1)
+      return world.getImage("runway2.gif")
+    return null;
+  }
+  public static getImageWidth(world: GameWorld, i: number): number {
+    return Runway.getImage(world, i).width;
+  }
+  public static getImageHeight(world: GameWorld, i: number): number {
+    return Runway.getImage(world, i).height;
   }
 }
 

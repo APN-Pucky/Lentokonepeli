@@ -80,8 +80,8 @@ export class Man extends OwnableSolidEntity {
 
   public playerinfo;
   public image;
-  public imageWidth;
-  public imageHeight;
+  //  public imageWidth;
+  //  public imageHeight;
 
 
   public shootDelay = 500;
@@ -93,15 +93,25 @@ export class Man extends OwnableSolidEntity {
 
 
 
-  public constructor(id: number, world: GameWorld, cache: Cache, x: number, y: number, player: PlayerInfo) {
-    super(id, world, player.getTeam());
+  public constructor(
+    world: GameWorld,
+    x: number,
+    y: number,
+    player: PlayerInfo = null,
+    type = EntityType.Trooper,
+    id: number = world.nextID(type),
+    cache: Cache = world.cache,) {
+    super(id, world, player == null ? -1 : player.getTeam());
+    this.type = type;
     this.playerinfo = player;
-    this.playerinfo.setHealth(1);
-    this.playerinfo.setHealthMax(1);
-    this.playerinfo.setFuel(0);
-    this.playerinfo.setAmmo(1);
-    this.playerinfo.setAmmoMax(1);
-    this.playerinfo.setBombs(1);
+    if (player != null) {
+      this.playerinfo.setHealth(1);
+      this.playerinfo.setHealthMax(1);
+      this.playerinfo.setFuel(0);
+      this.playerinfo.setAmmo(1);
+      this.playerinfo.setAmmoMax(1);
+      this.playerinfo.setBombs(1);
+    }
     this.localX = x * SCALE_FACTOR;
     this.localY = y * SCALE_FACTOR;
     this.image = [world.getImage("parachuter0.gif"), world.getImage("parachuter1.gif")];
@@ -123,19 +133,20 @@ export class Man extends OwnableSolidEntity {
       health: 255,
       state: TrooperState.Falling,
       //direction: TrooperDirection.None,
-      team: player.getTeam()
+      team: player == null ? -1 : player.getTeam()
     });
   }
   public getCollisionBounds(): Rectangle {
-    if (this.state != TrooperState.Parachuting) {
-      return new Rectangle(this.localX / SCALE_FACTOR, this.localY / SCALE_FACTOR + this.height / 2, this.width, this.height);
+    if (this.state == TrooperState.Parachuting) {
+      return new Rectangle(this.localX / SCALE_FACTOR, this.localY / SCALE_FACTOR, this.image[1].width, this.image[1].height);
     }
     else {
-      return new Rectangle(this.localX / SCALE_FACTOR, this.localY / SCALE_FACTOR + this.image[1].height / 2, this.image[1].width, this.image[1].height);
+      return new Rectangle(this.localX / SCALE_FACTOR, this.localY / SCALE_FACTOR, this.width, this.height);
     }
     //throw new Error("Method not implemented.");
   }
   public getCollisionImage(): BufferedImage {
+    //console.log("state: " + this.state + " " + this.image[0].width)
     return this.state == TrooperState.Parachuting ? this.image[1] : this.image[0];
   }
   getPlayerInfo(): import("./PlayerInfo").PlayerInfo {
@@ -165,7 +176,7 @@ export class Man extends OwnableSolidEntity {
     switch (this.state) {
       case TrooperState.Falling:
         this.localX += 100 * this.vx / this.speedPerPixel * tstep * SCALE_FACTOR;
-        this.localY -= 100 * this.vy / this.speedPerPixel * tstep * SCALE_FACTOR;
+        this.localY += 100 * this.vy / this.speedPerPixel * tstep * SCALE_FACTOR;
         this.vx -= Math.round((this.vx * 0.01) * tstep * SCALE_FACTOR);
         this.vy += this.speedPerPixel / 30 * tstep * SCALE_FACTOR;
         if (this.isKeyPressed(GameKey.MAN_PARACHUTE)) {
@@ -175,7 +186,7 @@ export class Man extends OwnableSolidEntity {
         break;
       case TrooperState.Parachuting:
         this.localX += 100 * this.vx / this.speedPerPixel * tstep * SCALE_FACTOR;
-        this.localY -= 100 * this.vy / this.speedPerPixel * tstep * SCALE_FACTOR;
+        this.localY += 100 * this.vy / this.speedPerPixel * tstep * SCALE_FACTOR;
         this.vx -= Math.round((this.vx * 0.01) * tstep * SCALE_FACTOR);
         this.vy -= Math.round((this.vy * 0.05) * tstep * SCALE_FACTOR);
         if (this.vy < this.speedPerPixel) {
@@ -276,13 +287,11 @@ export class Man extends OwnableSolidEntity {
         console.log("Shooting down: " + localObject1 + " " + d + " " + i);
       }
     }
-    let j = this.localX / 100;
-    let m = this.localY / 100 + 10 - this.height / 2;
+    let j = this.localX / 100 + this.width / 2;
+    let m = this.localY / 100 - 10 + this.height;
     console.log("bullet shot");
     const b = new Bullet(
-      this.world.nextID(EntityType.Bullet),
       this.world,
-      this.world.cache,
       j,
       m,
       d,
@@ -294,18 +303,18 @@ export class Man extends OwnableSolidEntity {
   }
 
   private countDistance(paramSolidEntity: SolidEntity): number {
-    let i = paramSolidEntity.getCollisionBounds().x;
-    let j = paramSolidEntity.getCollisionBounds().y;
-    let k = this.localX / 100;
-    let m = this.localY / 100;
+    let i = paramSolidEntity.getCollisionBounds().x + paramSolidEntity.getCollisionBounds().width / 2;
+    let j = paramSolidEntity.getCollisionBounds().y + paramSolidEntity.getCollisionBounds().height / 2;
+    let k = this.localX / 100 + this.width / 2;
+    let m = this.localY / 100 + this.height / 2;
     return (i - k) * (i - k) + (j - m) * (j - m);
   }
 
   private countAngle(paramSolidEntity: SolidEntity): number {
-    let i = paramSolidEntity.getCollisionBounds().x;
-    let j = paramSolidEntity.getCollisionBounds().y;
-    let k = this.localX / 100;
-    let m = this.localY / 100;
+    let i = paramSolidEntity.getCollisionBounds().x + paramSolidEntity.getCollisionBounds().width / 2;
+    let j = paramSolidEntity.getCollisionBounds().y + paramSolidEntity.getCollisionBounds().height / 2;
+    let k = this.localX / 100 + this.width / 2;
+    let m = this.localY / 100 + this.height / 2;
     return Math.atan2(j - m, i - k);
   }
 
@@ -380,7 +389,7 @@ export class Man extends OwnableSolidEntity {
     if (se.getType() == EntityType.Ground && (this.state == TrooperState.Falling || this.state == TrooperState.Parachuting)) {
       if (this.vy < this.speedPerPixel * 1.5) {
         this.setState(this.world.cache, TrooperState.Standing);
-        this.localY = (se.getCollisionBounds().getMaxY()) * 100;
+        this.localY = (se.getCollisionBounds().y - this.image[0].height) * 100;
         console.log("landed - ground ");
         this.set(this.world.cache, "y", Math.round(this.localY / SCALE_FACTOR));
       }
@@ -422,22 +431,26 @@ export class Man extends OwnableSolidEntity {
         if (!(b.getPlayerInfo().getId() == this.getPlayerInfo().getId())) {
           this.fraggedBy(b);
           this.removeSelf();
+          console.log("Man in Bullet");
         }
       }
       else if (se.getType() == EntityType.Bomb || se.getType() == EntityType.Explosion) {
         let b = se as Bomb;
         this.fraggedBy(b);
         this.removeSelf();
+        console.log("Man in Bomb")
       }
       else if (se instanceof Plane) {
         if (Date.now() >= this.invulnerabilityTimer + this.invulnerabilityTime) {
           this.fraggedBy(se as Plane);
           this.removeSelf()
+          console.log("Man in Plane")
         }
       }
       else if (se.getType() == EntityType.Water) {  //|| se.getType() == 23) { // TODO what is 23 ?!?!
         this.fraggedBy(null);
         this.removeSelf();
+        console.log("Man in Water")
       }
     }
   }

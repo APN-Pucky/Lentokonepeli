@@ -2,13 +2,15 @@ import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer, GameScreen } from "../constants";
 import { Terrain } from "../../../../dogfight/src/constants";
+import { spriteSheet } from "../textures";
+import { Hill } from "../../../../dogfight/src/entities/Hill";
 
-export class HillSprite extends GameSprite {
-  public x: number;
-  public y: number;
-  public terrain: Terrain;
+export class HillSprite extends GameSprite<Hill> {
+  //public x: number;
+  //public y: number;
+  //public terrain: Terrain;
 
-  private spritesheet: PIXI.Spritesheet;
+  //private spritesheet: PIXI.Spritesheet;
 
   private container: PIXI.Container;
 
@@ -19,11 +21,11 @@ export class HillSprite extends GameSprite {
   private maxY: number;
 
   public constructor(spritesheet: PIXI.Spritesheet, parent: PIXI.Container) {
-    super();
+    super(spriteSheet, Hill);
 
-    this.x = 0;
-    this.y = 0;
-    this.terrain = Terrain.Normal;
+    //this.x = 0;
+    //this.y = 0;
+    //this.terrain = Terrain.Normal;
 
     this.spritesheet = spritesheet;
     this.parent = parent;
@@ -44,7 +46,7 @@ export class HillSprite extends GameSprite {
 
   public redraw(): void {
     // update terrain
-    const tex = this.terrain == Terrain.Normal ? "hill1.gif" : "sandhill.gif";
+    const tex = this.entity.terrain == Terrain.Normal ? "hill1.gif" : "sandhill.gif";
     this.hill.texture = this.spritesheet.textures[tex];
     this.setCamera();
   }
@@ -56,11 +58,11 @@ export class HillSprite extends GameSprite {
     const center = this.parent.toLocal(new PIXI.Point(centerX, centerY));
     //center.x *= -1;
     //center.y *= -1;
-    const diffX = this.x - center.x;
-    const diffY = this.y - center.y;
+    const diffX = this.entity.x - center.x;
+    const diffY = this.entity.y - center.y;
 
-    const newX = Math.round(this.x - diffX / 8);
-    let newY = Math.round(this.y - diffY / 9);
+    const newX = Math.round(this.entity.x - diffX / 8);
+    let newY = Math.round(this.entity.y - diffY / 9);
 
     const min = -Math.round(this.maxY / 2);
 

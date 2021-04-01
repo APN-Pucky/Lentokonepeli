@@ -2,36 +2,41 @@ import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { FacingDirection, Team } from "../../../../dogfight/src/constants";
 import { DrawLayer, TeamColor } from "../constants";
+import { ImportantBuilding } from "../../../../dogfight/src/entities/ImportantBuilding";
+import { spriteSheet } from "../textures";
+import { GameWorld } from "../../../../dogfight/src/world/world";
 
 const HEALTH_BAR_HEIGHT = 3;
 
-export class ImportantBuildingSprite extends GameSprite {
-  public x: number;
-  public y: number;
-  public buildingType: number;
-  public health: number;
-  public team: number;
+export class ImportantBuildingSprite extends GameSprite<ImportantBuilding> {
+  static getImageWidth(world: GameWorld, arg1: number) {
+    throw new Error("Method not implemented.");
+  }
+  //public x: number;
+  //public y: number;
+  //public buildingType: number;
+  //public health: number;
+  //public team: number;
 
   public lastHealth: number;
   public blinkTime: number;
   private nofilter;
 
-  private spritesheet: PIXI.Spritesheet;
 
   public importantbuilding: PIXI.Sprite;
   //private backpart: PIXI.Sprite;
   private healthBar: PIXI.Graphics;
 
 
-  public constructor(spritesheet: PIXI.Spritesheet) {
-    super();
+  public constructor(spritesheet: PIXI.Spritesheet, world: GameWorld = new GameWorld(spriteSheet.textures)) {
+    super(spriteSheet, ImportantBuilding, world);
 
-    this.x = 0;
-    this.y = 0;
-    this.buildingType = 0;
-    this.health = 255;
+    //this.x = 0;
+    //this.y = 0;
+    //this.buildingType = 0;
+    //this.health = 255;
 
-    this.spritesheet = spritesheet;
+    //this.spritesheet = spritesheet;
 
     const texture = spritesheet.textures["headquarter_germans.gif"];
 
@@ -51,18 +56,18 @@ export class ImportantBuildingSprite extends GameSprite {
 
   public redraw(): void {
     // set direction and appropriate texture
-    if (this.buildingType == 0) {
-      const tex = this.health > 0 ? "headquarter_germans.gif" : "headquarter_broke.gif";
+    if (this.entity.buildingType == 0) {
+      const tex = this.entity.health > 0 ? "headquarter_germans.gif" : "headquarter_broke.gif";
       this.importantbuilding.texture = this.spritesheet.textures[tex];
     } else {
-      const tex = this.health > 0 ? "headquarter_raf.gif" : "headquarter_broke.gif";
+      const tex = this.entity.health > 0 ? "headquarter_raf.gif" : "headquarter_broke.gif";
       this.importantbuilding.texture = this.spritesheet.textures[tex];
     }
-    if (this.health > 0) {
-      if (this.health < this.lastHealth) {
+    if (this.entity.health > 0) {
+      if (this.entity.health < this.lastHealth) {
         this.blinkTime = Date.now();
       }
-      this.lastHealth = this.health;
+      this.lastHealth = this.entity.health;
       if (this.blinkTime + 100 > Date.now()) {
         //playBlinkSound();
         //this.nofilter = this.importantbuilding.filters;
@@ -83,10 +88,14 @@ export class ImportantBuildingSprite extends GameSprite {
       }
     }
     // center runway on x
+    /*
     const halfWidth = Math.round(this.importantbuilding.width / 2);
-    this.importantbuilding.x = this.x - halfWidth;
+    this.importantbuilding.x = this.entity.x - halfWidth;
+    this.importantbuilding.y = this.entity.y - Math.round(this.importantbuilding.height / 2);
+    */
+    this.importantbuilding.x = this.entity.x;
+    this.importantbuilding.y = this.entity.y;
 
-    this.importantbuilding.y = this.y - Math.round(this.importantbuilding.height / 2);
     // update height
     //const offset = 25 - 7; //this.direction == RunwayDirection.Right ? 25 : 25;
     //this.importantbuilding.position.y = this.y - offset;
@@ -96,14 +105,14 @@ export class ImportantBuildingSprite extends GameSprite {
   }
 
   private drawHealthBar(): void {
-    if (this.health <= 0) {
+    if (this.entity.health <= 0) {
       this.healthBar.visible = false;
       return;
     }
     this.healthBar.visible = true;
 
-    this.healthBar.position.y = this.y + 7;
-    this.healthBar.position.x = this.x - Math.round(this.importantbuilding.width / 2) + 10;
+    this.healthBar.position.x = this.entity.x + 10;
+    this.healthBar.position.y = this.entity.y + this.entity.getImageHeight(this.entity.buildingType) - 3 - 1;
 
     // ¯\_(ツ)_/¯
     //if (this.direction == FacingDirection.Left) {
@@ -111,11 +120,11 @@ export class ImportantBuildingSprite extends GameSprite {
     //}
 
     const color =
-      this.buildingType == 0
+      this.entity.buildingType == 0
         ? TeamColor.OpponentBackground
         : TeamColor.OwnBackground;
 
-    const amount = Math.round((this.importantbuilding.width - 20) * (this.health / 255));
+    const amount = Math.round((this.importantbuilding.width - 20) * (this.entity.health / 255));
 
     this.healthBar.clear();
     this.healthBar.beginFill(color);

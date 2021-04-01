@@ -55,8 +55,18 @@ export class Bullet extends OwnableSolidEntity {
 
   public speed: number;
 
-  public constructor(id: number, world: GameWorld, cache: Cache, x: number, y: number, angle: number, speed: number, origin: OwnableSolidEntity) {
-    super(id, world, origin.getTeam());
+  public constructor(
+    world: GameWorld,
+    x: number,
+    y: number,
+    angle: number,
+    speed: number,
+    origin: OwnableSolidEntity = null,
+    type = EntityType.Bullet,
+    id: number = world.nextID(type),
+    cache: Cache = world.cache,) {
+    super(id, world, origin == null ? -1 : origin.getTeam());
+    this.type = type;
     this.localX = x * SCALE_FACTOR;
     this.localY = y * SCALE_FACTOR;
     this.speed = (speed + 4) * SCALE_FACTOR * SCALE_FACTOR;
@@ -72,8 +82,8 @@ export class Bullet extends OwnableSolidEntity {
       x: x,
       y: y,
       age: 0,
-      shotBy: origin.getPlayerInfo().getId(),
-      team: origin.getTeam(),
+      shotBy: origin == null ? -1 : origin.getPlayerInfo().getId(),
+      team: origin == null ? -1 : origin.getTeam(),
       clientVX: this.clientVX,
       clientVY: this.clientVY
     });

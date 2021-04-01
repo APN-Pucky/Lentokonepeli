@@ -1,3 +1,4 @@
+import { GameWorld } from "../../dogfight/src/world/world";
 import { PlaneSprite } from "../src/render/sprites/plane";
 import { RunwaySprite } from "../src/render/sprites/runway";
 import { Draggable, Renderable } from "./helper";
@@ -9,10 +10,10 @@ import {
 } from "./helper";
 
 export class dragrunway extends RunwaySprite implements Draggable, Renderable {
-  public constructor(s) {
-    super(s)
-    this.x = 200;
-    this.y = 200;
+  public constructor(s, world: GameWorld) {
+    super(s, world)
+    this.entity.x = 200;
+    this.entity.y = 200;
     this.sprite = this.runway;
     this.sprite.interactive = true;
     this.sprite.buttonMode = true;
@@ -25,8 +26,8 @@ export class dragrunway extends RunwaySprite implements Draggable, Renderable {
   sprite: PIXI.Container;
   eventData: any;
   setPosition(newX: number, newY: number) {
-    this.x = newX;
-    this.y = newY;
+    this.entity.x = newX;
+    this.entity.y = newY;
     this.redraw();
     //console.log("move?");
     this.callback();

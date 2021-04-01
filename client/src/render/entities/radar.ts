@@ -69,7 +69,7 @@ export class Radar {
 
   public centerCamera(x: number, y: number): void {
     const radarX = Math.round((x * -1 * RADAR_HEIGHT) / 1000);
-    const radarY = Math.round((y * RADAR_HEIGHT) / 1000);
+    const radarY = Math.round((y * -1 * RADAR_HEIGHT) / 1000);
     this.radarGraphics.position.set(radarX, radarY);
   }
 
@@ -99,7 +99,7 @@ export class Radar {
 
   private renderObject(obj: any): void {
     let startX = Math.round((obj.x * RADAR_HEIGHT) / 1000) - 1;
-    let startY = Math.round((obj.y * -1 * RADAR_HEIGHT) / 1000) - 1;
+    let startY = Math.round((obj.y * 1 * RADAR_HEIGHT) / 1000) - 1;
     let color;
     if (this.myTeam == Team.Spectator || obj.team == Team.Spectator) {
       color = NEUTRAL_COLOR;
@@ -120,7 +120,7 @@ export class Radar {
       return;
     }
     const startX = Math.round((runway.x * RADAR_HEIGHT) / 1000) - 1;
-    const startY = Math.round((runway.y * -1 * RADAR_HEIGHT) / 1000) - 1;
+    const startY = Math.round((runway.y * 1 * RADAR_HEIGHT) / 1000) - 1;
     this.radarGraphics.beginFill(0xffffff);
     this.radarGraphics.drawRect(startX, startY + 1, 3, 3);
     this.radarGraphics.endFill();
@@ -128,9 +128,9 @@ export class Radar {
 
   private renderGround(ground: any): void {
     const startX = Math.round(
-      ((-Math.round(ground.width / 2) + ground.x) * RADAR_HEIGHT) / 1000
+      ((-Math.round(ground.width / 2) * 0 + ground.x) * RADAR_HEIGHT) / 1000
     );
-    const startY = Math.round((ground.y * -1 * RADAR_HEIGHT) / 1000);
+    const startY = Math.round((ground.y * 1 * RADAR_HEIGHT) / 1000);
     const rGroundWidth = Math.round((ground.width * RADAR_HEIGHT) / 1000);
     this.radarGraphics.beginFill(0x111111);
     this.radarGraphics.drawRect(startX, startY + 1, rGroundWidth, 2);

@@ -7,6 +7,7 @@ import { Bullet } from "./Bullet";
 import { Runway } from "./Runway";
 import { Team } from "../constants";
 import { Cache, CacheEntry } from "../network/cache";
+import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
 
 export abstract class SolidEntity extends Entity {
   public team: number = -1;
@@ -73,14 +74,20 @@ export abstract class SolidEntity extends Entity {
   public getPix(img: BufferedImage, paramRectangle1: Rectangle, paramRectangle2: Rectangle): number[] {
     //console.log("got pix");
 
+    console.log("r1 " + paramRectangle1.x + " " + paramRectangle1.y)
+    console.log("r2 " + paramRectangle2.x + " " + paramRectangle2.y)
     let x0 = -Math.round(paramRectangle2.getMinX() - paramRectangle1.getMinX());
-    let y0 = Math.round(paramRectangle2.getMaxY() - paramRectangle1.getMaxY());
+    let y0 = -Math.round(paramRectangle2.getMinY() - paramRectangle1.getMinY());
+    console.log("x " + x0 + " y " + y0)
 
     //console.log(paramRectangle2);
     //console.log(paramRectangle1);
     let datan = []
 
     let arrayOfInt = img.data;
+    if (img.data == undefined) {
+      console.error("WTF why undef img")
+    }
     //console.log(img.data.length);
     //console.log(paramRectangle2.width * paramRectangle2.height);
     //console.log(paramRectangle1.width * paramRectangle1.height);
@@ -123,6 +130,9 @@ export abstract class SolidEntity extends Entity {
           //if (!(this.checkCollisionWith(se) == se.checkCollisionWith(this))) {
           //  console.log("WTTTFFF")
           //}
+          if (se.getType() == EntityType.Water) {
+            console.log(se.getCollisionBounds())
+          }
           if (se.isAlive() && this.checkCollisionWith(se)) {
             bool = true;
             this.hit(se);

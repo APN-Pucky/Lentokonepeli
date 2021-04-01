@@ -169,7 +169,7 @@ export const planeData: PlaneInfo = {
     maxBombs: 5,
     maxHealth: 90,
     accelerationSpeed: 470,
-    maxY: -150,//65396, // what??
+    maxY: -150, // 65396, // what??
     turnStep: Math.PI,
     shootDelay: 180,
     speedModifier: 50.0,
@@ -308,15 +308,17 @@ export class Plane extends OwnableSolidEntity {
   private flipDelay = 200;
 
   public constructor(
-    id: number,
     world: GameWorld,
-    cache: Cache,
-    kind: PlaneType,
-    player: PlayerInfo,
-    side: Team,
-    runway: Runway
+    kind: PlaneType = PlaneType.Albatros,
+    player: PlayerInfo = null,
+    side: Team = Team.Centrals,
+    runway: Runway = null,
+    type = EntityType.Plane,
+    id: number = world.nextID(type),
+    cache: Cache = world.cache,
   ) {
     super(id, world, side);
+    this.type = type;
 
     this.playerInfo = player;
     this.isAbandoned = false;
@@ -380,9 +382,7 @@ export class Plane extends OwnableSolidEntity {
       y0 = this.runway.getStartY();
       for (let y = y0; y < y0 + ly; y += 5) {
         const bullet = new Bullet(
-          this.world.nextID(EntityType.Bullet),
           this.world,
-          this.world.cache,
           x, y,
           0, -4,
           this,
@@ -395,9 +395,7 @@ export class Plane extends OwnableSolidEntity {
       y0 = this.runway.getLandableY();
       for (let y = y0; y < y0 + ly; y += 5) {
         const bullet = new Bullet(
-          this.world.nextID(EntityType.Bullet),
           this.world,
-          this.world.cache,
           x, y,
           0, -4,
           this,
@@ -409,9 +407,7 @@ export class Plane extends OwnableSolidEntity {
       y0 = this.runway.getLandableY();
       for (let y = y0; y < y0 + ly; y += 5) {
         const bullet = new Bullet(
-          this.world.nextID(EntityType.Bullet),
           this.world,
-          this.world.cache,
           x, y,
           0, -4,
           this,
@@ -427,9 +423,7 @@ export class Plane extends OwnableSolidEntity {
       for (let x = x0; x < x0 + lx; x += 5) {
         for (let y = y0; y < y0 + ly; y += 5) {
           const bullet = new Bullet(
-            this.world.nextID(EntityType.Bullet),
             this.world,
-            this.world.cache,
             this.runway.getStartX() + x, this.runway.getStartY() + y,
             0, -4,
             this,
@@ -462,8 +456,8 @@ export class Plane extends OwnableSolidEntity {
   }
 
   private park(paramRunway: Runway): void {
-    this.localX = (paramRunway.getStartX() + this.width / 2) * SCALE_FACTOR;
-    this.localY = ((paramRunway.getStartY() + this.getBottomHeight() / 2 + this.height / 2)) * SCALE_FACTOR;
+    this.localX = (paramRunway.getStartX()) * SCALE_FACTOR;
+    this.localY = ((paramRunway.getStartY() - this.getBottomHeight())) * SCALE_FACTOR -10000;
     if (paramRunway.getDirection() == 0) {
       this.radians = Math.PI;
       this.setFlipped(this.world.cache, true);
@@ -506,8 +500,7 @@ export class Plane extends OwnableSolidEntity {
   }
 
   public getCollisionImage(): BufferedImage {
-    //console.log("get image " + this.imagename + "_rot" + Math.round(this.direction));
-    //console.log("rot: " + Math.round(this.direction), " flip:" + this.flipped);
+    //console.log("get image " + this.imagename + "_rot_" + Math.round(this.direction) + "_flip_" + this.flipped);
     return this.world.getImage(this.imagename + "_rot_" + Math.round(this.direction) + "_flip_" + this.flipped);
   }
 
@@ -609,7 +602,7 @@ export class Plane extends OwnableSolidEntity {
 
 
   private getHeightMultiplier(): number {
-    let d = -(this.localY / SCALE_FACTOR - (570 - this.maxY)) / 150.0;
+    let d = (this.localY / SCALE_FACTOR - (-64966 / 2 + this.maxY)) / 150.0;
     //console.log(d);
     if (d > 1.0) {
       d = 1.0;
@@ -638,7 +631,7 @@ export class Plane extends OwnableSolidEntity {
       d1 = -d1;
     }
 
-    this.radians -= d1;
+    this.radians += d1;
 
     if (this.radians < 0) {
       this.radians += Math.PI * 2;
@@ -646,7 +639,8 @@ export class Plane extends OwnableSolidEntity {
       this.radians -= Math.PI * 2;
     }
 
-    const d2 = GRAVITY * tstep * Math.sin(this.radians);
+    const d2 = GRAVITY * tstep * Math.sin(-this.radians);
+    //console.log(d2);
     this.speed += d2;
 
     if (this.speed < 0) {
@@ -683,6 +677,7 @@ export class Plane extends OwnableSolidEntity {
     }
     const x = Math.round(this.localX / SCALE_FACTOR);
     const y = Math.round(this.localY / SCALE_FACTOR);
+    console.log(x, " | ", y, " \/ ", this.radians, " v ", this.speed);
     this.setData(cache, { x, y });
     this.set(cache, "direction", radiansToDirection(this.radians));
   }
@@ -720,7 +715,7 @@ export class Plane extends OwnableSolidEntity {
     const turnRate = this.turnStep;
     const delta = (this.speed / SCALE_FACTOR / 4) * turnRate * tstep;
     this.radians += delta;
-    if (this.radians >= Math.PI * 2) {
+    while (this.radians >= Math.PI * 2) {
       this.radians -= Math.PI * 2;
     }
   }
@@ -729,7 +724,7 @@ export class Plane extends OwnableSolidEntity {
     const turnRate = this.turnStep;
     const delta = (this.speed / SCALE_FACTOR / 4) * turnRate * tstep;
     this.radians -= delta;
-    if (this.radians < 0) {
+    while (this.radians < 0) {
       this.radians += Math.PI * 2;
     }
   }
@@ -762,10 +757,10 @@ export class Plane extends OwnableSolidEntity {
       this.lastFlip = Date.now();
     }
     //this.steer(deltaTime);
-    if (this.isKeyPressed(GameKey.PLANE_DOWN)) {
+    if (this.isKeyPressed(GameKey.PLANE_UP)) {
       this.steerDown(deltaTime);
     }
-    if (this.isKeyPressed(GameKey.PLANE_UP)) {
+    if (this.isKeyPressed(GameKey.PLANE_DOWN)) {
       this.steerUp(deltaTime);
     }
     if (this.isKeyPressed(GameKey.PLANE_MOTOR) && (this.lastMotorOn + this.motorOnDelay < Date.now()) && this.fuelCounter > 0) {
@@ -793,36 +788,32 @@ export class Plane extends OwnableSolidEntity {
     this.jump(cache, deltaTime, false);
   }
 
-  private jump(cache: Cache, deltaTime: number, frag: boolean = true) {
-    if (this.isKeyPressed(GameKey.PLANE_JUMP) && this.getPlayerInfo().isControlling(this)) {
-      if (frag) this.fraggedBy(null);
-      console.log("plane - jump");
-      let localMan = new Man(
-        this.world.nextID(EntityType.Trooper),
+
+  private shoot(cache: Cache, deltaTime: number) {
+    if (this.isKeyPressed(GameKey.PLANE_SHOOT) && this.lastShot + this.shotDelay < Date.now() && this.getPlayerInfo().getAmmo() > 0) {
+      const bullet = new Bullet(
         this.world,
-        this.world.cache,
-        this.localX / SCALE_FACTOR - this.width / 2,
-        this.localY / SCALE_FACTOR - this.height / 2,
-        this.getPlayerInfo()
+        Math.round(this.localX / SCALE_FACTOR + this.width / 2 + Math.cos((this.radians)) * (this.width / 2 + 2)),
+        Math.round(this.localY / SCALE_FACTOR + this.height / 2 + Math.sin((this.radians)) * (this.height / 2 + 2)),
+        this.radians,
+        this.speed / SCALE_FACTOR,
+        this,
       );
-      this.world.addEntity(localMan);
-      this.getPlayerInfo().setControl(this.world.cache, EntityType.Trooper, localMan.getId());
-      this.setMode(PlaneMode.Falling);
-      this.getPlayerInfo().submitParachute(this, localMan);
-      //TODO clear pressed keys?
+      this.world.addEntity(bullet);
+      this.lastShot = Date.now();
+      this.getPlayerInfo().setAmmo(this.getPlayerInfo().getAmmo() - 1);
     }
   }
+
   private bomb(cache: Cache, deltaTime: number) {
     // add time elapsed to our bomb timer
     if (this.isKeyPressed(GameKey.PLANE_BOMB) && this.lastBomb + this.bombDelay < Date.now() && this.getPlayerInfo().getBombs() > 0) {
       this.setBombs(cache, this.bombs - 1);
 
       const bomb = new Bomb(
-        this.world.nextID(EntityType.Bomb),
         this.world,
-        this.world.cache,
-        Math.round(this.localX / SCALE_FACTOR),
-        Math.round(this.localY / SCALE_FACTOR),
+        Math.round(this.localX / SCALE_FACTOR + this.width / 2),
+        Math.round(this.localY / SCALE_FACTOR + this.height / 2),
         this.direction,
         this.speed / SCALE_FACTOR,
         this,
@@ -838,25 +829,24 @@ export class Plane extends OwnableSolidEntity {
       //bomb.setSpeed(this.world.cache, this.speed);
     }
   }
-  private shoot(cache: Cache, deltaTime: number) {
-    if (this.isKeyPressed(GameKey.PLANE_SHOOT) && this.lastShot + this.shotDelay < Date.now() && this.getPlayerInfo().getAmmo() > 0) {
-      const bullet = new Bullet(
-        this.world.nextID(EntityType.Bullet),
+
+  private jump(cache: Cache, deltaTime: number, frag: boolean = true) {
+    if (this.isKeyPressed(GameKey.PLANE_JUMP) && this.getPlayerInfo().isControlling(this)) {
+      if (frag) this.fraggedBy(null);
+      console.log("plane - jump");
+      let localMan = new Man(
         this.world,
-        this.world.cache,
-        Math.round(this.localX / SCALE_FACTOR + Math.cos((this.radians)) * (this.width / 2 + 2)),
-        Math.round(this.localY / SCALE_FACTOR + Math.sin((this.radians)) * (this.height / 2 + 2)),
-        this.radians,
-        this.speed / SCALE_FACTOR,
-        this,
+        this.localX / SCALE_FACTOR,
+        this.localY / SCALE_FACTOR,
+        this.getPlayerInfo()
       );
-      this.world.addEntity(bullet);
-      this.lastShot = Date.now();
-      this.getPlayerInfo().setAmmo(this.getPlayerInfo().getAmmo() - 1);
+      this.world.addEntity(localMan);
+      this.getPlayerInfo().setControl(this.world.cache, EntityType.Trooper, localMan.getId());
+      this.setMode(PlaneMode.Falling);
+      this.getPlayerInfo().submitParachute(this, localMan);
+      //TODO clear pressed keys?
     }
   }
-
-
   private moveLanded(cache: Cache, deltaTime: number): void {
     const tstep = deltaTime / 1000;
     if (this.isKeyPressed(GameKey.PLANE_MOTOR) && this.lastMotorOn + this.motorOnDelay < Date.now()) {
@@ -900,22 +890,22 @@ export class Plane extends OwnableSolidEntity {
     this.takeoffCounter += 1;
     if (this.takeoffCounter == 65 || this.takeoffCounter == 75) {
       if (this.flipped) {
-        this.steerDown(deltaTime);
+        this.steerUp(deltaTime);
       }
       else {
-        this.steerUp(deltaTime);
+        this.steerDown(deltaTime);
       }
       console.log("takeoff steer");
     }
     if (this.takeoffCounter == 60 || this.takeoffCounter == 70) {
       if (this.flipped) {
-        this.steerDown(deltaTime);
-      }
-      else {
         this.steerUp(deltaTime);
       }
+      else {
+        this.steerDown(deltaTime);
+      }
       console.log("takeoff jump");
-      this.localY += 100;
+      this.localY -= 100;
     }
     if (this.takeoffCounter >= 70) {
       this.setMode(PlaneMode.Flying)
@@ -1056,7 +1046,7 @@ export class Plane extends OwnableSolidEntity {
     if (se.getType() == EntityType.Runway) {
       let localRunway: Runway = se as Runway;
       console.log("HHIITT - Runway");
-      if (this.mode != PlaneMode.Landing && this.localX / SCALE_FACTOR - this.width / 2 > localRunway.getLandableX() && this.localX / SCALE_FACTOR + this.width / 2 < localRunway.getLandableX() + localRunway.getLandableWidth() &&
+      if (this.mode != PlaneMode.Landing && this.localX / SCALE_FACTOR > localRunway.getLandableX() && this.localX / SCALE_FACTOR + this.width < localRunway.getLandableX() + localRunway.getLandableWidth() &&
         !this.motorOn &&
         this.speed < 250 + this.speedModifier &&
         ((!this.flipped && (2 * Math.PI - this.radians < 0.8975979010256552 || 2 * Math.PI - this.radians > 5.385587406153931)) ||
@@ -1155,7 +1145,10 @@ export class Plane extends OwnableSolidEntity {
         //return;
       }
       console.log("plane - obj " + se);
-      this.fraggedBy(null);
+      //if (this.mode != PlaneMode.Falling) 
+      {
+        this.fraggedBy(null);
+      }
       this.explode(null);
     }
   }

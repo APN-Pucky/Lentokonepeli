@@ -10,8 +10,9 @@ export class Hill extends Entity {
   public y: number;
   public terrain: Terrain;
 
-  public constructor(id: number, world: GameWorld, cache: Cache, t_x = 0, t_y = 0, t_subType = Terrain.Normal) {
+  public constructor( world: GameWorld,  t_x = 0, t_y = 0, t_subType = Terrain.Normal,type = EntityType.Hill,id: number = world.nextID(type), cache: Cache  =world.cache, ) {
     super(id, world);
+    this.type = type;
     this.setData(cache, {
       x: t_x,
       y: t_y,

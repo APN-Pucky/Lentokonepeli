@@ -1,17 +1,18 @@
 import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer } from "../constants";
-import { bulletGlobals } from "../../../../dogfight/src/entities/Bullet";
+import { Bullet, bulletGlobals } from "../../../../dogfight/src/entities/Bullet";
+import { spriteSheet } from "../textures";
 
 const bulletColors = [0, 1118481, 3355443, 6316128, 10066329];
 
-export class BulletSprite extends GameSprite {
-  public x: number;
-  public y: number;
-  public clientVX: number;
-  public clientVY: number;
+export class BulletSprite extends GameSprite<Bullet> {
+  //public x: number;
+  //public y: number;
+  //public clientVX: number;
+  //public clientVY: number;
 
-  private spritesheet: PIXI.Spritesheet;
+  //private spritesheet: PIXI.Spritesheet;
 
   private container: PIXI.Container;
 
@@ -23,12 +24,12 @@ export class BulletSprite extends GameSprite {
   private ageRate = Math.round(bulletGlobals.lifetime / 5);
 
   public constructor(spritesheet: PIXI.Spritesheet) {
-    super();
+    super(spriteSheet, Bullet);
 
-    this.x = 0;
-    this.y = 0;
-    this.clientVX = 0;
-    this.clientVY = 0;
+    //this.x = 0;
+    //this.y = 0;
+    //this.clientVX = 0;
+    //this.clientVY = 0;
 
     this.spritesheet = spritesheet;
 
@@ -59,7 +60,7 @@ export class BulletSprite extends GameSprite {
   public redraw(): void {
     this.bullet.clear();
     this.bullet.beginFill(bulletColors[this.bulletColorIndex]);
-    this.bullet.drawRect(this.x, this.y, 2, 2);
+    this.bullet.drawRect(this.entity.x, this.entity.y, 2, 2);
     this.bullet.endFill();
   }
 

@@ -5,13 +5,15 @@ import { Terrain, FacingDirection } from "../../../../dogfight/src/constants";
 import { Coast } from "../../../../dogfight/src/entities/Coast";
 import { WATER_HEIGHT } from "./water";
 import { Water } from "../../../../dogfight/src/entities/Water";
+import { spriteSheet } from "../textures";
+import { GameWorld } from "../../../../dogfight/src/world/world";
 
-export class CoastSprite extends GameSprite {
-  public x: number;
-  public y: number;
-  public subType: number;
+export class CoastSprite extends GameSprite<Coast> {
+  //public x: number;
+  //public y: number;
+  //public subType: number;
 
-  private spritesheet: PIXI.Spritesheet;
+  //private spritesheet: PIXI.Spritesheet;
 
   private container: PIXI.Container;
 
@@ -21,12 +23,12 @@ export class CoastSprite extends GameSprite {
   private water: PIXI.Graphics;
   //private towerWidth: number;
 
-  public constructor(spritesheet: PIXI.Spritesheet) {
-    super();
+  public constructor(spritesheet: PIXI.Spritesheet, world: GameWorld = new GameWorld(spriteSheet.textures)) {
+    super(spriteSheet, Coast, world);
 
-    this.x = 0;
-    this.y = 0;
-    this.subType = 0;
+    //this.x = 0;
+    //this.y = 0;
+    //this.subType = 0;
     this.color = WaterColor.Normal;
     //this.direction = FacingDirection.Right;
 
@@ -36,7 +38,7 @@ export class CoastSprite extends GameSprite {
     this.water = new PIXI.Graphics();
     const tex: PIXI.Texture = spritesheet.textures["beach-l.gif"];
     this.beach = new PIXI.Sprite(tex);
-    this.beach.position.y = -tex.height;
+    //this.beach.position.y = -tex.height;
 
     this.container.addChild(this.water);
     this.container.addChild(this.beach);
@@ -47,7 +49,7 @@ export class CoastSprite extends GameSprite {
 
   public redraw(): void {
     // orient properly
-    if (this.subType == 1 || this.subType == 3) {
+    if (this.entity.subType == 1 || this.entity.subType == 3) {
       this.beach.scale.x = -1;
       this.beach.position.x = this.container.width;
       //this.beach.position.x = 0;
@@ -57,7 +59,7 @@ export class CoastSprite extends GameSprite {
     }
     // update terrain
     let tex: string;
-    switch (this.subType) {
+    switch (this.entity.subType) {
       case 0:
         tex = "beach-l.gif";
         break;
@@ -86,12 +88,16 @@ export class CoastSprite extends GameSprite {
 
     ///*
     // center tower
+    /*
     const halfWidth = Math.round(this.container.width / 2);
-    this.container.x = this.x - halfWidth;
+    this.container.x = this.entity.x - halfWidth;
 
     // update height
     const offset = 5;
-    this.container.position.y = this.y + Math.round(this.container.height / 2);
+    this.container.position.y = this.entity.y + Math.round(this.container.height / 2);
+    */
+    this.container.x = this.entity.x;
+    this.container.y = this.entity.y;
     //this.container.position.x = this.x;
     //*/
 
@@ -99,7 +105,7 @@ export class CoastSprite extends GameSprite {
     this.water.y = 0;
     this.water.clear();
     this.water.beginFill(this.color);
-    this.water.drawRect(0, 0, this.beach.texture.width, WATER_HEIGHT);
+    this.water.drawRect(0, this.container.height, this.beach.texture.width, WATER_HEIGHT);
     this.water.endFill();
     //*/
   }

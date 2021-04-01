@@ -16,7 +16,7 @@ export class Rectangle {
 
   public body(): RectangleBody {
     return {
-      center: { x: this.x, y: this.y },
+      center: { x: this.x + this.width / 2, y: this.y + this.height / 2 },
       direction: 0,
       height: this.height,
       width: this.width
@@ -27,19 +27,32 @@ export class Rectangle {
   }
   public getWidth() {
     return this.width;
+  }
+  /*
+    public getMinX() {
+      return this.x - this.width / 2;
     }
-
+    public getMaxX() {
+      return this.x + this.width / 2;
+    }
+    public getMinY() {
+      return this.y - this.height / 2;
+    }
+    public getMaxY() {
+      return this.y + this.height / 2;
+    }
+    */
   public getMinX() {
-    return this.x - this.width / 2;
+    return this.x;
   }
   public getMaxX() {
-    return this.x + this.width / 2;
+    return this.x + this.width;
   }
   public getMinY() {
-    return this.y - this.height / 2;
+    return this.y;
   }
   public getMaxY() {
-    return this.y + this.height / 2;
+    return this.y + this.height;
   }
 
   public intersects(r: Rectangle): boolean {
@@ -53,7 +66,8 @@ export class Rectangle {
     const x2 = Math.min(this.getMaxX(), r.getMaxX());
     const y2 = Math.min(this.getMaxY(), r.getMaxY());
 
-    return new Rectangle(x1 + (x2 - x1) / 2, y1 + (y2 - y1) / 2, x2 - x1, y2 - y1);
+    //return new Rectangle(x1 + (x2 - x1) / 2, y1 + (y2 - y1) / 2, x2 - x1, y2 - y1);
+    return new Rectangle(x1, y1, x2 - x1, y2 - y1);
   }
 }
 /**

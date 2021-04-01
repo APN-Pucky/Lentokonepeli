@@ -88,10 +88,11 @@ export async function loadImages(path = "./dist/assets/images/images.png") {
     const image2 = main_image.clone(); //await jimp.read(path);
     image2.crop(info.x, info.y, info.w, info.h)
       //.flip(false, true)
-      .autocrop()
+      //.autocrop()
       ;
     //if (["runway.gif", "runway2.gif"].indexOf(key) >= 0) image2.flip(false, true)
     images[key] = new BufferedImage(Buffer.from(image2.bitmap.data), { w: image2.bitmap.width, h: image2.bitmap.height });
+
     /*
      images[key] = new BufferedImage(await sharp("./dist/assets/images/images.png")
        .ensureAlpha()
@@ -107,7 +108,8 @@ export async function loadImages(path = "./dist/assets/images/images.png") {
     })
 
     if (key.startsWith("beach-l")) {
-      images[key.replace("beach-l", "beach-r")] = image2.clone().flip(true, false);
+      let tmpi = image2.clone().flip(true, false);
+      images[key.replace("beach-l", "beach-r")] = new BufferedImage(Buffer.from(tmpi.bitmap.data), { w: tmpi.bitmap.width, h: tmpi.bitmap.height})
     }
 
     //image3 = image3.crop(info.x, info.y, info.w, info.h);

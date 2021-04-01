@@ -29,13 +29,14 @@ export class ImportantBuilding extends SolidEntity {
 
   private localhealth = HEALTH_MAX;
 
-  public constructor(id: number, world: GameWorld, cache: Cache, x: number, y: number, team: number, buildingType: number) {
+  public constructor(world: GameWorld, team: number = 0, buildingType: number = 0, x: number = 0, y: number = 0, type: EntityType = EntityType.ImportantBuilding, id: number = world.nextID(type), cache: Cache = world.cache) {
     super(id, world, team);
+    this.type = type;
     this.image = [world.getImage("headquarter_germans.gif"), world.getImage("headquarter_raf.gif")];
     this.imageWidth = [this.image[0].width, this.image[1].width];
     this.imageHeight = [this.image[0].height, this.image[1].height];
     this.localhealth = HEALTH_MAX;
-    this.setData(cache, {
+    this.setData(world.cache, {
       x: x,
       y: y,
       buildingType: buildingType, //FacingDirection.Right,
@@ -43,8 +44,8 @@ export class ImportantBuilding extends SolidEntity {
       health: 255
     });
     //console.log(this.getCollisionBounds());
-
   }
+
 
   public getImageWidth(paramInt: number): number {
     return this.imageWidth[paramInt];
@@ -141,6 +142,7 @@ export class ImportantBuilding extends SolidEntity {
   }
 
 
+
   public getState(): CacheEntry {
     console.log("got ib")
     return {
@@ -151,6 +153,20 @@ export class ImportantBuilding extends SolidEntity {
       health: this.health,
       team: this.team
     };
+  }
+
+  public static getImage(world: GameWorld, i: number) {
+    if (i == 0)
+      return world.getImage("headquarter_germans.gif")
+    if (i == 1)
+      return world.getImage("headquarter_raf.gif")
+    return null;
+  }
+  public static getImageWidth(world: GameWorld, i: number): number {
+    return ImportantBuilding.getImage(world, i).width;
+  }
+  public static getImageHeight(world: GameWorld, i: number): number {
+    return ImportantBuilding.getImage(world, i).height;
   }
 }
 

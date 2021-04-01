@@ -1,6 +1,6 @@
 import { Cache } from "../network/cache";
 import { PlayerInfo, PlayerStatus } from "../entities/PlayerInfo";
-import { Flag } from "../entities/flag";
+import { Flag } from "../entities/Flag";
 import { Bullet } from "../entities/Bullet";
 import { Bomb } from "../entities/Bomb";
 import { Ground } from "../entities/Ground";
@@ -168,7 +168,7 @@ export class GameWorld {
    * and returns the information.
    */
   public addPlayer(team: Team): PlayerInfo {
-    const player = new PlayerInfo(this.nextID(EntityType.Player), this, this.cache);
+    const player = new PlayerInfo(this);
     player.set(this.cache, "team", team);
     this.addEntity(player);
     return player;
@@ -194,9 +194,7 @@ export class GameWorld {
 
   public createExplosion(x: number, y: number, o: Ownable): void {
     const explosion = new Explosion(
-      this.nextID(EntityType.Explosion),
       this,
-      this.cache,
       o,
       x,
       y

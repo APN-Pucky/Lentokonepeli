@@ -14,8 +14,9 @@ export class Water extends SolidEntity {
   public width: number;
   public subType: number;
 
-  public constructor(id: number, world: GameWorld, cache: Cache, t_x: number = 0, t_y: number = 0, t_width: number = 30000, t_subType: number = FacingDirection.Right) {
+  public constructor(world: GameWorld, t_x: number = 0, t_y: number = 0, t_width: number = 30000, t_subType: number = FacingDirection.Right, type = EntityType.Water, id: number = world.nextID(type), cache: Cache = world.cache,) {
     super(id, world, -1);
+    this.type = type;
     this.setData(cache, {
       x: t_x,
       y: t_y,
@@ -25,7 +26,7 @@ export class Water extends SolidEntity {
   }
 
   public getCollisionBounds(): Rectangle {
-    return new Rectangle(this.x, this.y + 5 - 50, this.width, 100);
+    return new Rectangle(this.x, this.y + 5 , this.width, 100);
   }
 
   public getState(): CacheEntry {

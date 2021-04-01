@@ -3,22 +3,22 @@ export const PANEL_HEIGHT = 150;
 export const WAVE_PHASE_TIME = 200; // Milliseconds
 
 export enum DrawLayer {
-  Hill = -120,
-  Water = -100,
-  Flag = -70,
-  ControlTower = -60,
-  Ground = -50,
-  Coast = -50,
-  RunwayBack = -10,
-  LightSmoke = -7,
-  Plane = -5,
-  DarkSmoke = -3,
-  Runway = 0,
-  Trooper = 5,
-  Explosion = 50,
-  Bomb = 60,
-  Bullet = 69,
-  Player = 100
+  Hill = 5,
+  Water = 10,
+  Flag = 6,
+  ControlTower = 6,
+  Ground = 7,
+  Coast = 11,
+  RunwayBack = 55,
+  LightSmoke = 10,
+  Plane = 56,
+  DarkSmoke = 10,
+  Runway = 55,
+  Trooper = 56,
+  Explosion = 10,
+  Bomb = 10,
+  Bullet = 10,
+  Player = 0
 }
 
 export enum GameScreen {

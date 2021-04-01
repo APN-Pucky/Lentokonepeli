@@ -29,6 +29,7 @@ export class Bomb extends OwnableSolidEntity {
   public y: number;
   public droppedBy: number; // ID of player who dropped it
   public team: Team; // team of player who dropped it
+  public direction: number;
 
   public image;
   public width;
@@ -41,8 +42,19 @@ export class Bomb extends OwnableSolidEntity {
   public filename = "bomb.gif";
   //public direction: number;
 
-  public constructor(id: number, world: GameWorld, cache: Cache, x: number, y: number, direction: number, speed: number, origin: OwnableSolidEntity) {
-    super(id, world, origin.getTeam());
+  public constructor(
+    world: GameWorld,
+    x: number,
+    y: number,
+    direction: number,
+    speed: number,
+    origin: OwnableSolidEntity = null,
+    type = EntityType.Bomb,
+    id: number = world.nextID(type),
+    cache: Cache = world.cache,) {
+
+    super(id, world, origin == null ? -1 : origin.getTeam());
+    this.type = type;
     //this.radians = directionToRadians(direction);
     this.setDirection(cache, direction);
     //this.localX = x * SCALE_FACTOR;
@@ -54,9 +66,15 @@ export class Bomb extends OwnableSolidEntity {
     this.origin = origin;
 
     // shift position by bomb width/height
+    /*
     this.setPos(cache,
       x - Math.cos(this.radians) * this.width / 2 - Math.sin(this.radians) * this.height / 2,
       y - Math.sin(this.radians) * this.width / 2 + Math.cos(this.radians) * this.height / 2);
+    */
+    this.setPos(cache,
+      x ,
+      y );
+
 
 
     this.setData(cache, {
@@ -64,8 +82,8 @@ export class Bomb extends OwnableSolidEntity {
       x: x,
       y: y,
       direction: direction,
-      droppedBy: origin.getPlayerInfo().id,
-      team: origin.getTeam()
+      droppedBy: origin == null ? -1 : origin.getPlayerInfo().id,
+      team: origin == null ? -1 : origin.getTeam()
     });
   }
   public getPlayerInfo(): PlayerInfo {
@@ -137,7 +155,7 @@ export class Bomb extends OwnableSolidEntity {
     this.localX += this.xSpeed * tstep * SCALE_FACTOR;
     this.localY += this.ySpeed * tstep * SCALE_FACTOR;
     this.xSpeed -= this.xSpeed * xDelta;
-    this.ySpeed -= yDelta;
+    this.ySpeed += yDelta;
     this.radians = Math.atan2(this.ySpeed, this.xSpeed);
 
     this.setData(cache, {

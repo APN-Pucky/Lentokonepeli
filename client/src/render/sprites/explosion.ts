@@ -1,27 +1,28 @@
 import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer } from "../constants";
-import { explosionGlobals } from "../../../../dogfight/src/entities/Explosion";
+import { Explosion, explosionGlobals } from "../../../../dogfight/src/entities/Explosion";
+import { spriteSheet } from "../textures";
 
 const ANIMATION_DURATION = 500;
 
-export class ExplosionSprite extends GameSprite {
-  public x: number;
-  public y: number;
+export class ExplosionSprite extends GameSprite<Explosion> {
+  //public x: number;
+  //public y: number;
 
   private container: PIXI.Container;
-  private spritesheet: PIXI.Spritesheet;
+  //private spritesheet: PIXI.Spritesheet;
   private explosion: PIXI.Sprite;
   private phase: number;
   private timeout: number;
   private animating: boolean = false;
-  private debug: PIXI.Graphics;
+  //private debug: PIXI.Graphics;
 
   public constructor(spritesheet: PIXI.Spritesheet) {
-    super();
+    super(spriteSheet, Explosion);
 
-    this.x = 0;
-    this.y = 0;
+    //this.x = 0;
+    //this.y = 0;
 
     this.spritesheet = spritesheet;
     this.phase = 1;
@@ -47,7 +48,7 @@ export class ExplosionSprite extends GameSprite {
     this.debug.clear();
     this.debug.lineStyle(1);
     this.debug.beginFill(0xffa500, 0.5);
-    this.debug.drawCircle(this.x, this.y, explosionGlobals.radius);
+    this.debug.drawCircle(this.entity.x, this.entity.y, explosionGlobals.radius);
     this.debug.endFill();
   }
 
@@ -71,7 +72,7 @@ export class ExplosionSprite extends GameSprite {
   }
 
   public redraw(): void {
-    this.explosion.position.set(this.x, this.y);
+    this.explosion.position.set(this.entity.x, this.entity.y);
     this.drawDebug();
     if (!this.animating) {
       this.animating = true;

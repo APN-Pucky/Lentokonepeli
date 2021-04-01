@@ -2,30 +2,32 @@ import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer } from "../constants";
 import { Team } from "../../../../dogfight/src/constants";
+import { spriteSheet } from "../textures";
+import { Flag } from "../../../../dogfight/src/entities/Flag";
 
 const FLAG_STR = "flag_TEAM_N.gif";
 
 const FLAG_PHASE_TIME = 256; // milliseconds
 
-export class FlagSprite extends GameSprite {
-  public x: number;
-  public y: number;
-  public team: number;
+export class FlagSprite extends GameSprite<Flag> {
+  //public x: number;
+  //public y: number;
+  //public team: number;
 
   private container: PIXI.Container;
-  private spritesheet: PIXI.Spritesheet;
+  //private spritesheet: PIXI.Spritesheet;
   private flag: PIXI.Sprite;
   private phase: number;
   private interval: number;
 
   public constructor(spritesheet: PIXI.Spritesheet) {
-    super();
+    super(spriteSheet, Flag);
 
-    this.x = 0;
-    this.y = 0;
-    this.team = Team.Centrals;
+    //this.x = 0;
+    //this.y = 0;
+    //this.team = Team.Centrals;
 
-    this.spritesheet = spritesheet;
+    //this.spritesheet = spritesheet;
     this.phase = 1;
 
     const tex = this.getTextureString();
@@ -35,7 +37,6 @@ export class FlagSprite extends GameSprite {
     this.container.zIndex = DrawLayer.Flag;
 
     this.flag = new PIXI.Sprite(texture);
-    this.flag.position.y = -Math.round(texture.height / 2) - 10;
 
     // start animation
     this.interval = window.setInterval((): void => {
@@ -53,7 +54,7 @@ export class FlagSprite extends GameSprite {
   }
 
   private getTextureString(): string {
-    const side = this.team == Team.Centrals ? "ger" : "raf";
+    const side = this.entity.team == Team.Centrals ? "ger" : "raf";
     return FLAG_STR.replace("TEAM", side).replace("N", this.phase.toString());
   }
 
@@ -62,12 +63,16 @@ export class FlagSprite extends GameSprite {
     this.flag.texture = this.spritesheet.textures[tex];
 
     // center on x
+    /*
     const halfWidth = Math.round(this.container.width / 2);
-    this.container.x = this.x - halfWidth;
+    this.container.x = this.entity.x - halfWidth;
 
     // update height
     const offset = 25;
-    this.container.position.y = -this.y - offset;
+    this.container.position.y = -this.entity.y - offset;
+    */
+    this.container.x = this.entity.x;
+    this.container.y = this.entity.y;
   }
 
   public destroy(): void {

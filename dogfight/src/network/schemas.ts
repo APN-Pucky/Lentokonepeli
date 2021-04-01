@@ -5,7 +5,7 @@ import { Plane, planeSchema } from "../entities/Plane";
 import { bombSchema } from "../entities/Bomb";
 import { bulletSchema } from "../entities/Bullet";
 import { explosionSchema } from "../entities/Explosion";
-import { flagSchema } from "../entities/flag";
+import { flagSchema } from "../entities/Flag";
 import { hillSchema } from "../entities/Hill";
 import { trooperSchema } from "../entities/Man";
 import { playerSchema } from "../entities/PlayerInfo";

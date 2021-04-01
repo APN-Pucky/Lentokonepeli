@@ -2,19 +2,20 @@ import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer, WaterColor } from "../constants";
 import { FacingDirection } from "../../../../dogfight/src/constants";
-import { getWaterRect } from "../../../../dogfight/src/entities/Water";
+import { getWaterRect, Water } from "../../../../dogfight/src/entities/Water";
+import { spriteSheet } from "../textures";
 
 const WAVE_PHASE_TIME = 200; // Milliseconds
 export const WATER_HEIGHT = 10000;
 const WAVE_TEXTURE_STR = "wave-l_N.gif";
 
-export class WaterSprite extends GameSprite {
-  public x: number;
-  public y: number;
-  public width: number;
-  public subType: number;
+export class WaterSprite extends GameSprite<Water> {
+  //public x: number;
+  //public y: number;
+  //public width: number;
+  //public subType: number;
 
-  private spritesheet: PIXI.Spritesheet;
+  //private spritesheet: PIXI.Spritesheet;
 
   private container: PIXI.Container;
   private water: PIXI.Graphics;
@@ -23,15 +24,16 @@ export class WaterSprite extends GameSprite {
   private color: WaterColor;
   private wavePhase: number;
   private windowInterval: number;
-  private debug: PIXI.Graphics;
+  //private debug: PIXI.Graphics;
 
   public constructor(spritesheet: PIXI.Spritesheet) {
-    super();
+    super(spriteSheet, Water);
+    this.debugcolor = 0x00ff00;
 
-    this.x = 0;
-    this.y = 0;
-    this.width = 500;
-    this.subType = FacingDirection.Right;
+    //this.x = 0;
+    //this.y = 0;
+    //this.width = 500;
+    //this.subType = FacingDirection.Right;
 
     this.color = WaterColor.Normal;
     this.wavePhase = 1;
@@ -75,18 +77,18 @@ export class WaterSprite extends GameSprite {
   }
 
   public redraw(): void {
-    if (this.subType == 2 || this.subType == 3) {
+    if (this.entity.subType == 2 || this.entity.subType == 3) {
       this.color = WaterColor.Desert
     }
     // create water
     this.water.clear();
     this.water.beginFill(this.color);
-    this.water.drawRect(0, 0, this.width, WATER_HEIGHT);
+    this.water.drawRect(0, 0, this.entity.width, WATER_HEIGHT);
     this.water.endFill();
-    this.waves.width = this.width;
+    this.waves.width = this.entity.width;
 
     // set wave directions
-    if (this.subType == 1 || this.subType == 2) {
+    if (this.entity.subType == 1 || this.entity.subType == 2) {
       this.waves.scale.x = -1;
       this.waves.position.x = this.waves.width;
     }
@@ -97,16 +99,19 @@ export class WaterSprite extends GameSprite {
 
 
     // center water.
+    /*
     const halfWidth = Math.round(this.container.width / 2);
-    this.container.x = this.x - halfWidth;
+    this.container.x = this.entity.x - halfWidth;
+    */
+    this.container.x = this.entity.x;
 
     // set water y-offset
-    this.container.y = this.y;
+    this.container.y = this.entity.y;
     this.drawDebug();
   }
 
   private drawDebug(): void {
-    const rect = getWaterRect(this.x, -this.y, this.width);
+    const rect = getWaterRect(this.entity.x, -this.entity.y, this.entity.width);
     this.debug.clear();
     this.debug.beginFill(0x0000ff);
     const halfW = rect.width / 2;

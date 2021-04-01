@@ -294,7 +294,7 @@ export class GameRenderer {
       this.HUD.radar.centerCamera(x, y);
     }
     const canvasWidth = this.pixiApp.screen.width;
-    const pos = toPixiCoords({ x: -x, y: -y });
+    const pos = toPixiCoords({ x: -x, y: +y });
     pos.x += Math.round(canvasWidth / 2);
     pos.y += Math.round(canvasHeight / 2);
     this.setCamera(pos.x, pos.y);

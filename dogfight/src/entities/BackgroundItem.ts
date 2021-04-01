@@ -12,8 +12,9 @@ export class BackgroundItem extends Entity {
   public y: number;
   public subType: FacingDirection;
 
-  public constructor(id: number, world: GameWorld, cache: Cache, t_x = 0, t_y = 0, t_subType = 0) {
+  public constructor(world: GameWorld, t_x = 0, t_y = 0, t_subType = 0,type = EntityType.BackgroundItem,id: number = world.nextID(type), cache: Cache  =world.cache, ) {
     super(id, world);
+    this.type = type;
     this.setData(cache, {
       x: t_x,
       y: t_y,

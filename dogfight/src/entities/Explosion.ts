@@ -35,12 +35,20 @@ export class Explosion extends OwnableSolidEntity {
   // Hash table to keep track of entities this has affected
   public affectedObjects = {};
 
-  public constructor(id: number, world: GameWorld, cache: Cache, o: Ownable, x: number, y: number) {
-    super(id, world, o.getPlayerInfo().getTeam());
-    this.playerInfo = o.getPlayerInfo();
+  public constructor(
+    world: GameWorld,
+    o: Ownable = null,
+    x: number = 0,
+    y: number = 0,
+    type = EntityType.Explosion,
+    id: number = world.nextID(type),
+    cache: Cache = world.cache,) {
+    super(id, world, o == null ? -1 : o.getPlayerInfo().getTeam());
+    this.type = type;
+    this.playerInfo = o == null ? null : o.getPlayerInfo();
     this.image = world.getImage("explosion0004.gif");
-    this.setTeam(cache, this.playerInfo.getTeam())
-    this.setPlayerID(cache, this.playerInfo.getId())
+    this.setTeam(cache, this.playerInfo == null ? -1 : this.playerInfo.getTeam())
+    this.setPlayerID(cache, this.playerInfo == null ? -1 : this.playerInfo.getId())
     this.setData(cache, {
       x,
       y,

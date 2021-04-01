@@ -62,24 +62,32 @@ function updateCollisions(): void {
     bullet.sprite.scale.set(1);
   }
 
-  let ccoast = new Coast(1000, gw, gw.cache, coast.x, -coast.y, coast.subType);
-  let iib = new ImportantBuilding(1200, gw, gw.cache, ib.x, -ib.y, 0, ib.buildingType);
-  let pi = new PlayerInfo(2, gw, gw.cache);
-  let p = new Plane(0, gw, gw.cache, plane.planeType, pi, 1, null);
-  p.setPos(gw.cache, plane.x, -plane.y);
-  p.setDirection(gw.cache, plane.direction);
-  p.setFlipped(gw.cache, plane.flipped);
-  let b = new Bullet(1, gw, gw.cache, bullet.position.x, -bullet.position.y, 0, 0, p);
-  let t = new Man(1, gw, gw.cache, trooper.x, -trooper.y, pi);
-  t.setState(gw.cache, trooper.state)
-  let r = new Runway(4, gw, gw.cache, 0, runway.x, -runway.y, runway.direction);
-  if (p.checkCollisionWith2(b) || p.checkCollisionWith2(t) || t.checkCollisionWith2(b)
-    || b.checkCollisionWith2(r)
-    || p.checkCollisionWith2(r) || t.checkCollisionWith2(r)
-    || p.checkCollisionWith2(ccoast)
-    || iib.checkCollisionWith2(t)) {
-    bullet.sprite.scale.set(2);
-    //console.log("hit");
+  //let ccoast = new Coast(gw, coast.x, coast.y, coast.subType);
+  //let iib = new ImportantBuilding(gw, ib.x, ib.y, 0, ib.buildingType);
+  //let pi = new PlayerInfo(gw);
+  //let p = new Plane(gw, plane.planeType, pi, 1, null);
+  plane.entity.planeType = plane.planeType;
+  plane.entity.setPos(gw.cache, plane.x, plane.y);
+  plane.entity.setDirection(gw.cache, plane.direction);
+  plane.entity.setFlipped(gw.cache, plane.flipped);
+  let b = new Bullet(gw, bullet.position.x, bullet.position.y, 0, 0, null);
+  //let t = new Man(gw, trooper.x, trooper.y, pi);
+  //t.setState(gw.cache, trooper.state)
+  //let r = new Runway(gw, 0, runway.x, runway.y, runway.direction);
+  //console.log("b ", ib.entity.getCollisionBounds())
+  //console.log("r ", runway.entity.getCollisionBounds())
+  if (
+    ib.entity.getCollisionBounds().intersects(runway.entity.getCollisionBounds()) ||
+    //plane.entity.checkCollisionWith2(b) || plane.entity.checkCollisionWith2(trooper.entity)  ||
+    trooper.entity.checkCollisionWith2(b) ||
+    trooper.entity.checkCollisionWith2(coast.entity) ||
+    b.checkCollisionWith2(runway.entity) ||
+    // plane.entity.checkCollisionWith2(runway.entity) || 
+    trooper.entity.checkCollisionWith2(runway.entity) ||
+    // plane.entity.checkCollisionWith2(coast.entity) ||
+    ib.entity.checkCollisionWith2(trooper.entity)) {
+    bullet.sprite.scale.set(5);
+    console.log("hit");
   }
   else {
     bullet.sprite.scale.set(1);
@@ -92,16 +100,16 @@ function addRenderable(container: PIXI.Container): void {
   app.stage.addChild(container);
 }
 
-function init(): void {
+function init(gw: GameWorld): void {
   document.body.appendChild(app.view);
-  runway = new dragrunway(spriteSheet);
-  trooper = new dragtrooper(spriteSheet);
-  plane = new dragplane(spriteSheet);
+  runway = new dragrunway(spriteSheet, gw);
+  trooper = new dragtrooper(spriteSheet, gw);
+  plane = new dragplane(spriteSheet, gw);
   plane.flipped = false;
   plane.direction = 0 * 64 / 2 + 0 * 64;
   plane.setDirection();
-  coast = new CoastSprite(spriteSheet);
-  ib = new ImportantBuildingSprite(spriteSheet);
+  coast = new CoastSprite(spriteSheet, gw);
+  ib = new ImportantBuildingSprite(spriteSheet, gw);
   for (const a of coast.renderables) { addRenderable(a) }
 
   //addRenderable(rect1.getContainer());
@@ -116,18 +124,33 @@ function init(): void {
     addRenderable(a);
     //break;
   }
+  for (const a of trooper.renderablesDebug) {
+    addRenderable(a);
+    //break;
+  }
   for (const a of runway.renderables) {
+    addRenderable(a);
+    //break;
+  }
+  for (const a of runway.renderablesDebug) {
+    addRenderable(a);
+    //break;
+  }
+  for (const a of coast.renderablesDebug) {
     addRenderable(a);
     //break;
   }
   for (const a of ib.renderables) {
     addRenderable(a);
   }
+  for (const a of ib.renderablesDebug) {
+    addRenderable(a);
+  }
   plane.update({ planeType: PlaneType.Salmson });
   trooper.update({ state: TrooperState.Parachuting });
   runway.update({ direction: 1 });
-  coast.update({ x: 250, y: -100, subType: 2 });
-  ib.update({ x: 350, y: -100, buildingType: 1 });
+  coast.update({ x: 250, y: 100, subType: 1 });
+  ib.update({ x: 350, y: 100, buildingType: 2 });
   plane.setCollisionCallback(updateCollisions);
   trooper.setCollisionCallback(updateCollisions);
   //rect1.setCollisionCallback(updateCollisions);
@@ -140,8 +163,8 @@ function init(): void {
 window.addEventListener("load", (): void => {
   loadSpriteSheet((): void => {
     loadImages("./assets/images/images.png").then((i) => {
-      init();
       gw = new GameWorld(i);
+      init(gw);
     });
   });
 });

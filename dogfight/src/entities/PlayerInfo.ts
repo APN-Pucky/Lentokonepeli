@@ -57,8 +57,9 @@ export class PlayerInfo extends Entity {
     .map(() => new Array(2)
       .fill(0));
 
-  public constructor(id: number, world: GameWorld, cache: Cache) {
+  public constructor( world: GameWorld,type = EntityType.Player,id: number = world.nextID(type), cache: Cache  =world.cache, ) {
     super(id, world);
+    this.type = type;
     this.name = "Player_" + this.id;
     this.controlType = EntityType.None;
     this.controlID = 0;

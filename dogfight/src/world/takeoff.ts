@@ -64,9 +64,7 @@ export function doTakeoff(world: GameWorld, takeoff: TakeoffEntry): void {
     console.log("reservation done");
     // create plane
     const plane = new Plane(
-      world.nextID(EntityType.Plane),
       world,
-      world.cache,
       takeoff.request.plane,
       player,
       player.team,

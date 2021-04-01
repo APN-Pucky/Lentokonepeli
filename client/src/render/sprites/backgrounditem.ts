@@ -2,13 +2,15 @@ import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer } from "../constants";
 import { Terrain, FacingDirection } from "../../../../dogfight/src/constants";
+import { BackgroundItem } from "../../../../dogfight/src/entities/BackgroundItem";
+import { spriteSheet } from "../textures";
 
-export class BackgroundItemSprite extends GameSprite {
-  public x: number;
-  public y: number;
-  public subType: number;
+export class BackgroundItemSprite extends GameSprite<BackgroundItem> {
+  //public x: number;
+  //public y: number;
+  //public subType: number;
 
-  private spritesheet: PIXI.Spritesheet;
+  //private spritesheet: PIXI.Spritesheet;
 
   private container: PIXI.Container;
 
@@ -16,11 +18,11 @@ export class BackgroundItemSprite extends GameSprite {
 
 
   public constructor(spritesheet: PIXI.Spritesheet) {
-    super();
+    super(spriteSheet, BackgroundItem);
 
-    this.x = 0;
-    this.y = 0;
-    this.subType = 0;
+    //this.x = 0;
+    //this.y = 0;
+    //this.subType = 0;
 
     this.spritesheet = spritesheet;
 
@@ -39,10 +41,10 @@ export class BackgroundItemSprite extends GameSprite {
   public redraw(): void {
     // update tex
     let tex: string;
-    if (this.subType < 2) {
+    if (this.entity.subType < 2) {
       tex = "controlTower.gif"
     }
-    else if (this.subType < 4) {
+    else if (this.entity.subType < 4) {
       tex = "controlTowerDesert.gif"
     }
     else {
@@ -53,21 +55,20 @@ export class BackgroundItemSprite extends GameSprite {
 
 
     // orient properly
-    if (this.subType % 2 == 1) {
+    if (this.entity.subType % 2 == 1) {
       this.tower.scale.x = -1;
       this.tower.position.x = this.tower.texture.width;
     } else {
       this.tower.scale.x = 1;
       this.tower.position.x = 0;
     }
-    this.tower.position.y = -this.tower.texture.height;
+    //this.tower.position.y = -this.tower.texture.height;
     // center tower
     const halfWidth = Math.round(this.container.width / 2);
-    this.container.x = this.x - halfWidth;
+    this.container.x = this.entity.x - halfWidth;
 
     // update height
-    const offset = 5;
-    this.container.position.y = -this.y + offset;
+    this.container.position.y = this.entity.y - this.container.height;
   }
 
   public destroy(): void {
