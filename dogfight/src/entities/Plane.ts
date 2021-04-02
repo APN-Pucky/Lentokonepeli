@@ -202,7 +202,7 @@ const SKY_HEIGHT = 500;
 
 // Plane physics variables
 const AIR_RESISTANCE = 1.0;
-const GRAVITY = -600; // per seecond, sign switched to negative
+const GRAVITY = 600; // per seecond, sign switched to negative
 // I think the y direction is reversed in the original
 // TODO: convert to mathematical calculation based on scale
 const GRAVITY_PULL = 4.908738521234052; // per second
@@ -352,6 +352,8 @@ export class Plane extends OwnableSolidEntity {
 
     this.imagename = frameTextureString[FrameStatus.Normal].replace("X", planeImageIDs[kind].toString());
     this.image = world.getImage(this.imagename);
+    this.width = this.image.width;
+    this.height = this.image.height;
 
     this.runway = runway;
 
@@ -457,7 +459,8 @@ export class Plane extends OwnableSolidEntity {
 
   private park(paramRunway: Runway): void {
     this.localX = (paramRunway.getStartX()) * SCALE_FACTOR;
-    this.localY = ((paramRunway.getStartY() - this.getBottomHeight())) * SCALE_FACTOR -10000;
+    console.log(" sy : " + paramRunway.getStartY())
+    this.localY = ((paramRunway.getStartY() - this.getBottomHeight())) * SCALE_FACTOR;
     if (paramRunway.getDirection() == 0) {
       this.radians = Math.PI;
       this.setFlipped(this.world.cache, true);
@@ -493,8 +496,11 @@ export class Plane extends OwnableSolidEntity {
   }
 
   public getCollisionBounds(): Rectangle {
+    /*
     let tmp = this.getCollisionImage();
     let r = new Rectangle(this.localX / SCALE_FACTOR, this.localY / SCALE_FACTOR, tmp.width, tmp.height);
+    */
+    let r = new Rectangle(this.localX / SCALE_FACTOR, this.localY / SCALE_FACTOR, this.width, this.height);
     //console.log(r);
     return r;
   }
@@ -511,7 +517,7 @@ export class Plane extends OwnableSolidEntity {
       //int[] arrayOfInt = this.image.getRGB(0, 0, this.image.getWidth(), this.image.getHeight(), null, 0, this.image.getHeight());
       for (let i = this.image.height - 1; i >= 0; i--) {
         for (let j = 0; j < this.image.width; j++) {
-          if (arrayOfInt[(i * this.image.width + j)] < 0) {
+          if (arrayOfInt[4 * (i * this.image.width + j) + 3] == 255) {
             this.bottomHeight = (i + 1);
             return this.bottomHeight;
           }
@@ -533,6 +539,7 @@ export class Plane extends OwnableSolidEntity {
     //this.setDirection(cache, (this.direction + 1) % 256);
     //this.checkCollision();
     //return;
+    //console.log("|");
     if (this.prevmode != this.mode) {
       console.log("plane mode: " + this.mode);
       this.prevmode = this.mode;
@@ -602,7 +609,7 @@ export class Plane extends OwnableSolidEntity {
 
 
   private getHeightMultiplier(): number {
-    let d = (this.localY / SCALE_FACTOR - (-64966 / 2 + this.maxY)) / 150.0;
+    let d = (this.localY / SCALE_FACTOR - (-569 + this.maxY)) / 150.0;
     //console.log(d);
     if (d > 1.0) {
       d = 1.0;
@@ -639,7 +646,7 @@ export class Plane extends OwnableSolidEntity {
       this.radians -= Math.PI * 2;
     }
 
-    const d2 = GRAVITY * tstep * Math.sin(-this.radians);
+    const d2 = GRAVITY * tstep * Math.sin(this.radians);
     //console.log(d2);
     this.speed += d2;
 
@@ -677,7 +684,7 @@ export class Plane extends OwnableSolidEntity {
     }
     const x = Math.round(this.localX / SCALE_FACTOR);
     const y = Math.round(this.localY / SCALE_FACTOR);
-    console.log(x, " | ", y, " \/ ", this.radians, " v ", this.speed);
+    //console.log(x, " | ", y, " \/ ", this.radians, " v ", this.speed);
     this.setData(cache, { x, y });
     this.set(cache, "direction", radiansToDirection(this.radians));
   }
@@ -1000,7 +1007,9 @@ export class Plane extends OwnableSolidEntity {
     }
     const x = Math.round(this.localX / SCALE_FACTOR);
     const y = Math.round(this.localY / SCALE_FACTOR);
-    let col = true;//this.checkCollision();
+    let col = true ;//this.checkCollision();
+    console.log((this.runway.getDirection() == 1 && x <= this.runway.getStartX()), (this.runway.getDirection() == 0 && x >= this.runway.getStartX()));
+    console.log(this.runway.getDirection() == 1, x <= this.runway.getStartX(), this.runway.getDirection() == 0, x >= this.runway.getStartX());
     if (!col || (this.runway.getDirection() == 1 && x <= this.runway.getStartX()) || (this.runway.getDirection() == 0 && x >= this.runway.getStartX())) {
       console.log("landed");
       console.log(col)
@@ -1019,7 +1028,6 @@ export class Plane extends OwnableSolidEntity {
     if ((this.mode == PlaneMode.Landing || this.mode == PlaneMode.Landed || this.mode == PlaneMode.TakingOff) && se == this.runway) {
       return;
     }
-    //console.log("HHIITT");
     if (this.mode == PlaneMode.Falling) {
       if (se instanceof OwnableSolidEntity && se.getPlayerInfo().getId() == this.getPlayerInfo().getId()) {
         return;
@@ -1059,13 +1067,14 @@ export class Plane extends OwnableSolidEntity {
           this.radians = 0;
         }
         //this.direction = radiansToDirection(this.radians);
-        this.localY = (localRunway.getLandableY() - this.getBottomHeight() / 2 + this.height / 2) * SCALE_FACTOR;
+        this.localY = (localRunway.getLandableY() - this.getBottomHeight() ) * SCALE_FACTOR;
         console.log("HHIITT - PrLanding!!!");
         if (localRunway.getTeam() == this.getTeam() && ((localRunway.getDirection() == 1 && this.radians == Math.PI) || (localRunway.getDirection() == 0 && this.radians == 0)) && localRunway.reserveFor(2)) {
           this.runway = localRunway;
           //this.mode = PlaneMode.Landing;
           this.setMode(PlaneMode.Landing);
           console.log("HHIITT - Landing!!!");
+          console.log("mode: " + this.mode);
         }
         this.setPos(this.world.cache, Math.round(this.localX / 100), Math.round(this.localY / 100));
         this.set(this.world.cache, "direction", radiansToDirection(this.radians));
@@ -1144,7 +1153,7 @@ export class Plane extends OwnableSolidEntity {
         console.log("plane - ground");
         //return;
       }
-      console.log("plane - obj " + se);
+      console.log("plane - obj " + se + " m=" + this.mode);
       //if (this.mode != PlaneMode.Falling) 
       {
         this.fraggedBy(null);

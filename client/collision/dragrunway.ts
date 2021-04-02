@@ -26,9 +26,10 @@ export class dragrunway extends RunwaySprite implements Draggable, Renderable {
   sprite: PIXI.Container;
   eventData: any;
   setPosition(newX: number, newY: number) {
-    this.entity.x = newX;
-    this.entity.y = newY;
-    this.redraw();
+    this.update({ "x": newX, "y": newY });
+    //this.entity.x = newX;
+    //this.entity.y = newY;
+    //this.redraw();
     //console.log("move?");
     this.callback();
     //;throw new Error("Method not implemented.");

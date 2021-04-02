@@ -203,12 +203,12 @@ export function parseLevelLayer(world: GameWorld, paramString: string): void {
       case '.':
         break;
       case 'H':
-        obj = new Hill(world, (i + j * 100 - 6 * 50) * 8 / 10, 40 - 25, 0);
+        obj = new Hill(world, (i + j * 100 - 6 * 50) * 8 / 10, -40, 0);
         //obj.setData(world.cache, hill);
         world.hills.push(obj);
         break;
       case 'S':
-        obj = new Hill(world, (i + j * 100 - 6 * 50) * 8 / 10, 45 - 25, 1);
+        obj = new Hill(world, (i + j * 100 - 6 * 50) * 8 / 10, -45, 1);
         //obj.setData(world.cache, hill);
         world.hills.push(obj);
         break;

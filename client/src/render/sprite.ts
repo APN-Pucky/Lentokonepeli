@@ -3,9 +3,10 @@ import { SCALE_FACTOR } from "../../../dogfight/src/constants";
 import { SolidEntity } from "../../../dogfight/src/entities/SolidEntity";
 import { Entity, EntityType } from "../../../dogfight/src/entity";
 import { GameWorld } from "../../../dogfight/src/world/world";
+import { Draggable, onDragEnd, onDragMove, onDragStart, Renderable } from "../../collision/helper";
 import { spriteSheet } from "./textures";
 
-export abstract class GameSprite<T extends Entity> {
+export abstract class GameSprite<T extends Entity> implements Draggable {
   public id: number;
   public entity: T;
   private world: GameWorld;
@@ -15,13 +16,15 @@ export abstract class GameSprite<T extends Entity> {
   public renderables: PIXI.Container[] = [];
   public renderablesDebug: PIXI.Container[] = [];
   public debugcolor = 0xff00ff;
+  public draggable = false;
 
-  public constructor(spritesheet: PIXI.Spritesheet, type: { new(...args: any[]): T; }, world: GameWorld = new GameWorld(spriteSheet.textures)) {
+  public constructor(spritesheet: PIXI.Spritesheet, type: { new(...args: any[]): T; }, world: GameWorld = new GameWorld(spriteSheet.textures), draggable = false) {
     this.renderables = [];
     this.renderablesDebug = [];
     this.spritesheet = spriteSheet;
     this.world = world;
     this.entity = new type(this.world);
+    this.draggable = draggable;
 
     this.debug = new PIXI.Graphics();
     this.renderablesDebug.push(this.debug);
@@ -40,6 +43,7 @@ export abstract class GameSprite<T extends Entity> {
         //value *= -1;
       }
       this.entity[key] = value;
+      //console.log(key + " = " + value)
     }
     this.redraw();
     this.redrawDebug();
@@ -73,4 +77,44 @@ export abstract class GameSprite<T extends Entity> {
    * and other client things floating about.
    */
   public abstract destroy(): void;
+
+  private callback: () => void;
+
+  selected: boolean;
+  eventData: any;
+  sprite: PIXI.Sprite;
+
+  public setPosition(newX: number, newY: number) {
+    this.update({ "x": newX, "y": newY });
+    //this.entity.x = newX;
+    //this.entity.y = newY;
+    //this.redraw();
+    //console.log("move?");
+    this.callback();
+    //;throw new Error("Method not implemented.");
+  }
+  public setCollisionCallback(callback: () => void): void {
+    this.callback = callback;
+  }
+  /*
+  public getContainer(): PIXI.Container {
+    return this.sprite;
+  }
+  */
+
+  public bindEventHandlers(sprite: PIXI.Sprite): void {
+    if (this.draggable) {
+      this.sprite = sprite;
+      console.log("OK")
+      sprite.interactive = true;
+      sprite.buttonMode = true;
+      sprite.on(
+        "pointerdown",
+        (e: PIXI.interaction.InteractionEvent): void => onDragStart(this, e)
+      );
+      sprite.on("pointerup", (): void => onDragEnd(this));
+      sprite.on("pointerupoutside", (): void => onDragEnd(this));
+      sprite.on("pointermove", (): void => onDragMove(this));
+    }
+  }
 }

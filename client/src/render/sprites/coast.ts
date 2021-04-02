@@ -23,8 +23,8 @@ export class CoastSprite extends GameSprite<Coast> {
   private water: PIXI.Graphics;
   //private towerWidth: number;
 
-  public constructor(spritesheet: PIXI.Spritesheet, world: GameWorld = new GameWorld(spriteSheet.textures)) {
-    super(spriteSheet, Coast, world);
+  public constructor(spritesheet: PIXI.Spritesheet, world: GameWorld = new GameWorld(spriteSheet.textures), draggable = false) {
+    super(spriteSheet, Coast, world, draggable);
 
     //this.x = 0;
     //this.y = 0;
@@ -45,6 +45,7 @@ export class CoastSprite extends GameSprite<Coast> {
     this.container.zIndex = DrawLayer.Coast;
 
     this.renderables.push(this.container);
+    this.bindEventHandlers(this.container);
   }
 
   public redraw(): void {

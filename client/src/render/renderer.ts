@@ -25,6 +25,8 @@ import { BulletSprite } from "./sprites/bullet";
 import { BombSprite } from "./sprites/bomb";
 import { CoastSprite } from "./sprites/coast";
 import { ImportantBuildingSprite } from "./sprites/importantbuilding";
+import { TeamInfoSprite } from "./sprites/teaminfo";
+import { KillArea } from "./entities/killarea";
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
@@ -74,6 +76,7 @@ export class GameRenderer {
   private sky: SkyBackground;
 
   public HUD: GameHud;
+  public killarea: KillArea;
 
   // UI Controllers
   public teamChooserUI: TeamChooserUI;
@@ -107,6 +110,7 @@ export class GameRenderer {
 
     this.sky = new SkyBackground(this.spriteSheet);
     this.HUD = new GameHud(this.spriteSheet);
+    this.killarea = new KillArea(this.spriteSheet);
 
     // Initialize UI
     this.teamChooserUI = new TeamChooserUI(this.spriteSheet);
@@ -127,6 +131,7 @@ export class GameRenderer {
     this.gameContainer.addChild(this.worldContainer);
     this.gameContainer.addChild(this.debug.gameContainer);
     this.gameContainer.addChild(this.HUD.container);
+    this.gameContainer.addChild(this.killarea.container);
 
     // Add UI controllers
     this.gameContainer.addChild(this.teamChooserUI.container);
@@ -205,6 +210,8 @@ export class GameRenderer {
         return new ImportantBuildingSprite(this.spriteSheet);
       case EntityType.Player:
         return new PlayerSprite(this.spriteSheet);
+      case EntityType.TeamInfo:
+        return new TeamInfoSprite(this.spriteSheet);
       case EntityType.Trooper:
         return new TrooperSprite(this.spriteSheet);
       case EntityType.Explosion:

@@ -26,8 +26,14 @@ import { processTroopers } from "./trooper";
 import { Ownable } from "../ownable";
 import { BufferedImage } from "../BufferedImage";
 import { Coast } from "../entities/Coast";
+import { TeamInfo } from "../entities/TeamInfo";
+import { messageCallback, Packet, PacketType } from "../network/types";
 
 
+export enum GameMode {
+  SCORE,
+  SURVIVE
+}
 
 /**
  * The Game World contains all entites,
@@ -43,6 +49,7 @@ export class GameWorld {
   // A queue of takeoff requests to be processed.
   public takeoffQueue: TakeoffEntry[];
   public inputQueue: InputQueue;
+  public gamemode: GameMode = GameMode.SCORE;
 
   public players: PlayerInfo[];
   public flags: Flag[];
@@ -58,6 +65,7 @@ export class GameWorld {
   public explosions: Explosion[];
   public bullets: Bullet[];
   public bombs: Bomb[];
+  public teaminfos: TeamInfo[];
 
   // god please forgive me for this sin
   private objectArrays = {
@@ -74,22 +82,24 @@ export class GameWorld {
     [EntityType.Plane]: "planes",
     [EntityType.Explosion]: "explosions",
     [EntityType.Bullet]: "bullets",
-    [EntityType.Bomb]: "bombs"
+    [EntityType.Bomb]: "bombs",
+    [EntityType.TeamInfo]: "teaminfos",
   };
 
   // Next available ID, incremented by 1.
   // Always counts up, never resets.
   private idCounter = 0;
-  private app = null;
+  private broadcaster: messageCallback = null;
   private textures = null;
 
-  public constructor(textures = null, app = null) {
-    this.resetWorld();
-    this.textures = textures;
-    this.app = app;
+  public constructor(textures = null, app: messageCallback = null) {
     for (const type in EntityType) {
       this.ids[type] = 0;
     }
+    this.textures = textures;
+    this.broadcaster = app;
+    this.resetWorld();
+
     //cont();
   }
 
@@ -100,7 +110,7 @@ export class GameWorld {
 
 
   public getEntities(): Entity[][] {
-    return [this.planes, this.troopers, this.bombs, this.bullets, this.runways, this.importantBuildings, this.grounds, this.coasts, this.waters, this.players, this.backgrounditem, this.hills, this.flags, this.explosions];
+    return [this.planes, this.troopers, this.bombs, this.bullets, this.runways, this.importantBuildings, this.grounds, this.coasts, this.waters, this.players, this.backgrounditem, this.hills, this.flags, this.explosions, this.teaminfos];
   }
   public clearCache(): void {
     this.cache = {};
@@ -126,6 +136,8 @@ export class GameWorld {
     this.explosions = [];
     this.bullets = [];
     this.bombs = [];
+    this.teaminfos = [new TeamInfo(this, 0), new TeamInfo(this, 1)];
+    //this.teaminfos[0].setScore(100);
   }
 
   /**
@@ -262,18 +274,23 @@ export class GameWorld {
 
   public died(o: Ownable, x: number, y: number): void {
     let p = o.getPlayerInfo();
-    p.setStatus(p.world.cache, PlayerStatus.Takeoff);
-    p.setControl(p.world.cache, EntityType.None, 0);
-    /*
-    if (this.gameMode == 1) {
-      // ghost
+    this.diedWithoutAvatar(p, x, y);
+  }
+  public diedWithoutAvatar(p: PlayerInfo, x, y) {
+    if (this.gamemode == GameMode.SURVIVE) {
+      // TODO wait
+      //showGhost();
+      if (p.getTeam() != -1) {
+        this.teaminfos[p.getTeam()].dead(p);
+      }
     }
     else {
-      // respawn
+      // Respawn
+      p.setStatus(p.world.cache, PlayerStatus.Takeoff);
+      p.setControl(p.world.cache, EntityType.None, 0);
     }
-
-    //*/
   }
+
   public landed(o: Ownable, r: Runway, bol: boolean = false) {
     let p: PlayerInfo = o.getPlayerInfo();
     p.setStatus(p.world.cache, PlayerStatus.Takeoff);
@@ -286,9 +303,14 @@ export class GameWorld {
     //return this.gameUtil.getTimeLeft();
     return -1;
   }
+  public scored(p1: number, p2: number) {
+    if (p1 != -1) {
+      this.teaminfos[p1].adjustScore(p2);
+    }
+  }
 
   public adjustScore(paramInt1: number, paramInt2: number): void {
-    //this.gameUtil.scored(paramInt1, paramInt2);
+    this.scored(paramInt1, paramInt2);
   }
 
   public isRoundOver(): boolean {
@@ -306,7 +328,7 @@ export class GameWorld {
     if ((e == null) || (e.getPlayerInfo() == localPlayerInfo1)) {
       localPlayerInfo1.submitSuicide(p);
       let i = c == 1 ? 1 : 4;
-      //this.toolkit.pushText(4, localPlayerInfo1.getTeam() + "\t" + i + "\t" + localPlayerInfo1.getFullName());
+      this.pushText(4, localPlayerInfo1.getTeam() + "\t" + i + "\t" + localPlayerInfo1.getFullName());
     }
     else {
       let localPlayerInfo2: PlayerInfo = e.getPlayerInfo();
@@ -314,12 +336,12 @@ export class GameWorld {
       if (localPlayerInfo2.getTeam() == localPlayerInfo1.getTeam()) {
         j = c == 1 ? 2 : 5;
         localPlayerInfo2.submitTeamKill(e, p);
-        //this.toolkit.pushText(4, localPlayerInfo2.getTeam() + "\t" + j + "\t" + localPlayerInfo2.getFullName() + "\t" + localPlayerInfo1.getFullName());
+        this.pushText(4, localPlayerInfo2.getTeam() + "\t" + j + "\t" + localPlayerInfo2.getFullName() + "\t" + localPlayerInfo1.getFullName());
       }
       else {
         j = c == 1 ? 3 : 6;
         localPlayerInfo2.submitKill(e, p);
-        //this.toolkit.pushText(4, localPlayerInfo2.getTeam() + "\t" + j + "\t" + localPlayerInfo2.getFullName() + "\t" + localPlayerInfo1.getFullName());
+        this.pushText(4, localPlayerInfo2.getTeam() + "\t" + j + "\t" + localPlayerInfo2.getFullName() + "\t" + localPlayerInfo1.getFullName());
       }
     }
   }
@@ -327,7 +349,7 @@ export class GameWorld {
     //this.gameUtil.killedWithoutAvatar(paramPlayerInfo, paramInt);
     paramPlayerInfo.submitSuicide(null);
     let i = paramInt == 1 ? 1 : 4;
-    //this.toolkit.pushText(4, paramPlayerInfo.getTeam() + "\t" + i + "\t" + paramPlayerInfo.getFullName());
+    this.pushText(4, paramPlayerInfo.getTeam() + "\t" + i + "\t" + paramPlayerInfo.getFullName());
   }
   public isTeamBalance(): boolean {
     //return this.teamBalance;
@@ -336,6 +358,16 @@ export class GameWorld {
 
   public setTeamBalance(paramBoolean: boolean): void {
     //this.teamBalance = paramBoolean;
+  }
+
+  public pushText(p1: number = -1, text: string) {
+    this.broadcaster(
+      {
+        type: PacketType.PushText,
+        data: {
+          text: p1 + "\t" + text
+        }
+      });
   }
 
   public getState(): Cache {
@@ -354,6 +386,7 @@ export class GameWorld {
       this.troopers,
       this.bombs,
       this.bullets,
+      this.teaminfos,
     ];
     const cache: Cache = {};
     for (const obj in objects) {

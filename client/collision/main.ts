@@ -23,6 +23,9 @@ import { Coast } from "../../dogfight/src/entities/Coast";
 import { ImportantBuildingSprite } from "../src/render/sprites/importantbuilding";
 import { isBigIntLiteral } from "typescript";
 import { ImportantBuilding } from "../../dogfight/src/entities/ImportantBuilding";
+import { PlaneSprite } from "../src/render/sprites/plane";
+import { RunwaySprite } from "../src/render/sprites/runway";
+import { TrooperSprite } from "../src/render/sprites/trooper";
 
 console.log("collision script");
 
@@ -66,7 +69,6 @@ function updateCollisions(): void {
   //let iib = new ImportantBuilding(gw, ib.x, ib.y, 0, ib.buildingType);
   //let pi = new PlayerInfo(gw);
   //let p = new Plane(gw, plane.planeType, pi, 1, null);
-  plane.entity.planeType = plane.planeType;
   plane.entity.setPos(gw.cache, plane.x, plane.y);
   plane.entity.setDirection(gw.cache, plane.direction);
   plane.entity.setFlipped(gw.cache, plane.flipped);
@@ -76,18 +78,28 @@ function updateCollisions(): void {
   //let r = new Runway(gw, 0, runway.x, runway.y, runway.direction);
   //console.log("b ", ib.entity.getCollisionBounds())
   //console.log("r ", runway.entity.getCollisionBounds())
+
   if (
-    ib.entity.getCollisionBounds().intersects(runway.entity.getCollisionBounds()) ||
-    //plane.entity.checkCollisionWith2(b) || plane.entity.checkCollisionWith2(trooper.entity)  ||
+    plane.entity.checkCollisionWith2(b) || plane.entity.checkCollisionWith2(trooper.entity) ||
+    plane.entity.checkCollisionWith2(runway.entity) ||
+    plane.entity.checkCollisionWith2(coast.entity) ||
+
     trooper.entity.checkCollisionWith2(b) ||
     trooper.entity.checkCollisionWith2(coast.entity) ||
-    b.checkCollisionWith2(runway.entity) ||
-    // plane.entity.checkCollisionWith2(runway.entity) || 
     trooper.entity.checkCollisionWith2(runway.entity) ||
-    // plane.entity.checkCollisionWith2(coast.entity) ||
-    ib.entity.checkCollisionWith2(trooper.entity)) {
+    b.checkCollisionWith2(runway.entity) ||
+    ib.entity.checkCollisionWith2(trooper.entity) ||
+      ib.entity.checkCollisionWith2(runway.entity)) {
     bullet.sprite.scale.set(5);
     console.log("hit");
+  }
+  else if (
+    plane.entity.getCollisionBounds().intersects(coast.entity.getCollisionBounds()) ||
+    ib.entity.getCollisionBounds().intersects(coast.entity.getCollisionBounds()) ||
+    ib.entity.getCollisionBounds().intersects(runway.entity.getCollisionBounds())
+  ) {
+    bullet.sprite.scale.set(2);
+    console.log("intersect")
   }
   else {
     bullet.sprite.scale.set(1);
@@ -102,14 +114,14 @@ function addRenderable(container: PIXI.Container): void {
 
 function init(gw: GameWorld): void {
   document.body.appendChild(app.view);
-  runway = new dragrunway(spriteSheet, gw);
-  trooper = new dragtrooper(spriteSheet, gw);
-  plane = new dragplane(spriteSheet, gw);
+  runway = new RunwaySprite(spriteSheet, gw, true);
+  trooper = new TrooperSprite(spriteSheet, gw, true);
+  plane = new PlaneSprite(spriteSheet, gw, true);
   plane.flipped = false;
   plane.direction = 0 * 64 / 2 + 0 * 64;
   plane.setDirection();
-  coast = new CoastSprite(spriteSheet, gw);
-  ib = new ImportantBuildingSprite(spriteSheet, gw);
+  coast = new CoastSprite(spriteSheet, gw, true);
+  ib = new ImportantBuildingSprite(spriteSheet, gw, true);
   for (const a of coast.renderables) { addRenderable(a) }
 
   //addRenderable(rect1.getContainer());
@@ -118,7 +130,9 @@ function init(gw: GameWorld): void {
   addRenderable(bullet.getContainer());
   for (const a of plane.renderables) {
     addRenderable(a);
-    break;
+  }
+  for (const a of plane.renderablesDebug) {
+    addRenderable(a);
   }
   for (const a of trooper.renderables) {
     addRenderable(a);
@@ -147,10 +161,10 @@ function init(gw: GameWorld): void {
     addRenderable(a);
   }
   plane.update({ planeType: PlaneType.Salmson });
-  trooper.update({ state: TrooperState.Parachuting });
-  runway.update({ direction: 1 });
-  coast.update({ x: 250, y: 100, subType: 1 });
-  ib.update({ x: 350, y: 100, buildingType: 2 });
+  trooper.update({ x: 200, y: 200, state: TrooperState.Parachuting });
+  runway.update({ x: 100, y: 100, direction: 1 });
+  coast.update({ x: 2500, y: 300, subType: 1 });
+  ib.update({ x: 350, y: 120, buildingType: 1 });
   plane.setCollisionCallback(updateCollisions);
   trooper.setCollisionCallback(updateCollisions);
   //rect1.setCollisionCallback(updateCollisions);
@@ -158,6 +172,8 @@ function init(gw: GameWorld): void {
   //rect2.setCollisionCallback(updateCollisions);
   bullet.setCollisionCallback(updateCollisions);
   runway.setCollisionCallback(updateCollisions);
+  coast.setCollisionCallback(updateCollisions);
+  ib.setCollisionCallback(updateCollisions);
 }
 
 window.addEventListener("load", (): void => {

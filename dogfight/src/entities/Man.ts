@@ -232,7 +232,7 @@ export class Man extends OwnableSolidEntity {
           this.shoot();
         }
         else if (this.isKeyPressed(GameKey.MAN_SUICIDE)) {
-          this.world.createExplosion(this.x, this.y, this)
+          this.world.createExplosion(this.x + this.image.width / 2, this.y + this.image.height, this)
           this.fraggedBy(null);
           this.removeSelf();
         }
@@ -276,7 +276,7 @@ export class Man extends OwnableSolidEntity {
       });
     });
 
-    let d = 4.71238898038469 - Math.PI; //
+    let d = 4.71238898038469; //
     if (localObject1 != null) {
       d = this.countAngle(localObject1);
     }

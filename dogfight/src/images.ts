@@ -107,9 +107,9 @@ export async function loadImages(path = "./dist/assets/images/images.png") {
       console.log(res)
     })
 
-    if (key.startsWith("beach-l")) {
+    if (key.startsWith("beach-l.gif")) {
       let tmpi = image2.clone().flip(true, false);
-      images[key.replace("beach-l", "beach-r")] = new BufferedImage(Buffer.from(tmpi.bitmap.data), { w: tmpi.bitmap.width, h: tmpi.bitmap.height})
+      images[key.replace("beach-l", "beach-r")] = new BufferedImage(Buffer.from(tmpi.bitmap.data), { w: tmpi.bitmap.width, h: tmpi.bitmap.height })
     }
 
     //image3 = image3.crop(info.x, info.y, info.w, info.h);

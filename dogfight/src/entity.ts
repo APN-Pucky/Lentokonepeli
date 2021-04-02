@@ -30,8 +30,10 @@ export enum EntityType {
   Bullet,
   Bomb,
   Coast,
-  ImportantBuilding // Update our variable in the object, and the cache.
-}
+  ImportantBuilding,
+  TeamInfo,
+}// Update our variable in the object, and the cache.
+
 
 type sendableData = number | string | boolean;
 

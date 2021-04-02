@@ -28,8 +28,8 @@ export class ImportantBuildingSprite extends GameSprite<ImportantBuilding> {
   private healthBar: PIXI.Graphics;
 
 
-  public constructor(spritesheet: PIXI.Spritesheet, world: GameWorld = new GameWorld(spriteSheet.textures)) {
-    super(spriteSheet, ImportantBuilding, world);
+  public constructor(spritesheet: PIXI.Spritesheet, world: GameWorld = new GameWorld(spriteSheet.textures), draggable = false) {
+    super(spriteSheet, ImportantBuilding, world, draggable);
 
     //this.x = 0;
     //this.y = 0;
@@ -52,6 +52,7 @@ export class ImportantBuildingSprite extends GameSprite<ImportantBuilding> {
 
     this.renderables.push(this.importantbuilding);
     this.renderables.push(this.healthBar);
+    this.bindEventHandlers(this.importantbuilding);
   }
 
   public redraw(): void {

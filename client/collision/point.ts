@@ -13,6 +13,7 @@ export class PointSprite implements Renderable, Draggable {
   public sprite: PIXI.Graphics;
   public eventData: PIXI.interaction.InteractionData;
   public position: Vec2d;
+  public color = 0x000000;
   private callback: () => void;
   public constructor() {
     this.position = {
@@ -21,7 +22,7 @@ export class PointSprite implements Renderable, Draggable {
     };
     this.sprite = new PIXI.Graphics();
     this.sprite.lineStyle(0);
-    this.sprite.beginFill(0x000000, 1);
+    this.sprite.beginFill(this.color, 1);
     this.sprite.drawCircle(0, 0, 2);
     this.sprite.endFill();
     this.sprite.position.set(this.position.x, this.position.y);

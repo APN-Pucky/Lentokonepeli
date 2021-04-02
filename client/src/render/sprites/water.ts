@@ -26,8 +26,8 @@ export class WaterSprite extends GameSprite<Water> {
   private windowInterval: number;
   //private debug: PIXI.Graphics;
 
-  public constructor(spritesheet: PIXI.Spritesheet) {
-    super(spriteSheet, Water);
+  public constructor(spritesheet: PIXI.Spritesheet, ) {
+    super(spriteSheet, Water, );
     this.debugcolor = 0x00ff00;
 
     //this.x = 0;

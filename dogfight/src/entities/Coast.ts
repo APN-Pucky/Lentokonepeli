@@ -29,7 +29,7 @@ export class Coast extends SolidEntity {
   }
 
   public getCollisionBounds(): import("../physics/rectangle").Rectangle {
-    console.log(this.subType + "" + this.images[this.subType].width)
+    //console.log(this.subType + "" + this.images[this.subType].width)
     return new Rectangle(this.x, this.y, this.images[this.subType].width, this.images[this.subType].height);
   }
 

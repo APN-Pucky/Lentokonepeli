@@ -26,8 +26,8 @@ export class RunwaySprite extends GameSprite<Runway> {
 
   private runwayWidth: number;
 
-  public constructor(spritesheet: PIXI.Spritesheet, world: GameWorld = new GameWorld(spriteSheet.textures)) {
-    super(spriteSheet, Runway, world);
+  public constructor(spritesheet: PIXI.Spritesheet, world: GameWorld = new GameWorld(spriteSheet.textures), draggable = false) {
+    super(spriteSheet, Runway, world, draggable);
 
     //this.x = 0;
     //this.y = 0;
@@ -59,6 +59,7 @@ export class RunwaySprite extends GameSprite<Runway> {
     this.renderables.push(this.runway);
     this.renderables.push(this.backpart);
     this.renderables.push(this.healthBar);
+    this.bindEventHandlers(this.runway);
   }
 
   public redraw(): void {

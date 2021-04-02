@@ -74,38 +74,65 @@ export abstract class SolidEntity extends Entity {
   public getPix(img: BufferedImage, paramRectangle1: Rectangle, paramRectangle2: Rectangle): number[] {
     //console.log("got pix");
 
-    console.log("r1 " + paramRectangle1.x + " " + paramRectangle1.y)
-    console.log("r2 " + paramRectangle2.x + " " + paramRectangle2.y)
+    //console.log("r1 " + paramRectangle1.x + " " + paramRectangle1.y + " " + paramRectangle1.width + " " + paramRectangle1.height)
+    //console.log("r2 " + paramRectangle2.x + " " + paramRectangle2.y + " " + paramRectangle2.width + " " + paramRectangle2.height)
     let x0 = -Math.round(paramRectangle2.getMinX() - paramRectangle1.getMinX());
     let y0 = -Math.round(paramRectangle2.getMinY() - paramRectangle1.getMinY());
-    console.log("x " + x0 + " y " + y0)
+    //console.log("x " + x0 + " y " + y0)
 
     //console.log(paramRectangle2);
     //console.log(paramRectangle1);
-    let datan = []
+    let datan = [];
 
     let arrayOfInt = img.data;
-    if (img.data == undefined) {
-      console.error("WTF why undef img")
-    }
     //console.log(img.data.length);
     //console.log(paramRectangle2.width * paramRectangle2.height);
     //console.log(paramRectangle1.width * paramRectangle1.height);
-    for (let y = y0; y < y0 + paramRectangle1.height; y++) {
-      for (let x = x0; x < x0 + paramRectangle1.width; x++) {
-        datan.push(arrayOfInt[4 * (x + y * paramRectangle2.width) + 3]);
+    for (let y = y0; y < y0 + Math.round(paramRectangle1.height); y++) {
+      for (let x = x0; x < x0 + Math.round(paramRectangle1.width); x++) {
+        //if (paramRectangle2.height == 25) console.log(x + y * Math.round(paramRectangle2.width) + " -> " + arrayOfInt[4 * (x + y * Math.round(paramRectangle2.width)) + 3]);
+        datan.push(arrayOfInt[4 * (x + y * Math.round(paramRectangle2.width)) + 3]);
       }
     }
     //console.log(x0, y0, datan[0]);
     //return arrayOfInt;
+    //if (paramRectangle2.height == 25) console.log(datan);
     return datan;
     //return getRGB(paramRectangle1.x - paramRectangle2.x, paramRectangle1.y - paramRectangle2.y, paramRectangle1.width, paramRectangle1.height, null, 0, paramRectangle1.width);
   }
 
   private checkPix(paramRectangle: Rectangle, paramArrayOfInt1: number[], paramArrayOfInt2: number[]): boolean {
+    /*
+    console.log("H:" + paramArrayOfInt1)
+    for (let i = 0; i < paramRectangle.getHeight(); i++) {
+      let s = "";
+      for (let j = 0; j < paramRectangle.getWidth(); j++) {
+        if (((paramArrayOfInt1[(i * Math.round(paramRectangle.width) + j)] == 255))) {
+          s += "HH";
+        }
+        else {
+          s += "  ";
+        }
+      }
+      console.log(s);
+    }
+    console.log("X:" + paramArrayOfInt2)
+    for (let i = 0; i < paramRectangle.getHeight(); i++) {
+      let s = "";
+      for (let j = 0; j < paramRectangle.getWidth(); j++) {
+        if (((paramArrayOfInt2[(i * Math.round(paramRectangle.width) + j)] == 255))) {
+          s += "XX";
+        }
+        else {
+          s += "  ";
+        }
+      }
+      console.log(s);
+    }
+    */
     for (let i = 0; i < paramRectangle.getHeight(); i++) {
       for (let j = 0; j < paramRectangle.getWidth(); j++) {
-        if (((paramArrayOfInt1[(i * paramRectangle.width + j)] == 255)) && ((paramArrayOfInt2[(i * paramRectangle.width + j)] == 255))) {
+        if (((paramArrayOfInt1[(i * Math.round(paramRectangle.width) + j)] == 255)) && ((paramArrayOfInt2[(i * Math.round(paramRectangle.width) + j)] == 255))) {
           return true;
         }
       }
@@ -130,9 +157,6 @@ export abstract class SolidEntity extends Entity {
           //if (!(this.checkCollisionWith(se) == se.checkCollisionWith(this))) {
           //  console.log("WTTTFFF")
           //}
-          if (se.getType() == EntityType.Water) {
-            console.log(se.getCollisionBounds())
-          }
           if (se.isAlive() && this.checkCollisionWith(se)) {
             bool = true;
             this.hit(se);

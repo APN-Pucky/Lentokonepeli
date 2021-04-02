@@ -29,7 +29,7 @@ export class Ground extends SolidEntity {
 
   public getCollisionBounds(): import("../physics/rectangle").Rectangle {
     //console.log("height " + this.image.getHeight() / 2);
-    return new Rectangle(this.x, this.y + this.yHitOffset, this.width, this.image.height-this.yHitOffset);
+    return new Rectangle(this.x, this.y + this.yHitOffset, this.width, this.image.height - this.yHitOffset);
   }
 
   public getState(): CacheEntry {

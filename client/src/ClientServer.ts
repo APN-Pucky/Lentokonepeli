@@ -1,5 +1,5 @@
 import { GameWorld } from "../../dogfight/src/world/world";
-import { PacketType, Packet } from "../../dogfight/src/network/types";
+import { PacketType, Packet, messageCallback } from "../../dogfight/src/network/types";
 import { PlayerInfo } from "../../dogfight/src/entities/PlayerInfo";
 import { TeamOption } from "./teamSelector";
 import { Team } from "../../dogfight/src/constants";
@@ -10,7 +10,7 @@ import { isNameValid } from "../../dogfight/src/validation";
 import { ClientState, ConnectionState } from "./clientState";
 import { spriteSheet } from "./render/textures";
 
-type messageCallback = (data: Packet) => void;
+//type messageCallback = (data: Packet) => void;
 
 /**
  * A fake "server" that runs only on the client.
@@ -36,7 +36,7 @@ export class ClientServer {
     this.serverMsg = callback;
     ClientState.connection = ConnectionState.OPEN;
 
-    this.world = new GameWorld(img);
+    this.world = new GameWorld(img, callback);
     loadMap(this.world, MAP_CLASSIC_2);
     setInterval((): void => {
       this.loop();

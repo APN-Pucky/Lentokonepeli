@@ -93,7 +93,7 @@ export class GameClient {
     }, this.images);
 
     // center camera
-    this.renderer.centerCamera(0, 150);
+    this.renderer.centerCamera(0, -150);
 
     // Draw it to the screen
     const div = document.getElementById("game-canvas");
@@ -227,7 +227,12 @@ export class GameClient {
 
       this.setMode(ClientMode.PreFlight);
       this.renderer.HUD.setTeam(data.team);
+      this.renderer.killarea.setTeam(data.team);
       this.renderer.HUD.radar.refreshRadar(this.gameObjects);
+      this.renderer.HUD.updateScore(this.gameObjects[EntityType.TeamInfo]);
+    }
+    if (type == PacketType.PushText) {
+      this.renderer.killarea.refreshArea(data.text);
     }
   }
 
@@ -360,6 +365,9 @@ export class GameClient {
         }
       }
       this.renderer.HUD.updateFollowObject(object);
+    }
+    else if (type == EntityType.TeamInfo) {
+      this.renderer.HUD.updateScore(this.gameObjects[EntityType.TeamInfo]);
     }
     // If this is an update to our follow object,
     // update our HUD

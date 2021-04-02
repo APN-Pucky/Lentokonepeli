@@ -18,6 +18,7 @@ import { isNameValid } from "../dogfight/src/validation";
 import { BufferedImage } from "../dogfight/src/BufferedImage";
 import { loadImages } from "../dogfight/src/images";
 
+
 const sharp = require('sharp');
 
 const PORT = process.env.PORT || 3259;
@@ -32,10 +33,18 @@ const wss = new WebSocket.Server({ server });
 
 loadImages().then((img) => {
 
+  function broadcast(p: Packet): void {
+    wss.clients.forEach((client): void => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(encodePacket(p));
+      }
+    });
+  }
+
   //for (let key in img)
   //console.log(key);
   // Initialize game world.
-  const world = new GameWorld(img);
+  const world = new GameWorld(img, broadcast);
   //loadMap(world, MAP_CLASSIC_2);
   loadStringMap(world,
     desert ,
@@ -47,6 +56,7 @@ loadImages().then((img) => {
   let startTime = Date.now();
   let lastTick = 0;
 
+
   // Game loop function
   function loop(): void {
     const currentTick = Date.now() - startTime;
@@ -57,12 +67,15 @@ loadImages().then((img) => {
 
     if (Object.keys(updates).length > 0) {
       const packet = { type: PacketType.ChangeSync, data: updates };
+      broadcast(packet);
+      /*
       // send updates to each client
       wss.clients.forEach((client): void => {
         if (client.readyState === WebSocket.OPEN) {
           client.send(encodePacket(packet));
         }
       });
+      */
     }
     lastTick = currentTick;
   }

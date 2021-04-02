@@ -1,5 +1,7 @@
 export type SendableType = number | string | boolean;
 
+
+export type messageCallback = (data: Packet) => void;
 /**
  * All networked information is sent through packets.
  * Some packets may be compressed to binary, but most are not.
@@ -31,7 +33,8 @@ export enum PacketType {
   /* Server --> User */
   FullSync,
   ChangeSync,
-  AssignPlayer
+  AssignPlayer,
+  PushText,
 }
 
 /**

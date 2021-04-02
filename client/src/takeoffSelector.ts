@@ -19,12 +19,12 @@ const alliedPlanes: PlaneType[] = [
 
 const cameraOffset = {
   [FacingDirection.Left]: {
-    x: 70,
-    y: 170
+    x: 0,//70 + 100,
+    y: -170
   },
   [FacingDirection.Right]: {
-    x: -95,
-    y: 170
+    x: 0,//-95 + 100,
+    y: -170
   }
 };
 

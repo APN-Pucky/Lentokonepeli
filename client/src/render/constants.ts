@@ -2,23 +2,39 @@ export const PANEL_HEIGHT = 150;
 
 export const WAVE_PHASE_TIME = 200; // Milliseconds
 
+export enum LAYER {
+  LAYER07 = (14),
+  LAYER08 = (13),
+  LAYER09 = (12),
+  LAYER10 = (11),
+  LAYER11 = (10),
+  LAYER12 = (9),
+  LAYER13 = (8),
+  LAYER14 = (7),
+  LAYER15 = (6),
+  LAYER16 = (5),
+  LAYER17 = (4),
+  LAYER11_LAYER13 = (55), // added to two layers... fore and background => flip in original code
+  LAYER10_LAYER12 = (56), // added to two layers...
+}
+
 export enum DrawLayer {
-  Hill = 5,
-  Water = 10,
-  Flag = 6,
-  ControlTower = 6,
-  Ground = 7,
-  Coast = 11,
-  RunwayBack = 55,
-  LightSmoke = 10,
-  Plane = 56,
-  DarkSmoke = 10,
-  Runway = 55,
-  Trooper = 56,
-  Explosion = 10,
-  Bomb = 10,
-  Bullet = 10,
-  Player = 0
+  Hill = LAYER.LAYER16,
+  Water = LAYER.LAYER11,
+  Flag = LAYER.LAYER15,
+  ControlTower = LAYER.LAYER15,
+  Ground = LAYER.LAYER14,
+  Coast = LAYER.LAYER10,
+  RunwayBack = LAYER.LAYER13, // LAYER11_LAYER13
+  LightSmoke = LAYER.LAYER11,
+  Plane = LAYER.LAYER12,//LAYER.LAYER10_LAYER12,
+  DarkSmoke = LAYER.LAYER11,
+  Runway = LAYER.LAYER11, // LAYER11_LAYER13
+  Trooper = LAYER.LAYER12,//LAYER.LAYER10_LAYER12,
+  Explosion = LAYER.LAYER11,
+  Bomb = LAYER.LAYER11,
+  Bullet = LAYER.LAYER11,
+  Player = LAYER.LAYER12
 }
 
 export enum GameScreen {
@@ -32,7 +48,9 @@ export enum TeamColor {
   OpponentForeground = 0xff0000, // red
   OpponentBackground = 0xffb574,
   SpectatorForeground = 0x000000,
-  SpectatorBackground = 0xffffff
+  SpectatorBackground = 0xffffff,
+  UnchosenForeground = 0x000000,
+  UnchosenBackground = 0xffffff,
 }
 
 export enum WaterColor {

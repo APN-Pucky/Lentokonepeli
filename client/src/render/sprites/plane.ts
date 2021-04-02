@@ -47,8 +47,8 @@ export class PlaneSprite extends GameSprite<Plane> {
 
   //private debug: PIXI.Graphics;
 
-  public constructor(spritesheet: PIXI.Spritesheet, world: GameWorld = new GameWorld(spriteSheet.textures)) {
-    super(spriteSheet, Plane, world);
+  public constructor(spritesheet: PIXI.Spritesheet, world: GameWorld = new GameWorld(spriteSheet.textures), draggable = false) {
+    super(spriteSheet, Plane, world, draggable);
 
     this.frameStatus = FrameStatus.Normal;
 
@@ -68,6 +68,7 @@ export class PlaneSprite extends GameSprite<Plane> {
 
     this.plane = new PIXI.Sprite();
     this.plane.anchor.set(0.5);
+
     //this.plane.anchor.set(0);
 
     this.container.zIndex = DrawLayer.Plane;
@@ -87,6 +88,8 @@ export class PlaneSprite extends GameSprite<Plane> {
     this.renderables.push(this.lightSmoke);
     this.renderables.push(this.darkSmoke);
     this.renderablesDebug.push(this.debug);
+
+    this.bindEventHandlers(this.container);
   }
 
   private setDirection(): void {
@@ -98,8 +101,8 @@ export class PlaneSprite extends GameSprite<Plane> {
     const frameStr = frameTextureString[this.frameStatus];
     const textureString = frameStr.replace("X", number.toString());
     this.plane.texture = this.spritesheet.textures[textureString];
-    this.plane.x = this.plane.texture.width / 2;
-    this.plane.y = this.plane.texture.height / 2;
+    this.plane.x = this.entity.width / 2;
+    this.plane.y = this.entity.height / 2;
   }
 
   private handleFlip(): void {
@@ -150,7 +153,7 @@ export class PlaneSprite extends GameSprite<Plane> {
   }
 
   ///*
-  private redrawDebug(): void {
+  public redrawDebug(): void {
     // debug
     this.debug.clear();
     this.debug.beginFill(0xff00ff);
@@ -194,7 +197,7 @@ export class PlaneSprite extends GameSprite<Plane> {
       // callback time based on how damaged plane is.
       const smoketex = this.spritesheet.textures["smoke2.gif"];
       const smoke = new PIXI.Sprite(smoketex);
-      const smokePos = this.getSmokePosition(true);
+      const smokePos = this.getSmokePosition(false);
 
       smoke.anchor.set(0.5, 0.5);
       smoke.position.set(smokePos.x, smokePos.y);
@@ -222,11 +225,11 @@ export class PlaneSprite extends GameSprite<Plane> {
   private getSmokePosition(center: boolean): Vec2d {
     // direction = 0 -> 256   2^8
     const radians = directionToRadians(this.entity.direction);
-    const halfWidth = 0 * Math.round(this.plane.width / 2);
-    const offset = Math.round(halfWidth / 6);
+    const halfWidth = Math.round(this.entity.width / 2);
+    const offset = 2//Math.round(halfWidth / 6);
 
     const r = halfWidth + offset;
-    const theta = radians * -1;
+    const theta = radians * 1;
     const deltaX = r * Math.cos(theta);
     const deltaY = r * Math.sin(theta);
     let newX: number, newY: number;
@@ -234,8 +237,8 @@ export class PlaneSprite extends GameSprite<Plane> {
       newX = this.entity.x;
       newY = this.entity.y;
     } else {
-      newX = this.entity.x - deltaX;
-      newY = this.entity.y - deltaY;
+      newX = this.entity.x - deltaX + this.entity.width / 2;
+      newY = this.entity.y - deltaY + this.entity.height / 2;
     }
     return { x: newX, y: newY };
   }

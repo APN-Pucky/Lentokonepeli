@@ -15,6 +15,7 @@ export enum PlayerStatus {
 }
 
 export class PlayerInfo extends Entity {
+
   public type = EntityType.Player;
   public name: string;
   public team: Team;
@@ -57,7 +58,7 @@ export class PlayerInfo extends Entity {
     .map(() => new Array(2)
       .fill(0));
 
-  public constructor( world: GameWorld,type = EntityType.Player,id: number = world.nextID(type), cache: Cache  =world.cache, ) {
+  public constructor(world: GameWorld, type = EntityType.Player, id: number = world.nextID(type), cache: Cache = world.cache,) {
     super(id, world);
     this.type = type;
     this.name = "Player_" + this.id;
@@ -134,6 +135,9 @@ export class PlayerInfo extends Entity {
 
   public setName(cache: Cache, name: string): void {
     this.set(cache, "name", name);
+  }
+  public getFullName(): string {
+    return this.name;
   }
 
   public setPing(cache: Cache, ping: number): void {

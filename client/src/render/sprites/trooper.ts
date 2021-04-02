@@ -30,8 +30,8 @@ export class TrooperSprite extends GameSprite<Man> {
 
   //private debug: PIXI.Graphics;
 
-  public constructor(spritesheet: PIXI.Spritesheet, world: GameWorld = new GameWorld(spriteSheet.textures)) {
-    super(spriteSheet, Man, world);
+  public constructor(spritesheet: PIXI.Spritesheet, world: GameWorld = new GameWorld(spriteSheet.textures), draggable = false) {
+    super(spriteSheet, Man, world, draggable);
     this.debugcolor = 0x00ffff;
 
     //this.x = 0;
@@ -50,7 +50,7 @@ export class TrooperSprite extends GameSprite<Man> {
     this.trooper = new PIXI.Sprite(texture);
     // this.trooper.x = -Math.round(texture.width / 2);
 
-    this.trooper.anchor.x = 0;
+    this.trooper.anchor.x = 0.5;
     this.trooper.anchor.y = 0;
 
     this.container.addChild(this.trooper);
@@ -63,6 +63,7 @@ export class TrooperSprite extends GameSprite<Man> {
     this.interval = window.setInterval((): void => {
       this.pimpWalk();
     }, frameDelay);
+    this.bindEventHandlers(this.trooper);
   }
 
   private getTexture(): string {
@@ -102,7 +103,7 @@ export class TrooperSprite extends GameSprite<Man> {
   public redraw(): void {
     // update texture state
     this.trooper.texture = this.spritesheet.textures[this.getTexture()];
-    /*
+    ///*
     if (this.entity.state == TrooperState.Walking_LEFT || this.entity.state == TrooperState.Walking_RIGHT) {
       const dir = this.entity.state == TrooperState.Walking_LEFT ? 1 : -1;
       // const d = TrooperDirection[this.direction];
@@ -112,13 +113,13 @@ export class TrooperSprite extends GameSprite<Man> {
     } else {
       this.trooper.scale.x = 1;
     }
-    */
+
+    //*/
     //this.trooper.y = -Math.round(this.trooper.texture.height) / 2;
     //console.log(this.entity.getCollisionBounds())
     //this.drawDebug();
     //this.container.position.set(this.entity.x, this.entity.y);
-    this.trooper.height = this.trooper.height;
-    this.trooper.x = this.entity.x;
+    this.trooper.x = this.entity.x + this.trooper.width / 2;
     this.trooper.y = this.entity.y - this.trooper.height + this.trooper.texture.height;
   }
 

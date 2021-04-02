@@ -30,7 +30,7 @@ export class PlayerInfos {
       fontWeight: "bold",
       fill: TeamColor.SpectatorBackground
     });
-    text.anchor.x = 0.5;
+    //text.anchor.x = 0.5;
     return text;
   }
 
@@ -63,9 +63,9 @@ export class PlayerInfos {
     if (name != undefined && x != undefined && y != undefined) {
       text.text = name;
       if (playerInfo.controlType == EntityType.Plane) {
-        text.position.set(x, (y - 25) * -1);
+        text.position.set(x, (y - 25) * 1);
       } else if (playerInfo.controlType == EntityType.Trooper) {
-        text.position.set(x, (y + 48) * -1);
+        text.position.set(x, (y + 48) * 1);
       }
 
       text.style.fill = color;

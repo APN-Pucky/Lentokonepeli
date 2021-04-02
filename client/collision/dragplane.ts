@@ -25,6 +25,7 @@ export class dragplane extends PlaneSprite implements Draggable, Renderable {
   sprite: PIXI.Container;
   eventData: any;
   setPosition(newX: number, newY: number) {
+    
     this.entity.x = newX;
     this.entity.y = newY;
     this.redraw();
