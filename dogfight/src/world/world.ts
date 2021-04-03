@@ -378,7 +378,7 @@ export class GameWorld {
     if ((e == null) || (e.getPlayerInfo() == localPlayerInfo1)) {
       localPlayerInfo1.submitSuicide(p);
       let i = c == 1 ? 1 : 4;
-      this.pushText(4, localPlayerInfo1.getTeam() + "\t" + i + "\t" + localPlayerInfo1.getFullName());
+      this.pushText(4, "", localPlayerInfo1.getTeam() + "\t" + i + "\t" + localPlayerInfo1.getFullName());
     }
     else {
       let localPlayerInfo2: PlayerInfo = e.getPlayerInfo();
@@ -386,12 +386,12 @@ export class GameWorld {
       if (localPlayerInfo2.getTeam() == localPlayerInfo1.getTeam()) {
         j = c == 1 ? 2 : 5;
         localPlayerInfo2.submitTeamKill(e, p);
-        this.pushText(4, localPlayerInfo2.getTeam() + "\t" + j + "\t" + localPlayerInfo2.getFullName() + "\t" + localPlayerInfo1.getFullName());
+        this.pushText(4, "", localPlayerInfo2.getTeam() + "\t" + j + "\t" + localPlayerInfo2.getFullName() + "\t" + localPlayerInfo1.getFullName());
       }
       else {
         j = c == 1 ? 3 : 6;
         localPlayerInfo2.submitKill(e, p);
-        this.pushText(4, localPlayerInfo2.getTeam() + "\t" + j + "\t" + localPlayerInfo2.getFullName() + "\t" + localPlayerInfo1.getFullName());
+        this.pushText(4, "", localPlayerInfo2.getTeam() + "\t" + j + "\t" + localPlayerInfo2.getFullName() + "\t" + localPlayerInfo1.getFullName());
       }
     }
   }
@@ -399,7 +399,7 @@ export class GameWorld {
     //this.gameUtil.killedWithoutAvatar(paramPlayerInfo, paramInt);
     paramPlayerInfo.submitSuicide(null);
     let i = paramInt == 1 ? 1 : 4;
-    this.pushText(4, paramPlayerInfo.getTeam() + "\t" + i + "\t" + paramPlayerInfo.getFullName());
+    this.pushText(4, "", paramPlayerInfo.getTeam() + "\t" + i + "\t" + paramPlayerInfo.getFullName());
   }
   public isTeamBalance(): boolean {
     //return this.teamBalance;
@@ -410,12 +410,12 @@ export class GameWorld {
     //this.teamBalance = paramBoolean;
   }
 
-  public pushText(p1: number = -1, text: string) {
+  public pushText(p1: number = -1, sender = "", text: string) {
     this.broadcaster(
       {
         type: PacketType.PushText,
         data: {
-          text: p1 + "\t" + text
+          text: p1 + "\t" + sender + "\t" + text
         }
       });
   }

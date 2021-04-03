@@ -1,5 +1,5 @@
 import { InputChange, PlayerInput, InputKey } from "../../dogfight/src/input";
-import { ClientState } from "./clientState";
+import { ClientState, InputState } from "./clientState";
 
 const keyMap = {
   Space: InputKey.Jump,
@@ -27,6 +27,7 @@ export class InputHandler {
   private playerInputState: PlayerInput;
 
   public processGameKeyChange: (change: InputChange) => void;
+  public processStrInputChange: (send: boolean) => void;
 
   public constructor() {
     this.playerInputState = {};
@@ -44,13 +45,43 @@ export class InputHandler {
   }
 
   private onKeyDown(event: KeyboardEvent): void {
-    if (this.isGameKey(event)) {
-      const key = this.getGameKey(event);
-      const isKeyPressed = this.playerInputState[key];
-      if (!isKeyPressed) {
-        this.playerInputState[key] = true;
-        this.processGameKeyChange({ key, isPressed: true });
+    if (!ClientState.inputing) {
+      if (this.isGameKey(event)) {
+        const key = this.getGameKey(event);
+        const isKeyPressed = this.playerInputState[key];
+        if (!isKeyPressed) {
+          this.playerInputState[key] = true;
+          this.processGameKeyChange({ key, isPressed: true });
+        }
       }
+      if (event.key == "y") {
+        ClientState.inputStr = "";
+        ClientState.inputing = InputState.ALL;
+        this.processStrInputChange(false);
+      }
+      if (event.key == "t") {
+        ClientState.inputStr = "";
+        ClientState.inputing = InputState.TEAM;
+        this.processStrInputChange(false);
+      }
+    }
+    else {
+      if (event.key == "Enter") {
+        this.processStrInputChange(true);
+        ClientState.inputing = InputState.None;
+      }
+      else {
+        if (event.key == "Escape") {
+          ClientState.inputing = InputState.None;
+        }
+        else if (event.key == "Backspace") {
+          ClientState.inputStr = ClientState.inputStr.slice(0, -1);
+        }
+        else {
+          ClientState.inputStr += event.key;
+        }
+      }
+      this.processStrInputChange(false);
     }
     if (event.key == "Tab") {
       ClientState.showPlayers = true;

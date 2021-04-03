@@ -3,7 +3,14 @@ export enum ConnectionState {
   OPEN,
   CLOSED
 }
+export enum InputState {
+  None,
+  ALL,
+  TEAM
+}
 export const ClientState = {
   showPlayers: false,
-  connection: ConnectionState.CONNECTING
+  inputing: InputState.None,
+  inputStr: "",
+  connection: ConnectionState.CONNECTING,
 };

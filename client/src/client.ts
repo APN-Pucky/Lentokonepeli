@@ -19,6 +19,7 @@ import { isNameValid } from "../../dogfight/src/validation";
 import Cookies from "js-cookie";
 import { moveBullet } from "../../dogfight/src/entities/Bullet";
 import { loadImages } from "../../dogfight/src/images";
+import { ClientState, InputState } from "./clientState";
 
 export class GameClient {
   private renderer: GameRenderer;
@@ -107,6 +108,9 @@ export class GameClient {
     this.input.processGameKeyChange = (change): void => {
       this.processGameInput(change);
     };
+    this.input.processStrInputChange = (send: boolean): void => {
+      this.processStrInput(send);
+    };
 
     // register/start local movement calculations
     this.lastTick = Date.now();
@@ -176,7 +180,19 @@ export class GameClient {
       // console.log("you are playing now!");
     }
   }
+  private processStrInput(send: boolean): void {
+    this.renderer.chatfield.update();
+    if (send) {
+      let type = 0;
+      if (ClientState.inputing == InputState.ALL)
+        type = 1;
+      if (ClientState.inputing == InputState.TEAM)
+        type = 2;
+      const packet: Packet = { type: PacketType.PushText, data: { text: type + "\t" + this.playerInfo.name + "\t" + ClientState.inputStr } };
+      this.network.send(packet);
+    }
 
+  }
   private processGameInput(change: InputChange): void {
     switch (this.mode) {
       case ClientMode.SelectTeam: {
@@ -233,6 +249,7 @@ export class GameClient {
     }
     if (type == PacketType.PushText) {
       this.renderer.killarea.refreshArea(data.text);
+      this.renderer.chatarea.refreshArea(data.text);
     }
   }
 

@@ -29,6 +29,8 @@ import { TeamInfoSprite } from "./sprites/teaminfo";
 import { KillArea } from "./entities/killarea";
 import { ClockSprite } from "./sprites/clock";
 import { Clock } from "./entities/clock";
+import { ChatArea } from "./entities/chatarea";
+import { ChatField } from "./entities/chatfield";
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
@@ -79,6 +81,8 @@ export class GameRenderer {
 
   public HUD: GameHud;
   public killarea: KillArea;
+  public chatarea: ChatArea;
+  public chatfield: ChatField;
   public clock: Clock;
 
   // UI Controllers
@@ -114,6 +118,8 @@ export class GameRenderer {
     this.sky = new SkyBackground(this.spriteSheet);
     this.HUD = new GameHud(this.spriteSheet);
     this.killarea = new KillArea(this.spriteSheet);
+    this.chatarea = new ChatArea(this.spriteSheet);
+    this.chatfield = new ChatField(this.spriteSheet);
     this.clock = new Clock(this.spriteSheet);
 
     // Initialize UI
@@ -136,6 +142,8 @@ export class GameRenderer {
     this.gameContainer.addChild(this.debug.gameContainer);
     this.gameContainer.addChild(this.HUD.container);
     this.gameContainer.addChild(this.killarea.container);
+    this.gameContainer.addChild(this.chatarea.container);
+    this.gameContainer.addChild(this.chatfield.container);
     this.gameContainer.addChild(this.clock.container);
 
     // Add UI controllers

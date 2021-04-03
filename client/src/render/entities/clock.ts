@@ -23,7 +23,8 @@ export class Clock {
     this.text = new PIXI.Text("", {
       font: "arial",
       fontSize: 17,
-      fill: ClockColor.base
+      fill: ClockColor.base,
+      fontWeight: "bold"
     });
 
     this.text.zIndex = DrawLayer.Clock;
@@ -47,18 +48,20 @@ export class Clock {
       this.text.style = {
         font: "arial",
         fontSize: 17,
-        fill: ClockColor.special
+        fill: ClockColor.special,
+        fontWeight: "bold"
       };
     } else {
       this.text.style = {
         font: "arial",
         fontSize: 17,
-        fill: ClockColor.base
+        fill: ClockColor.base,
+        fontWeight: "bold"
       };
     }
     this.text.text = (str1 + ":" + str2)
     this.text.x = 350;
-    this.text.y = 397 - 17;
+    this.text.y = 397;
     //console.log(str1 + ":" + str2)
 
   }

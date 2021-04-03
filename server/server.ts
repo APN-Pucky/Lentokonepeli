@@ -126,13 +126,18 @@ loadImages().then((img) => {
           world.queueInput(player.id, key, isPressed);
         }
       }
-
+      if (packet.type == PacketType.PushText) {
+        //TODO do security
+        broadcast(packet);
+      }
       // send world state to newly connected player.
       if (packet.type == PacketType.RequestFullSync) {
         // get current world state and send it to newly player
         const state = world.getState();
         const data: Packet = { type: PacketType.FullSync, data: state };
         ws.send(encodePacket(data));
+        //ws.send(encodePacket({ type: PacketType.PushText, data: { text: 7 + "\t\t" + "ok 3 erä alkaaa. kun enterit on paineltu" } }))
+        //ws.send(encodePacket({ type: PacketType.PushText, data: { text: 1 + "\tPucky\t" + "Hello there" } }))
         return;
       }
 

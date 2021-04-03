@@ -90,7 +90,7 @@ export class KillArea {
     if (+elems[0] == 4) {
       this.line = new PIXI.Container();
       this.line.y = this.container.getBounds().bottom;
-      let i: number = +elems[1];
+      let i: number = +elems[2];
       let j: number = this.myTeam;
       let str1: string;
       let str2: string;
@@ -106,42 +106,42 @@ export class KillArea {
         str1 = "opponent"
         str2 = "own";
       }
-      let k: number = +elems[2];
+      let k: number = +elems[3];
       let str3: string;
       let str4: string;
       switch (k) {
         case 1:
-          this.insertText(elems[3] + " ", str1);
+          this.insertText(elems[4] + " ", str1);
           this.insertText(" ", "plane");
           break;
         case 2:
-          str3 = elems[3];
-          str4 = elems[4];
+          str3 = elems[4];
+          str4 = elems[5];
           this.insertText(str3 + " ", str1);
           this.insertText(" ", "plane");
           this.insertText(" " + str4 + " ", str1);
           break;
         case 3:
-          str3 = elems[3];
-          str4 = elems[4];
+          str3 = elems[4];
+          str4 = elems[5];
           this.insertText(str3 + " ", str1);
           this.insertText(" ", "plane");
           this.insertText(" " + str4 + " ", str2);
           break;
         case 4:
-          this.insertText(elems[3] + " ", str1);
+          this.insertText(elems[4] + " ", str1);
           this.insertText(" ", "man");
           break;
         case 5:
-          str3 = elems[3];
-          str4 = elems[4];
+          str3 = elems[4];
+          str4 = elems[5];
           this.insertText(str3 + " ", str1);
           this.insertText(" ", "man");
           this.insertText(" " + str4 + " ", str1);
           break;
         case 6:
-          str3 = elems[3];
-          str4 = elems[4];
+          str3 = elems[4];
+          str4 = elems[5];
           this.insertText(str3 + " ", str1);
           this.insertText(" ", "man");
           this.insertText(" " + str4 + " ", str2);
