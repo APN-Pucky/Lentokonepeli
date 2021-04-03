@@ -99,7 +99,8 @@ export class Bullet extends OwnableSolidEntity {
     return new Rectangle(this.localX / SCALE_FACTOR, this.localY / SCALE_FACTOR, this.width, this.height);
   }
 
-  public tick(cache: Cache, deltaTime: number): void {
+  public tick(deltaTime: number): void {
+    let cache: Cache = this.world.cache;
     this.move(cache, deltaTime);
     this.ageBullet(cache, deltaTime);
   }

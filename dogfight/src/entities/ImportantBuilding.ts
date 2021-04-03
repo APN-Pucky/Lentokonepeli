@@ -73,7 +73,7 @@ export class ImportantBuilding extends SolidEntity {
     this.set(this.world.cache, "health", Math.round(this.localhealth / HEALTH_MAX * 255));
   }
 
-  public run(): void {
+  public tick(deltaTime: number): void {
     if ((this.localhealth > 0) && (this.localhealth < HEALTH_MAX)) {
       this.healthTimer = ((this.healthTimer + 1) % HEALTH_TIMER_MAX);
       if (this.healthTimer == 0) {

@@ -532,7 +532,8 @@ export class Plane extends OwnableSolidEntity {
 
   private prevmode;
   // advance the plane simulation
-  public tick(cache: Cache, deltaTime: number): void {
+  public tick(deltaTime: number): void {
+    let cache: Cache = this.world.cache;
     //console.log("Mode: " + this.mode + " X: " + this.x + " Y: " + this.y);
     //this.speed = 0;
     //this.setPos(cache, this.localX / 100, this.localY / 100);
@@ -1007,7 +1008,7 @@ export class Plane extends OwnableSolidEntity {
     }
     const x = Math.round(this.localX / SCALE_FACTOR);
     const y = Math.round(this.localY / SCALE_FACTOR);
-    let col = true ;//this.checkCollision();
+    let col = true;//this.checkCollision();
     console.log((this.runway.getDirection() == 1 && x <= this.runway.getStartX()), (this.runway.getDirection() == 0 && x >= this.runway.getStartX()));
     console.log(this.runway.getDirection() == 1, x <= this.runway.getStartX(), this.runway.getDirection() == 0, x >= this.runway.getStartX());
     if (!col || (this.runway.getDirection() == 1 && x <= this.runway.getStartX()) || (this.runway.getDirection() == 0 && x >= this.runway.getStartX())) {
@@ -1067,7 +1068,7 @@ export class Plane extends OwnableSolidEntity {
           this.radians = 0;
         }
         //this.direction = radiansToDirection(this.radians);
-        this.localY = (localRunway.getLandableY() - this.getBottomHeight() ) * SCALE_FACTOR;
+        this.localY = (localRunway.getLandableY() - this.getBottomHeight()) * SCALE_FACTOR;
         console.log("HHIITT - PrLanding!!!");
         if (localRunway.getTeam() == this.getTeam() && ((localRunway.getDirection() == 1 && this.radians == Math.PI) || (localRunway.getDirection() == 0 && this.radians == 0)) && localRunway.reserveFor(2)) {
           this.runway = localRunway;

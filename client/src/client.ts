@@ -369,6 +369,9 @@ export class GameClient {
     else if (type == EntityType.TeamInfo) {
       this.renderer.HUD.updateScore(this.gameObjects[EntityType.TeamInfo]);
     }
+    else if (type == EntityType.Clock) {
+      this.renderer.clock.updateTime(object);
+    }
     // If this is an update to our follow object,
     // update our HUD
     if (type == this.followObject.type && this.followObject.id == id) {

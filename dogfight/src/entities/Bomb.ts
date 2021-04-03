@@ -72,8 +72,8 @@ export class Bomb extends OwnableSolidEntity {
       y - Math.sin(this.radians) * this.width / 2 + Math.cos(this.radians) * this.height / 2);
     */
     this.setPos(cache,
-      x ,
-      y );
+      x,
+      y);
 
 
 
@@ -101,7 +101,8 @@ export class Bomb extends OwnableSolidEntity {
   public getCollisionImage(): BufferedImage {
     return this.world.getImage(this.filename + "_rot_" + radiansToDirection(this.radians) + "_flip_" + false);
   }
-  public tick(cache: Cache, deltaTime: number): void {
+  public tick(deltaTime: number): void {
+    let cache: Cache = this.world.cache;
     this.move(cache, deltaTime);
     this.ageBomb(cache, deltaTime);
     this.checkCollision();

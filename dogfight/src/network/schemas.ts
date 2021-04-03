@@ -15,6 +15,7 @@ import { waterSchema } from "../entities/Water";
 import { coastSchema } from "../entities/Coast";
 import { importantBuildingSchema } from "../entities/ImportantBuilding";
 import { teaminfoSchema } from "../entities/TeamInfo";
+import { clockSchema } from "../entities/Clock";
 
 export const schemaTypes = {
   [EntityType.Plane]: planeSchema,
@@ -32,4 +33,5 @@ export const schemaTypes = {
   [EntityType.Bomb]: bombSchema,
   [EntityType.Coast]: coastSchema,
   [EntityType.TeamInfo]: teaminfoSchema,
+  [EntityType.Clock]: clockSchema,
 };

@@ -64,7 +64,8 @@ export class Explosion extends OwnableSolidEntity {
     this.set(cache, "playerID", id);
   }
 
-  public tick(cache: Cache, deltaTime: number): void {
+  public tick(deltaTime: number): void {
+    let cache: Cache = this.world.cache;
     this.age += deltaTime;
     if (this.age >= 560) {
       //console.log("explosion age " + this.age);

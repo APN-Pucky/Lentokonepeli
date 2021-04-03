@@ -32,6 +32,7 @@ export enum EntityType {
   Coast,
   ImportantBuilding,
   TeamInfo,
+  Clock,
 }// Update our variable in the object, and the cache.
 
 

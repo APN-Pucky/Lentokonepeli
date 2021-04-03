@@ -34,7 +34,8 @@ export enum DrawLayer {
   Explosion = LAYER.LAYER11,
   Bomb = LAYER.LAYER11,
   Bullet = LAYER.LAYER11,
-  Player = LAYER.LAYER12
+  Player = LAYER.LAYER12,
+  Clock = LAYER.LAYER07,
 }
 
 export enum GameScreen {

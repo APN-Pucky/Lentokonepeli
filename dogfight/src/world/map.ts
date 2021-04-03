@@ -113,7 +113,7 @@ export function loadMap(world: GameWorld, map: GameMap): void {
       world,
     );
     obj.setData(world.cache, tower);
-    world.backgrounditem.push(obj);
+    world.backgrounditems.push(obj);
   });
   map.waters.forEach((water): void => {
     const obj = new Water(world);
@@ -234,27 +234,27 @@ export function parseLevelLayer(world: GameWorld, paramString: string): void {
         break;
       case "T":
         obj = new BackgroundItem(world, i + j * 100 + 50, 5, 0)
-        world.backgrounditem.push(obj);
+        world.backgrounditems.push(obj);
         break;
       case "t":
         obj = new BackgroundItem(world, i + j * 100 + 50, 5, 1)
-        world.backgrounditem.push(obj);
+        world.backgrounditems.push(obj);
         break;
       case "D":
         obj = new BackgroundItem(world, i + j * 100 + 50, 5, 2)
-        world.backgrounditem.push(obj);
+        world.backgrounditems.push(obj);
         break;
       case "d":
         obj = new BackgroundItem(world, i + j * 100 + 50, 5, 3)
-        world.backgrounditem.push(obj);
+        world.backgrounditems.push(obj);
         break;
       case "P":
         obj = new BackgroundItem(world, i + j * 100 + 50, 5, 4)
-        world.backgrounditem.push(obj);
+        world.backgrounditems.push(obj);
         break;
       case "p":
         obj = new BackgroundItem(world, i + j * 100 + 50, 5, 5)
-        world.backgrounditem.push(obj);
+        world.backgrounditems.push(obj);
         break;
       case "F":
         obj = new Flag(world, i + j * 100 + 50 - Flag.getImageWidth(world) / 2, -90, 0)

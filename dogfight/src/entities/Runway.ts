@@ -69,7 +69,7 @@ export class Runway extends SolidEntity {
   }
 
   public getCollisionBounds(): Rectangle {
-    return new Rectangle(this.x, this.y , this.imageWidth[1 - this.direction], this.imageHeight[1 - this.direction]);
+    return new Rectangle(this.x, this.y, this.imageWidth[1 - this.direction], this.imageHeight[1 - this.direction]);
   }
   public getCollisionImage() {
     return this.image[1 - this.direction];
@@ -146,7 +146,7 @@ export class Runway extends SolidEntity {
     return true;
   }
 
-  public run(): void {
+  public tick(deltaTime: number): void {
     if ((this.localhealth > 0) && (this.localhealth < HEALTH_MAX)) {
       this.healthTimer = ((this.healthTimer + 1) % HEALTH_TIMER_MAX);
       if (this.healthTimer == 0) {

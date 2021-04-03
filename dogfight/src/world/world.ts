@@ -28,6 +28,8 @@ import { BufferedImage } from "../BufferedImage";
 import { Coast } from "../entities/Coast";
 import { TeamInfo } from "../entities/TeamInfo";
 import { messageCallback, Packet, PacketType } from "../network/types";
+import { Clock } from "../entities/Clock";
+import { Ticking } from "../entities/Ticking";
 
 
 export enum GameMode {
@@ -58,7 +60,7 @@ export class GameWorld {
   public hills: Hill[];
   public runways: Runway[];
   public importantBuildings: ImportantBuilding[];
-  public backgrounditem: BackgroundItem[];
+  public backgrounditems: BackgroundItem[];
   public troopers: Man[];
   public planes: Plane[];
   public waters: Water[];
@@ -66,6 +68,7 @@ export class GameWorld {
   public bullets: Bullet[];
   public bombs: Bomb[];
   public teaminfos: TeamInfo[];
+  public clocks: Clock[];
 
   // god please forgive me for this sin
   private objectArrays = {
@@ -84,6 +87,7 @@ export class GameWorld {
     [EntityType.Bullet]: "bullets",
     [EntityType.Bomb]: "bombs",
     [EntityType.TeamInfo]: "teaminfos",
+    [EntityType.Clock]: "clocks",
   };
 
   // Next available ID, incremented by 1.
@@ -91,6 +95,9 @@ export class GameWorld {
   private idCounter = 0;
   private broadcaster: messageCallback = null;
   private textures = null;
+
+  private modeTime = 1000 * 1000;
+  private startTime;
 
   public constructor(textures = null, app: messageCallback = null) {
     for (const type in EntityType) {
@@ -110,7 +117,24 @@ export class GameWorld {
 
 
   public getEntities(): Entity[][] {
-    return [this.planes, this.troopers, this.bombs, this.bullets, this.runways, this.importantBuildings, this.grounds, this.coasts, this.waters, this.players, this.backgrounditem, this.hills, this.flags, this.explosions, this.teaminfos];
+    return [
+      this.planes,
+      this.troopers,
+      this.bombs,
+      this.bullets,
+      this.runways,
+      this.importantBuildings,
+      this.grounds,
+      this.coasts,
+      this.waters,
+      this.players,
+      this.backgrounditems,
+      this.hills,
+      this.flags,
+      this.explosions,
+      this.teaminfos,
+      this.clocks,
+    ];
   }
   public clearCache(): void {
     this.cache = {};
@@ -129,7 +153,7 @@ export class GameWorld {
     this.hills = [];
     this.runways = [];
     this.importantBuildings = [];
-    this.backgrounditem = [];
+    this.backgrounditems = [];
     this.troopers = [];
     this.waters = [];
     this.planes = [];
@@ -137,6 +161,9 @@ export class GameWorld {
     this.bullets = [];
     this.bombs = [];
     this.teaminfos = [new TeamInfo(this, 0), new TeamInfo(this, 1)];
+    this.clocks = [new Clock(this)];
+
+    this.startTime = Date.now();
     //this.teaminfos[0].setScore(100);
   }
 
@@ -151,12 +178,28 @@ export class GameWorld {
   public tick(deltaTime: number): Cache {
     processInputs(this);
     processTakeoffs(this);
+
+    ///*
+    for (let el of this.getEntities()) {
+      for (let e of el) {
+        if ((e as any).tick !== undefined) {
+          (e as any).tick(deltaTime);
+        }
+      }
+    }
+    //*/
+
+    /*
     processPlanes(this, deltaTime);
     processBullets(this, deltaTime);
     processBombs(this, deltaTime);
     processTroopers(this, deltaTime);
     processExplosions(this, deltaTime);
     processCollision(this);
+    for (let e of this.clocks) {
+      e.tick(deltaTime);
+    }
+    //*/
     return this.cache;
   }
 
@@ -301,8 +344,15 @@ export class GameWorld {
   //TODO s
   public getGameTimeLeft(): number {
     //return this.gameUtil.getTimeLeft();
-    return -1;
+    let l: number = this.startTime + this.modeTime - Date.now();
+    return l > 0 ? l : 0;
   }
+
+  public getGameTimeElapsed(): number {
+    let l = Date.now() - this.startTime;
+    return l > 0 ? l : 0;
+  }
+
   public scored(p1: number, p2: number) {
     if (p1 != -1) {
       this.teaminfos[p1].adjustScore(p2);
@@ -379,7 +429,7 @@ export class GameWorld {
       this.hills,
       this.runways,
       this.importantBuildings,
-      this.backgrounditem,
+      this.backgrounditems,
       this.waters,
       this.planes,
       this.explosions,

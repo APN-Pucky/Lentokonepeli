@@ -161,7 +161,8 @@ export class Man extends OwnableSolidEntity {
     this.setState(this.world.cache, TrooperState.Parachuting);
   }
 
-  public tick(cache: Cache, deltaTime: number): void {
+  public tick(deltaTime: number): void {
+    let cache: Cache = this.world.cache;
     this.move(cache, deltaTime);
   }
 
