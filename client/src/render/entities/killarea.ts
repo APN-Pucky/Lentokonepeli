@@ -149,7 +149,12 @@ export class KillArea {
       }
       this.container.addChild(this.line);
       const tl = this.line;
-      setTimeout(() => { this.container.removeChild(tl) }, 8000);
+      setTimeout(() => {
+        this.container.removeChild(tl);
+        for (let c of this.container.children) {
+          c.y -= tl.height;
+        }
+      }, 8000);
 
     }
   }

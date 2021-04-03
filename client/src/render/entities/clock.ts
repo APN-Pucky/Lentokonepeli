@@ -59,7 +59,7 @@ export class Clock {
     this.text.text = (str1 + ":" + str2)
     this.text.x = 350;
     this.text.y = 397 - 17;
-    console.log(str1 + ":" + str2)
+    //console.log(str1 + ":" + str2)
 
   }
 }
