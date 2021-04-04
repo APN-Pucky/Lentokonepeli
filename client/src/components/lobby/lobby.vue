@@ -21,7 +21,7 @@
             {{ r.id }}
           </td>
           <td>{{ r.name }}</td>
-          <td>{{ r.map }}</td>
+          <td>{{ r.map.name }}</td>
           <td>{{ r.current_players }}/{{ r.max_players }}</td>
         </tr>
       </tbody>

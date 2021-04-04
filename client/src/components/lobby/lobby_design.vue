@@ -6,11 +6,19 @@
       <input type="text" v-model="params.name" />
       <br />
       <label>Map</label>
-      <select v-model="params.map">
+      <select v-model="params.map.name" @change="setMap(params.map.name)">
         <option v-for="m in maps" :value="m" :key="m">
           {{ m }}
         </option>
       </select>
+      <br />
+      <label>Map Layout</label>
+      <textarea
+        type="text"
+        v-model="params.map.layout"
+        rows="5"
+        cols="100"
+      ></textarea>
       <br />
       <label>Max Players</label>
       <input type="text" v-model.number="params.max_players" />
@@ -35,6 +43,10 @@ export default Vue.extend({
     },
   },
   methods: {
+    setMap(m) {
+      this.$store.state.client.roomparams.map.layout = maps[m];
+      return m;
+    },
     handleClick() {
       this.$store.state.client.createRoom();
     },

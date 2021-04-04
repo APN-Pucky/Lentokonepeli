@@ -11,6 +11,12 @@ import { Coast, coastSchema } from "../entities/Coast";
 import { ImportantBuilding } from "../entities/ImportantBuilding";
 import { ImportantBuildingSprite } from "../../../client/src/render/sprites/importantbuilding";
 
+
+export interface Map {
+  name: string,
+  layout: string,
+  objects: GameMap,
+}
 /**
  * A declaritive object that describes a level.
  * You can list all of the objects
@@ -25,76 +31,77 @@ export interface GameMap {
   hills: any[];
 }
 
-export let katala: string[] = [
+export let katala: string = [
   "..HF..fH....................H......",
   "...L..r.........................t..",
-  "\\<######>//////////////////////<#>/"];
-export let london: string[] = [
+  "\\<######>//////////////////////<#>/"].join("\n");
+export let london: string = [
   "...H..........H...H...H....H...H...H.....H..........H....",
   ".R..................i....l..i..r....i..................L.",
   "F...F..........fft....ff..t...T..ff....Tff..........F...F",
   "#####>////////<###########################>\\\\\\\\\\\\\\\\<#####",
-];
-export let bunkers: string[] = [
+].join("\n");
+export let bunkers: string = [
   "...Sp..S.p...........pP...........P..S..p.S...",
   ".....D.F.R..........F..f.............f.d......",
   "...R................I..i..........l.....l.....",
   "([_________]((((((([____])))))))[___________])"
-];
+].join("\n");
 
-export let classic2: string[] = [
+export let classic2: string = [
   "...H.....H.....H.....H.....H.....H.....H.....H.....H.....H...",
   "...R.....................................................l...",
   "........R....R.................................l....l........",
   "........F....T.................................t....f........",
   "\\<#########################################################>/"
-];
-export let desert: string[] = [
+].join("\n");
+export let desert: string = [
   "...P.....P....p..p....P.......P........pP....",
   "........D...R.S.........S.....S.....d........",
   "...IF.R.........................l.....l.fi...",
   "([_________________________________________])",
-];
-export let africa: string[] = [
+].join("\n");
+export let africa: string = [
   "..p.PPpP.p.......Pp....pp..P.p...p.P......pP.p.......p.pPPpPp..",
   "...S....S....S...S....S.....S....S...S......S...S...S...S..S...",
   "..I.I.I...R..FDF...............................fdf..l...i.i.i..",
   "..................L.........................r..................",
   "([___________________________________________________________])"
-];
+].join("\n");
 
-export let jungle: string[] = [
+export let jungle: string = [
   "..p..p......P.Pp.pp.....PpP.....Pp.p.p......P.pP...",
   "...H....H....H.....H...H.....H...H......H...H....H.",
   "............R........................l.............",
   "...R.......F..........................f......l.....",
   "([_____])([________])(([____])([_______]))([_____])",
-]
+].join("\n")
 
-export let sahara: string[] = [
+export let sahara: string = [
   "................S........................S.......S.....S..S..........................................S...............",
   ".............D...R..................................................................................d................",
   "PP...ppp...R..F.................................................................................l..f..l.....PP...ppP.",
   "__])[_________________________________________________________________________________________________________]([____",
-]
+].join("\n")
 
-export let berlin: string[] = [
+export let berlin: string = [
   "....................................................................H...H...",
   "FFF..TF.....tF..T.TF...TF...T..F..t..t..t..FFF..............................",
   ".......R..I...R.....R........I........................................f.l...",
   "###############################################>//////////////////<#######>/",
-]
+].join("\n")
 
 export let maps = {
-  "katala" : katala, 
-  "london" : london,
-   "bunkers" : bunkers,
-    "classic2": classic2,
-     "desert" : desert,
-      "africa" : africa, 
-      "jungle" : jungle, 
-      "berlin" : berlin,
-       "sahara" : sahara};
+  "katala": katala,
+  "london": london,
+  "bunkers": bunkers,
+  "classic2": classic2,
+  "desert": desert,
+  "africa": africa,
+  "jungle": jungle,
+  "berlin": berlin,
+  "sahara": sahara
+};
 
 export function loadMap(world: GameWorld, map: GameMap): void {
   map.grounds.forEach((ground): void => {
@@ -131,11 +138,12 @@ export function loadMap(world: GameWorld, map: GameMap): void {
   });
 }
 
-export function loadStringMap(world: GameWorld, strings: string[]) {
-  for (let s of strings) {
+export function loadStringMap(world: GameWorld, strings: string) {
+  for (let s of strings.split("\n")) {
     parseLevelLayer(world, s);
   }
 }
+
 export function parseLevelLayer(world: GameWorld, paramString: string): void {
   let i = -paramString.length * 100 / 2;
   for (let j = 0; j < paramString.length; j++) {

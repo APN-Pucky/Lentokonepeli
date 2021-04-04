@@ -4,7 +4,7 @@ import { rm } from "../../util";
 import { WebSocketConnection } from "../session";
 import { createModifiersFromModifierFlags } from "typescript";
 import { GameWorld, } from "../../world/world";
-import { desert, loadStringMap } from "../../world/map";
+import { desert, loadStringMap, maps } from "../../world/map";
 import { TeamOption } from "../../../../client/src/teamSelector";
 import { Team } from "../../constants";
 import { RoomInfo, RoomParameters, RoomServer } from "./room";
@@ -17,11 +17,7 @@ export class LobbyServer extends Server {
   public constructor(img) {
     super(img);
     this.roomservers = [];
-    this.createRoom({ id: 0, name: "default1", map: "desert", max_players: 16 })
-    this.createRoom({ id: 1, name: "default2", map: "jungle", max_players: 16 })
-    this.createRoom({ id: 2, name: "default3", map: "sahara", max_players: 16 })
-    this.createRoom({ id: 3, name: "default4", map: "berlin", max_players: 16 })
-    this.createRoom({ id: 4, name: "default5", map: "katala", max_players: 16 })
+    this.createRoom({ id: 0, name: "default1", map: { name: "desert", layout: maps["desert"], objects: undefined }, max_players: 16 })
   }
   public packetRecieved(pi: PlayerImpl, packet: Packet) {
     switch (packet.type) {

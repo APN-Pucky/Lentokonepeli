@@ -48,7 +48,7 @@ export class GameClient {
   public roomparams: RoomParameters = {
     id: -1,
     name: "Name",
-    map: "map",
+    map: { name: "custom", layout: [], objects: undefined },
     max_players: 16,
   };
 

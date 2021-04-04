@@ -13,13 +13,14 @@ import { isNameValid } from "../../validation";
 import { requestTakeoff } from "../../world/takeoff";
 import { InputState } from "../../../../client/src/clientState";
 import { InputChange, InputKey } from "../../input";
+import { Map } from "../../world/map";
 
 
 export interface RoomParameters {
   id: number;
   name: string;
-  map: string;
-  max_players: number,
+  map: Map,
+  max_players: number;
 }
 
 export interface RoomInfo extends RoomParameters {
@@ -33,7 +34,7 @@ export class RoomServer extends Server {
   private params: RoomParameters;
   public constructor(img, data: RoomParameters) {
     super(img);
-    this.world = new GameWorld(img, (p: Packet) => { this.broadcast(p); }, maps[data.map]);
+    this.world = new GameWorld(img, (p: Packet) => { this.broadcast(p); }, data.map);
     this.params = data;
     this.players_limit = data.max_players;
     //console.log(this.world)

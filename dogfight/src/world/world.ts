@@ -25,7 +25,8 @@ import { messageCallback, Packet, PacketType } from "../network/types";
 import { Clock } from "../entities/Clock";
 import { Ticking } from "../entities/Ticking";
 import { Player, PlayerImpl } from "../network/player";
-import { loadStringMap } from "./map";
+import { loadMap, loadStringMap } from "./map";
+import { Map } from "./map";
 
 
 export enum GameMode {
@@ -95,7 +96,7 @@ export class GameWorld {
   private modeTime = 1000 * 1000;
   private startTime;
 
-  public constructor(textures = null, app: messageCallback = null, map: string[] = null) {
+  public constructor(textures = null, app: messageCallback = null, map: Map = null) {
     console.log("Created world");
     for (const type in EntityType) {
       this.ids[type] = 0;
@@ -103,8 +104,12 @@ export class GameWorld {
     this.textures = textures;
     this.broadcaster = app;
     this.resetWorld();
-    if (map != null)
-      loadStringMap(this, map);
+    if (map != null) {
+      if (map.layout != undefined)
+        loadStringMap(this, map.layout);
+      if (map.objects != undefined)
+        loadMap(this, map.objects);
+    }
 
     //cont();
   }
