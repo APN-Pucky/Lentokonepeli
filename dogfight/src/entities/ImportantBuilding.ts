@@ -20,7 +20,7 @@ export class ImportantBuilding extends SolidEntity {
   public buildingType: number;
   public team: Team;
   public health: number;
-  public healthTimer: number;
+  public healthTimer: number = 0;
 
   public image;
   public imageWidth;
@@ -77,6 +77,7 @@ export class ImportantBuilding extends SolidEntity {
     if ((this.localhealth > 0) && (this.localhealth < HEALTH_MAX)) {
       this.healthTimer = ((this.healthTimer + 1) % HEALTH_TIMER_MAX);
       if (this.healthTimer == 0) {
+        console.log("healu");
         this.localhealth += 1
         if (this.localhealth * 255 % HEALTH_MAX == 0) {
           this.setHealth(this.localhealth);

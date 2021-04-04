@@ -53,5 +53,8 @@ clumsy plane.`,
   planeSalmsonDescription: `Versatile plane
 with bombs and machine guns.
 Fast and powerful, though
-not very agile.`
+not very agile.`,
+
+  id: "ID",
+  map: "Map",
 };

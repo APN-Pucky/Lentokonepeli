@@ -43,10 +43,12 @@ export class TeamSelector {
       return;
     }
     if (key == InputKey.Left || key == InputKey.Up) {
+      console.log("selected left")
       this.changeSelection(-1, renderer);
       return;
     }
     if (key == InputKey.Right || key == InputKey.Down) {
+      console.log("selected right")
       this.changeSelection(1, renderer);
     }
   }

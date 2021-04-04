@@ -30,7 +30,7 @@ export class Runway extends SolidEntity {
 
   public lastReserve: number;
   public reserveTimer: number;
-  public healthTimer: number;
+  public healthTimer: number = 0;
   private playersInside = [];
 
 

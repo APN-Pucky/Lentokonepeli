@@ -1,7 +1,10 @@
 <template>
   <div id="header">
     <a @click="toggleSettings">
-      <i :class="viewSettings ? 'header-clicked' : ''" class="material-icons">settings</i>
+      <i :class="viewSettings ? 'header-clicked' : ''" class="material-icons"
+        >settings</i
+      >
+    </a>
     </a>
   </div>
 </template>
@@ -16,13 +19,19 @@ export default Vue.extend({
     },
     viewSettings() {
       return this.$store.state.viewSettings;
-    }
+    },
+    viewLobby() {
+      return this.$store.state.viewLobby;
+    },
   },
   methods: {
     toggleSettings() {
       this.$store.state.viewSettings = !this.$store.state.viewSettings;
-    }
-  }
+    },
+    toggleLobby() {
+      this.$store.state.viewLobby = !this.$store.state.viewLobby;
+    },
+  },
 });
 </script>
 

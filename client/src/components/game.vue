@@ -1,6 +1,7 @@
 <template>
   <div id="game">
     <div id="game-view">
+      <Lobby></Lobby>
       <Players></Players>
       <div id="game-canvas"></div>
     </div>
@@ -12,11 +13,13 @@
 import Vue from "vue";
 import Debug from "./debug/debug.vue";
 import Players from "./players.vue";
+import Lobby from "./lobby/lobby.vue";
 
 export default Vue.extend({
   components: {
+    Lobby,
     Players,
-    Debug
+    Debug,
   },
   computed: {
     isLoaded() {
@@ -24,8 +27,8 @@ export default Vue.extend({
     },
     viewDebug() {
       return this.$store.state.viewDebug;
-    }
-  }
+    },
+  },
 });
 </script>
 

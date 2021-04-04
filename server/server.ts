@@ -136,8 +136,7 @@ loadImages().then((img) => {
         const state = world.getState();
         const data: Packet = { type: PacketType.FullSync, data: state };
         ws.send(encodePacket(data));
-        //ws.send(encodePacket({ type: PacketType.PushText, data: { text: 7 + "\t\t" + "ok 3 erä alkaaa. kun enterit on paineltu" } }))
-        //ws.send(encodePacket({ type: PacketType.PushText, data: { text: 1 + "\tPucky\t" + "Hello there" } }))
+        ws.send(encodePacket({ type: PacketType.PushText, data: { text: 7 + "\t\t" + "Hello there" } }))
         return;
       }
 

@@ -16,13 +16,7 @@ import { Team } from "../constants";
 import { Plane, teamPlanes } from "../entities/Plane";
 import { InputQueue, InputKey } from "../input";
 import { processInputs } from "./input";
-import { processCollision } from "./collision";
 import { processTakeoffs, TakeoffEntry } from "./takeoff";
-import { processPlanes } from "./plane";
-import { processBullets } from "./bullet";
-import { processBombs } from "./bomb";
-import { processExplosions } from "./explosion";
-import { processTroopers } from "./trooper";
 import { Ownable } from "../ownable";
 import { BufferedImage } from "../BufferedImage";
 import { Coast } from "../entities/Coast";
@@ -30,7 +24,13 @@ import { TeamInfo } from "../entities/TeamInfo";
 import { messageCallback, Packet, PacketType } from "../network/types";
 import { Clock } from "../entities/Clock";
 import { Ticking } from "../entities/Ticking";
+import { Player, PlayerImpl } from "../network/player";
 
+export interface WorldInfo {
+  id: number;
+  name: string;
+  map: string;
+}
 
 export enum GameMode {
   SCORE,
@@ -98,16 +98,23 @@ export class GameWorld {
 
   private modeTime = 1000 * 1000;
   private startTime;
+  private info: WorldInfo;
 
-  public constructor(textures = null, app: messageCallback = null) {
+  public constructor(textures = null, app: messageCallback = null, info: WorldInfo = null) {
+    console.log("Created world");
     for (const type in EntityType) {
       this.ids[type] = 0;
     }
     this.textures = textures;
     this.broadcaster = app;
     this.resetWorld();
+    this.info = info;
 
     //cont();
+  }
+
+  public getInfo(): WorldInfo {
+    return this.info;
   }
 
   public getImage(name: string) {
@@ -222,11 +229,20 @@ export class GameWorld {
    * Adds a player to the game,
    * and returns the information.
    */
-  public addPlayer(team: Team): PlayerInfo {
-    const player = new PlayerInfo(this);
+  public addPlayer(team: Team, pi: Player): PlayerInfo {
+    const player = new PlayerInfo(this, pi);
     player.set(this.cache, "team", team);
     this.addEntity(player);
     return player;
+  }
+
+  public getPlayer(pi: Player) {
+    for (let p of this.players) {
+      if (p.player == pi) {
+        return p;
+      }
+    }
+    return null;
   }
 
   public removePlayer(p: PlayerInfo): void {

@@ -7,6 +7,7 @@ import { teamPlanes, Plane, PlaneType } from "./Plane";
 import { Ownable } from "../ownable";
 import { Man } from "./Man";
 import { GameObjectSchema, IntType } from "../network/types";
+import { Player } from "../network/player";
 
 export enum PlayerStatus {
   Playing,
@@ -23,6 +24,7 @@ export class PlayerInfo extends Entity {
   public controlID: number;
   public status: PlayerStatus;
   public ping: number;
+  public player: Player;
 
   public inputState: PlayerInput;
 
@@ -58,9 +60,10 @@ export class PlayerInfo extends Entity {
     .map(() => new Array(2)
       .fill(0));
 
-  public constructor(world: GameWorld, type = EntityType.Player, id: number = world.nextID(type), cache: Cache = world.cache,) {
+  public constructor(world: GameWorld, pi: Player, type = EntityType.Player, id: number = world.nextID(type), cache: Cache = world.cache,) {
     super(id, world);
     this.type = type;
+    this.player = pi;
     this.name = "Player_" + this.id;
     this.controlType = EntityType.None;
     this.controlID = 0;

@@ -4,7 +4,6 @@ import { PlayerInfo } from "../entities/PlayerInfo";
 import { Plane } from "../entities/Plane";
 import { KeyChangeList, InputKey, GameKey } from "../input";
 import { Man, TrooperState } from "../entities/Man";
-import { destroyTrooper } from "./trooper";
 
 export function planeInput(
   world: GameWorld,

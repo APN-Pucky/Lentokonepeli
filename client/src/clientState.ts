@@ -9,6 +9,7 @@ export enum InputState {
   TEAM
 }
 export const ClientState = {
+  showLobby: true,
   showPlayers: false,
   inputing: InputState.None,
   inputStr: "",

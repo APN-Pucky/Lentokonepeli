@@ -10,13 +10,8 @@ import { GameObjectSchema, IntType } from "../network/types";
 import { PlayerInfo } from "./PlayerInfo";
 import { Runway } from "./Runway";
 import { ImportantBuilding } from "./ImportantBuilding";
+import { rm } from "../util";
 
-function arrayRemove(arr, value) {
-
-  return arr.filter(function (ele) {
-    return ele != value;
-  });
-}
 
 export class TeamInfo extends Entity {
   public type: EntityType;
@@ -51,8 +46,8 @@ export class TeamInfo extends Entity {
   }
 
   public part(pi: PlayerInfo) {
-    this.players = arrayRemove(this.players, pi);
-    this.deads = arrayRemove(this.deads, pi);
+    this.players = rm(this.players, pi);
+    this.deads = rm(this.deads, pi);
   }
 
   public dead(pi: PlayerInfo) {

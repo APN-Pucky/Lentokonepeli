@@ -363,6 +363,7 @@ function decodeInput(buffer: ArrayBuffer): Packet {
 }
 
 export function encodePacket(packet: Packet): string | ArrayBuffer {
+  //console.log("sending " + packet.type + " " +packet.data)
   switch (packet.type) {
     case PacketType.FullSync:
     case PacketType.ChangeSync: {
@@ -378,6 +379,7 @@ export function encodePacket(packet: Packet): string | ArrayBuffer {
 }
 
 export function decodePacket(data: string | ArrayBuffer): Packet {
+  //console.log("receving " + data);
   if (typeof data == "string") {
     const packet = JSON.parse(data);
     return packet;

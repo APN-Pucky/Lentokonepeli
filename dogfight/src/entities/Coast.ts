@@ -30,7 +30,7 @@ export class Coast extends SolidEntity {
 
   public getCollisionBounds(): import("../physics/rectangle").Rectangle {
     //console.log(this.subType + "" + this.images[this.subType].width)
-    return new Rectangle(this.x, this.y, this.images[this.subType].width, this.images[this.subType].height);
+    return new Rectangle(this.x, this.y, Coast.getImageWidth(this.world, this.subType), Coast.getImageHeight(this.world, this.subType));
   }
 
   public getCollisionImage(): BufferedImage {

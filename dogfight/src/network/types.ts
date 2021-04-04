@@ -21,6 +21,11 @@ export interface Packet {
  */
 export enum PacketType {
   /* User --> Server */
+  ConnectPlayer,
+  CreateRoom,
+  ListRooms,
+  JoinRoom,
+
   RequestFullSync,
   RequestJoinTeam,
   RequestTakeoff,
