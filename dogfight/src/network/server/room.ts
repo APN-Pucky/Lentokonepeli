@@ -5,7 +5,7 @@ import { rm } from "../../util";
 import { WebSocketConnection } from "../session";
 import { createModifiersFromModifierFlags } from "typescript";
 import { GameWorld, } from "../../world/world";
-import { africa, berlin, bunkers, classic2, desert, jungle, katala, loadStringMap, london, sahara } from "../../world/map";
+import { africa, berlin, bunkers, classic2, desert, jungle, katala, loadStringMap, london, maps, sahara } from "../../world/map";
 import { TeamOption } from "../../../../client/src/teamSelector";
 import { Team } from "../../constants";
 import { Server } from "./server";
@@ -14,18 +14,6 @@ import { requestTakeoff } from "../../world/takeoff";
 import { InputState } from "../../../../client/src/clientState";
 import { InputChange, InputKey } from "../../input";
 
-const maps =
-{
-  "desert": desert,
-  "katala": katala,
-  "bunkers": bunkers,
-  "london": london,
-  "classic2": classic2,
-  "jungle": jungle,
-  "africa": africa,
-  "berlin": berlin,
-  "sahara": sahara,
-}
 
 export interface RoomParameters {
   id: number;

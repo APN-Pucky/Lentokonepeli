@@ -20,7 +20,7 @@ import Cookies from "js-cookie";
 import { moveBullet } from "../../dogfight/src/entities/Bullet";
 import { loadImages } from "../../dogfight/src/images";
 import { ClientState, InputState } from "./clientState";
-import { RoomInfo } from "../../dogfight/src/network/server/room";
+import { RoomInfo, RoomParameters } from "../../dogfight/src/network/server/room";
 
 export class GameClient {
   private renderer: GameRenderer;
@@ -44,6 +44,13 @@ export class GameClient {
 
   public gameObjects: {};
   public rooms: RoomInfo[] = [];
+
+  public roomparams: RoomParameters = {
+    id: -1,
+    name: "Name",
+    map: "map",
+    max_players: 16,
+  };
 
   // strictly for vue, needs to know when
   // objects are updated.
@@ -124,6 +131,11 @@ export class GameClient {
     this.network.send({ type: PacketType.JoinRoom, data: { id: "" + id } });
     this.network.send({ type: PacketType.RequestFullSync });
     ClientState.showLobby = false;
+  }
+
+  public createRoom(): void {
+    this.network.send({ type: PacketType.CreateRoom, data: { params: this.roomparams } })
+    console.log("sent");
   }
 
   public onAnimationFrame(): void {

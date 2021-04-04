@@ -43,7 +43,6 @@ class Localize {
     phrase: keyof Translation | string,
     params?: any
   ): string {
-    console.log(phrase + " = " + Languages[lang][phrase])
     let str = Languages[lang][phrase];
     if (params !== undefined) {
       for (const key in params) {

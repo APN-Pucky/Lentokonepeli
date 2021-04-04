@@ -26,7 +26,7 @@ export class LobbyServer extends Server {
   public packetRecieved(pi: PlayerImpl, packet: Packet) {
     switch (packet.type) {
       case PacketType.CreateRoom:
-        this.createRoom(packet.data);
+        this.createRoom(packet.data.params);
         break;
       case PacketType.ListRooms:
         pi.send({ type: PacketType.ListRooms, data: { rooms: this.listRooms() } });
@@ -52,6 +52,7 @@ export class LobbyServer extends Server {
     let s: RoomServer;
     data["id"] = this.roomservers.length;
     this.roomservers.push(s = new RoomServer(this.img, data));
+    console.log("creatign " + data["name"])
   }
   public listRooms(): RoomInfo[] {
     let roominfos: RoomInfo[] = [];

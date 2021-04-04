@@ -5,6 +5,7 @@
     <Game v-show="conn == states.OPEN"></Game>
     <div v-if="conn == states.CONNECTING">{{ lang.connecting }}</div>
     <div class="error" v-if="conn == states.CLOSED">{{ lang.error }}</div>
+    <lobbyDesign></lobbyDesign>
   </div>
 </template>
 
@@ -17,18 +18,20 @@ import { GameObjectType } from "../../../dogfight/src/object";
 import { ClientMode } from "../types";
 import { ConnectionState } from "../clientState";
 import { Localizer } from "../localization/localizer";
+import LobbyDesign from "./lobby/lobby_design.vue";
 export default Vue.extend({
   name: "App",
   components: {
     Game,
     Header,
-    Settings
+    Settings,
+    LobbyDesign,
   },
   computed: {
     lang() {
       return {
         connecting: Localizer.get("connecting"),
-        error: Localizer.get("connectionError")
+        error: Localizer.get("connectionError"),
       };
     },
     states() {
@@ -46,8 +49,8 @@ export default Vue.extend({
     },
     loaded() {
       return this.$store.state.client.loadedGame;
-    }
-  }
+    },
+  },
 });
 </script>
 <style>

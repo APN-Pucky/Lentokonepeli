@@ -85,7 +85,16 @@ export let berlin: string[] = [
   "###############################################>//////////////////<#######>/",
 ]
 
-export let maps = [katala, london, bunkers, classic2, desert, africa, jungle, berlin, sahara];
+export let maps = {
+  "katala" : katala, 
+  "london" : london,
+   "bunkers" : bunkers,
+    "classic2": classic2,
+     "desert" : desert,
+      "africa" : africa, 
+      "jungle" : jungle, 
+      "berlin" : berlin,
+       "sahara" : sahara};
 
 export function loadMap(world: GameWorld, map: GameMap): void {
   map.grounds.forEach((ground): void => {

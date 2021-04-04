@@ -20,16 +20,10 @@ export default Vue.extend({
     viewSettings() {
       return this.$store.state.viewSettings;
     },
-    viewLobby() {
-      return this.$store.state.viewLobby;
-    },
   },
   methods: {
     toggleSettings() {
       this.$store.state.viewSettings = !this.$store.state.viewSettings;
-    },
-    toggleLobby() {
-      this.$store.state.viewLobby = !this.$store.state.viewLobby;
     },
   },
 });
