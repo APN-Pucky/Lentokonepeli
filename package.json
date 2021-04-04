@@ -4,7 +4,7 @@
   "description": "A modern remake of Lentokonepeli/Dogfight",
   "main": "index.js",
   "scripts": {
-    "watch": "watch 'npm run build' ./client",
+    "watch": "watch 'npm run build' ./client ./dogfight",
     "test": "jest",
     "lint": "eslint **/*.ts",
     "collision": "parcel client/collision/index.html",

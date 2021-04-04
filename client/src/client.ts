@@ -20,7 +20,7 @@ import Cookies from "js-cookie";
 import { moveBullet } from "../../dogfight/src/entities/Bullet";
 import { loadImages } from "../../dogfight/src/images";
 import { ClientState, InputState } from "./clientState";
-import { WorldInfo } from "../../dogfight/src/world/world";
+import { RoomInfo } from "../../dogfight/src/network/server/room";
 
 export class GameClient {
   private renderer: GameRenderer;
@@ -43,7 +43,7 @@ export class GameClient {
   private images;
 
   public gameObjects: {};
-  public rooms: WorldInfo[] = [];
+  public rooms: RoomInfo[] = [];
 
   // strictly for vue, needs to know when
   // objects are updated.

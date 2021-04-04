@@ -6,6 +6,7 @@
           <th>{{ lang.id }}</th>
           <th>{{ lang.name }}</th>
           <th>{{ lang.map }}</th>
+          <th>{{ lang.players }}</th>
         </tr>
       </thead>
       <tbody>
@@ -21,6 +22,7 @@
           </td>
           <td>{{ r.name }}</td>
           <td>{{ r.map }}</td>
+          <td>{{ r.current_players }}/{{ r.max_players }}</td>
         </tr>
       </tbody>
     </table>
@@ -37,7 +39,7 @@ import {
   PlayerInfo,
 } from "../../../../dogfight/src/entities/PlayerInfo";
 import { Localizer } from "../../localization/localizer";
-import { WorldInfo } from "../../../../dogfight/src/world/world";
+import { RoomInfo } from "../../../../dogfight/src/network/server/room";
 const flags = {
   [Team.Centrals]: "germanflag_small.gif",
   [Team.Allies]: "raf_flag_small.gif",
@@ -62,6 +64,7 @@ export default Vue.extend({
         name: Localizer.get("name"),
         id: Localizer.get("id"),
         map: Localizer.get("map"),
+        players: Localizer.get("players"),
       };
     },
     showLobby() {
@@ -100,7 +103,7 @@ export default Vue.extend({
       }
       return "enemy-team";
     },
-    handleclick(r: WorldInfo): void {
+    handleclick(r: RoomInfo): void {
       console.log("clicked " + r.id);
       this.$store.state.client.joinRoom(r.id);
     },

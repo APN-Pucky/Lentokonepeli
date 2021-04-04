@@ -34,15 +34,16 @@ class Localize {
     }
   }
 
-  public get(phrase: keyof Translation, params?: any): string {
+  public get(phrase: keyof Translation | string, params?: any): string {
     return this.getString(this.language, phrase, params);
   }
 
   public getString(
     lang: Language,
-    phrase: keyof Translation,
+    phrase: keyof Translation | string,
     params?: any
   ): string {
+    console.log(phrase + " = " + Languages[lang][phrase])
     let str = Languages[lang][phrase];
     if (params !== undefined) {
       for (const key in params) {

@@ -57,4 +57,5 @@ not very agile.`,
 
   id: "ID",
   map: "Map",
+  players: "Players",
 };

@@ -44,6 +44,7 @@ export interface Translation {
   planeSalmsonName: string;
   planeSalmsonDescription: string;
 
-  id:string;
-  map:string;
+  id: string;
+  map: string;
+  players: string;
 }

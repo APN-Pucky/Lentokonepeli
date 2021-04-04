@@ -4,7 +4,7 @@ import WebSocket from "ws";
 import { rm } from "../../util";
 import { WebSocketConnection } from "../session";
 import { createModifiersFromModifierFlags } from "typescript";
-import { GameWorld, WorldInfo } from "../../world/world";
+import { GameWorld, } from "../../world/world";
 import { africa, berlin, bunkers, classic2, desert, jungle, katala, loadStringMap, london, sahara } from "../../world/map";
 import { TeamOption } from "../../../../client/src/teamSelector";
 import { Team } from "../../constants";
@@ -27,15 +27,28 @@ const maps =
   "sahara": sahara,
 }
 
+export interface RoomParameters {
+  id: number;
+  name: string;
+  map: string;
+  max_players: number,
+}
+
+export interface RoomInfo extends RoomParameters {
+  current_players: number,
+}
+
 export class RoomServer extends Server {
   private world: GameWorld;
   private startTime: number;
   private lastTick: number;
-  public constructor(img, data: WorldInfo) {
+  private params: RoomParameters;
+  public constructor(img, data: RoomParameters) {
     super(img);
-    this.world = new GameWorld(img, (p: Packet) => { this.broadcast(p); }, data);
+    this.world = new GameWorld(img, (p: Packet) => { this.broadcast(p); }, maps[data.map]);
+    this.params = data;
+    this.players_limit = data.max_players;
     //console.log(this.world)
-    loadStringMap(this.world, maps[data.map]);
     this.startTime = Date.now();
     this.lastTick = 0;
     setInterval(() => { this.tick() }, 1000 / 100);
@@ -109,6 +122,21 @@ export class RoomServer extends Server {
     pi.send({ type: PacketType.FullSync, data: this.world.getState() });
     pi.send({ type: PacketType.PushText, data: { text: 7 + "\t\t" + "Hello There" } });
     console.log("send full sync");
+  }
+
+  public getInfo(): RoomInfo {
+    let ri: RoomInfo = {
+      id: this.params.id,
+      name: this.params.name,
+      map: this.params.map,
+      max_players: this.params.max_players,
+      current_players: this.players.length,
+
+    };
+
+
+    return ri;
+
   }
   public getWorld() {
     return this.world;
