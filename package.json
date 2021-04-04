@@ -11,7 +11,7 @@
     "build-solo": "env BUILD=client parcel build client/public/index.html client/public/images/* --public-url replacthislinewithadot",
     "build": "parcel build client/public/index.html --public-url ./",
     "build-no-server": "env BUILD=client parcel build client/public/index.html --public-url ./",
-    "server": "ts-node server/server.ts",
+    "server": "ts-node server/mainserver.ts",
     "no-server": "env BUILD=client parcel client/public/index.html",
     "watch-client": "parcel watch client/public/index.html",
     "clean": "rm -rf .cache && rm -rf dist",
