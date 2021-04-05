@@ -5,7 +5,6 @@
         >settings</i
       >
     </a>
-    </a>
   </div>
 </template>
 

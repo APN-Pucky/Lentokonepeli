@@ -22,6 +22,8 @@ import { isRectangleCollision } from "../physics/collision";
 import { OwnableSolidEntity } from "./OwnableSolidEntity";
 import { Explosion } from "./Explosion";
 import { GameObjectSchema, IntType } from "../network/types";
+import { PlayerImpl } from "../network/player";
+import { Followable } from "./Followable";
 
 // deprecated
 export const infoHUD = {
@@ -236,8 +238,12 @@ export function destroyPlane(
 //const PIXI = require("node-pixi.js");
 //import { PIXI } from 'node-pixi';
 //const app = new PIXI.Application({ forceCanvas: true });
-export class Plane extends OwnableSolidEntity {
-  public type = EntityType.Plane;
+export class Plane extends OwnableSolidEntity implements Followable {
+  public static type = EntityType.Plane;
+  public followed: boolean = false;
+  public getCenterX() { return this.x + this.width / 2 }
+  public getCenterY() { return this.y + this.height / 2 }
+
   public playerInfo: PlayerInfo;
   public team: Team;
   public planeType: PlaneType;
@@ -313,12 +319,8 @@ export class Plane extends OwnableSolidEntity {
     player: PlayerInfo = null,
     side: Team = Team.Centrals,
     runway: Runway = null,
-    type = EntityType.Plane,
-    id: number = world.nextID(type),
-    cache: Cache = world.cache,
   ) {
-    super(id, world, side);
-    this.type = type;
+    super(world, Plane, side);
 
     this.playerInfo = player;
     this.isAbandoned = false;
@@ -357,7 +359,7 @@ export class Plane extends OwnableSolidEntity {
 
     this.runway = runway;
 
-    this.setData(cache, {
+    this.setData(world.cache, {
       x: 0,
       y: 0,
       direction: 0,
@@ -886,7 +888,7 @@ export class Plane extends OwnableSolidEntity {
       //getDogfightToolkit().killed(new Man(0, 0, this.playerInfo), null, 2);
       //this.world.killed(new Trooper(), null, 2);
       //this.playerInfo.removeKeyListener(this);
-      this.world.died(this, this.x, this.y);
+      this.world.died(this, this.getCenterX(), this.getCenterY());
     }
     this.world.removeEntity(this);
   }
@@ -1176,7 +1178,7 @@ export class Plane extends OwnableSolidEntity {
     else {
       if (this.getPlayerInfo().isControlling(this)) {
         this.world.killed(this, e, 2);
-        this.world.died(this, this.x, this.y);
+        this.world.died(this, this.getCenterX(), this.getCenterY());
       }
       this.world.removeEntity(this);
     }
@@ -1211,23 +1213,25 @@ export class Plane extends OwnableSolidEntity {
       y: this.y,
     };
   }
+  public static schema: GameObjectSchema = {
+    numbers: [
+      { name: "x", intType: IntType.Int16 },
+      { name: "y", intType: IntType.Int16 },
+      { name: "planeType", intType: IntType.Uint8 },
+      { name: "team", intType: IntType.Uint8 },
+      { name: "direction", intType: IntType.Uint8 },
+      //{ name: "health", intType: IntType.Uint8 },
+      //{ name: "fuel", intType: IntType.Uint8 },
+      //{ name: "ammo", intType: IntType.Uint8 },
+      //{ name: "bombs", intType: IntType.Uint8 }
+    ],
+    booleans: ["flipped", "motorOn"],
+    strings: []
+  }; public static getType() { return this.type; }
+  public static getSchema() { return this.schema; }
 }
 
-export const planeSchema: GameObjectSchema = {
-  numbers: [
-    { name: "x", intType: IntType.Int16 },
-    { name: "y", intType: IntType.Int16 },
-    { name: "planeType", intType: IntType.Uint8 },
-    { name: "team", intType: IntType.Uint8 },
-    { name: "direction", intType: IntType.Uint8 },
-    //{ name: "health", intType: IntType.Uint8 },
-    //{ name: "fuel", intType: IntType.Uint8 },
-    //{ name: "ammo", intType: IntType.Uint8 },
-    //{ name: "bombs", intType: IntType.Uint8 }
-  ],
-  booleans: ["flipped", "motorOn"],
-  strings: []
-};
+
 export function getPlaneRect(
   x: number,
   y: number,

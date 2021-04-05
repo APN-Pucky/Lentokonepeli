@@ -18,7 +18,7 @@ export const explosionGlobals = {
 };
 
 export class Explosion extends OwnableSolidEntity {
-  public type = EntityType.Explosion;
+  public static type = EntityType.Explosion;
   public x: number;
   public y: number;
   public playerID: number;
@@ -40,16 +40,13 @@ export class Explosion extends OwnableSolidEntity {
     o: Ownable = null,
     x: number = 0,
     y: number = 0,
-    type = EntityType.Explosion,
-    id: number = world.nextID(type),
-    cache: Cache = world.cache,) {
-    super(id, world, o == null ? -1 : o.getPlayerInfo().getTeam());
-    this.type = type;
+  ) {
+    super(world,Explosion, o == null ? -1 : o.getPlayerInfo().getTeam());
     this.playerInfo = o == null ? null : o.getPlayerInfo();
     this.image = world.getImage("explosion0004.gif");
-    this.setTeam(cache, this.playerInfo == null ? -1 : this.playerInfo.getTeam())
-    this.setPlayerID(cache, this.playerInfo == null ? -1 : this.playerInfo.getId())
-    this.setData(cache, {
+    this.setTeam(world.cache, this.playerInfo == null ? -1 : this.playerInfo.getTeam())
+    this.setPlayerID(world.cache, this.playerInfo == null ? -1 : this.playerInfo.getId())
+    this.setData(world.cache, {
       x,
       y,
       age: 0
@@ -115,13 +112,14 @@ export class Explosion extends OwnableSolidEntity {
       age: this.age
     };
   }
-}
 
-export const explosionSchema: GameObjectSchema = {
-  numbers: [
-    { name: "x", intType: IntType.Int16 },
-    { name: "y", intType: IntType.Int16 }
-  ],
-  booleans: [],
-  strings: []
-};
+  public static schema: GameObjectSchema = {
+    numbers: [
+      { name: "x", intType: IntType.Int16 },
+      { name: "y", intType: IntType.Int16 }
+    ],
+    booleans: [],
+    strings: []
+  };  public static getType() { return this.type; }
+  public static getSchema() { return this.schema; }
+}

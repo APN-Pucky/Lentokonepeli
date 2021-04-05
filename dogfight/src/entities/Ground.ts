@@ -7,7 +7,7 @@ import { GameWorld } from "../world/world";
 import { SolidEntity } from "./SolidEntity";
 
 export class Ground extends SolidEntity {
-  public type = EntityType.Ground;
+  public static type = EntityType.Ground;
   public x: number;
   public y: number;
   public width: number;
@@ -15,11 +15,10 @@ export class Ground extends SolidEntity {
   public image;
   private yHitOffset = 7; // 6.5 since image.height/2 == 18.5 and offset is 25
 
-  public constructor(world: GameWorld, t_x: number = 0, t_y: number = 0, t_width: number = 0, subType: number = 0, type: EntityType = EntityType.Ground, id: number = world.nextID(type), cache: Cache = world.cache,) {
-    super(id, world, -1);
-    this.type = type;
+  public constructor(world: GameWorld, t_x: number = 0, t_y: number = 0, t_width: number = 0, subType: number = 0,) {
+    super(world, Ground, -1);
     this.image = world.getImage("ground1.gif");
-    this.setData(cache, {
+    this.setData(world.cache, {
       x: t_x,
       y: t_y,
       width: t_width,
@@ -42,19 +41,20 @@ export class Ground extends SolidEntity {
     };
   }
 
+
+  public static schema: GameObjectSchema = {
+    numbers: [
+      { name: "x", intType: IntType.Int16 },
+      { name: "y", intType: IntType.Int16 },
+      { name: "width", intType: IntType.Uint16 },
+      { name: "terrain", intType: IntType.Uint8 }
+    ],
+    booleans: [],
+    strings: []
+  }; public static getType() { return this.type; }
+  public static getSchema() { return this.schema; }
+
 }
-
-export const groundSchema: GameObjectSchema = {
-  numbers: [
-    { name: "x", intType: IntType.Int16 },
-    { name: "y", intType: IntType.Int16 },
-    { name: "width", intType: IntType.Uint16 },
-    { name: "terrain", intType: IntType.Uint8 }
-  ],
-  booleans: [],
-  strings: []
-};
-
 export function getGroundRect(
   x: number,
   y: number,
@@ -70,3 +70,4 @@ export function getGroundRect(
     direction: 0
   };
 }
+

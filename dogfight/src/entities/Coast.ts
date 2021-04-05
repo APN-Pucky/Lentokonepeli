@@ -9,19 +9,18 @@ import { SolidEntity } from "./SolidEntity";
 
 
 export class Coast extends SolidEntity {
-  public type = EntityType.Coast;
+  public static type = EntityType.Coast;
   public x: number;
   public y: number;
   public subType: number;
   public images;
 
-  public constructor(world: GameWorld, t_x: number = 0, t_y: number = 0, t_subType: number = 0, type = EntityType.Coast, id: number = world.nextID(type), cache: Cache = world.cache,) {
-    super(id, world, -1);
-    this.type = type;
+  public constructor(world: GameWorld, t_x: number = 0, t_y: number = 0, t_subType: number = 0,) {
+    super(world,Coast, -1);
     this.images = [
       world.getImage("beach-l.gif"), world.getImage("beach-r.gif"),
       world.getImage("beach-l_desert.gif"), world.getImage("beach-r_desert.gif")];
-    this.setData(cache, {
+    this.setData(world.cache, {
       x: t_x,
       y: t_y,
       subType: t_subType
@@ -63,15 +62,17 @@ export class Coast extends SolidEntity {
     return Coast.getImage(world, i).height;
   }
 
+
+  public static schema: GameObjectSchema = {
+    numbers: [
+      { name: "x", intType: IntType.Int16 },
+      { name: "y", intType: IntType.Int16 },
+      { name: "subType", intType: IntType.Uint8 }
+    ],
+    booleans: [],
+    strings: []
+  };
+  public static getType() { return this.type; }
+  public static getSchema() { return this.schema; }
+
 }
-
-export const coastSchema: GameObjectSchema = {
-  numbers: [
-    { name: "x", intType: IntType.Int16 },
-    { name: "y", intType: IntType.Int16 },
-    { name: "subType", intType: IntType.Uint8 }
-  ],
-  booleans: [],
-  strings: []
-};
-

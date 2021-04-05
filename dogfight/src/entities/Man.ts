@@ -16,6 +16,7 @@ import { Bomb } from "./Bomb";
 import { Plane } from "./Plane";
 import { BufferedImage } from "../BufferedImage";
 import { GameObjectSchema, IntType } from "../network/types";
+import { Followable } from "./Followable";
 
 
 
@@ -54,9 +55,12 @@ export enum TrooperDirection {
   Right
 }
 
-export class Man extends OwnableSolidEntity {
+export class Man extends OwnableSolidEntity implements Followable {
 
-  public type = EntityType.Trooper;
+  public static type = EntityType.Trooper;
+  public followed: boolean = false;
+  public getCenterX() { return this.x + this.width / 2 }
+  public getCenterY() { return this.y + this.height / 2 }
 
   public localX: number;
   public localY: number;
@@ -98,11 +102,8 @@ export class Man extends OwnableSolidEntity {
     x: number,
     y: number,
     player: PlayerInfo = null,
-    type = EntityType.Trooper,
-    id: number = world.nextID(type),
-    cache: Cache = world.cache,) {
-    super(id, world, player == null ? -1 : player.getTeam());
-    this.type = type;
+  ) {
+    super(world, Man, player == null ? -1 : player.getTeam());
     this.playerinfo = player;
     if (player != null) {
       this.playerinfo.setHealth(1);
@@ -125,7 +126,7 @@ export class Man extends OwnableSolidEntity {
     this.vx = 0;
     this.vy = 0;
 
-    this.setData(cache, {
+    this.setData(world.cache, {
       x: x,
       y: y,
       ammo: 255,
@@ -475,7 +476,7 @@ export class Man extends OwnableSolidEntity {
       console.log("rm - self")
       this.world.removeEntity(this);
       let r = this.getCollisionBounds();
-      this.world.died(this, r.x, r.y);
+      this.world.died(this, this.getCenterX(), this.getCenterY());
     }
   }
 
@@ -492,22 +493,23 @@ export class Man extends OwnableSolidEntity {
       team: this.team
     };
   }
-}
 
-export const trooperSchema: GameObjectSchema = {
-  numbers: [
-    { name: "x", intType: IntType.Int16 },
-    { name: "y", intType: IntType.Int16 },
-    { name: "health", intType: IntType.Uint8 },
-    { name: "state", intType: IntType.Uint8 },
-    { name: "direction", intType: IntType.Uint8 },
-    //{ name: "ammo", intType: IntType.Uint8 },
-    //{ name: "bombs", intType: IntType.Uint8 },
-    { name: "team", intType: IntType.Uint8 }
-  ],
-  booleans: [],
-  strings: []
-};
+  public static schema: GameObjectSchema = {
+    numbers: [
+      { name: "x", intType: IntType.Int16 },
+      { name: "y", intType: IntType.Int16 },
+      { name: "health", intType: IntType.Uint8 },
+      { name: "state", intType: IntType.Uint8 },
+      { name: "direction", intType: IntType.Uint8 },
+      //{ name: "ammo", intType: IntType.Uint8 },
+      //{ name: "bombs", intType: IntType.Uint8 },
+      { name: "team", intType: IntType.Uint8 }
+    ],
+    booleans: [],
+    strings: []
+  }; public static getType() { return this.type; }
+  public static getSchema() { return this.schema; }
+}
 export function getTrooperRect(
   x: number,
   y: number,

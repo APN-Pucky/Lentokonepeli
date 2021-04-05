@@ -14,7 +14,7 @@ import { rm } from "../util";
 
 
 export class TeamInfo extends Entity {
-  public type: EntityType;
+  public static type: EntityType = EntityType.TeamInfo;
   public team: Team;
   public score: number = 0;
   public wins: number = -1;
@@ -26,9 +26,8 @@ export class TeamInfo extends Entity {
   public timeWinner: boolean = false;
 
 
-  public constructor(world: GameWorld, team: Team, type = EntityType.TeamInfo, id: number = world.nextID(type), cache: Cache = world.cache,) {
-    super(id, world);
-    this.type = type;
+  public constructor(world: GameWorld, team: Team,) {
+    super(world, TeamInfo);
     this.team = team;
   }
 
@@ -139,14 +138,15 @@ export class TeamInfo extends Entity {
       score: this.score,
     };
   }
-}
 
-export const teaminfoSchema: GameObjectSchema = {
-  numbers: [
-    { name: "team", intType: IntType.Uint8 },
-    { name: "score", intType: IntType.Int16 },
-    { name: "wins", intType: IntType.Int16 },
-  ],
-  booleans: [],
-  strings: []
-};
+  public static schema: GameObjectSchema = {
+    numbers: [
+      { name: "team", intType: IntType.Uint8 },
+      { name: "score", intType: IntType.Int16 },
+      { name: "wins", intType: IntType.Int16 },
+    ],
+    booleans: [],
+    strings: []
+  }; public static getType() { return this.type; }
+  public static getSchema() { return this.schema; }
+}

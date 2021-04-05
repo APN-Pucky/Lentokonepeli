@@ -5,8 +5,10 @@ import {
   IntType,
   PacketType
 } from "./types";
-import { schemaTypes } from "./schemas";
+//import { schemaTypes } from "./schemas";
 import { InputChange } from "../input";
+import { Entity, } from "../entity";
+import { getGameObjectSchema, } from "../entityfactory";
 
 function getGameObjectSize(data: any, schema: GameObjectSchema): number {
   const typeBytes = 1;
@@ -200,7 +202,7 @@ export function encodeCache(packet: Packet): ArrayBuffer {
   for (const type in cache) {
     for (const id in cache[type]) {
       const entry = cache[type][id];
-      size += getGameObjectSize(entry, schemaTypes[type]);
+      size += getGameObjectSize(entry, getGameObjectSchema(+type));
     }
   }
   // create arraybuffer with size of info.
@@ -222,7 +224,7 @@ export function encodeCache(packet: Packet): ArrayBuffer {
       // const header = ((t & 0xff) << 24) | (idNum & 0xffffff);
       // view.setUint32(offset, header);
       offset += 2;
-      offset = encodeGameObject(view, offset, entry, schemaTypes[t]);
+      offset = encodeGameObject(view, offset, entry, getGameObjectSchema(+t));
     }
   }
   return buffer;
@@ -254,7 +256,7 @@ export function decodeCache(buffer: ArrayBuffer): Packet {
       type: type
     };
 
-    const schema: GameObjectSchema = schemaTypes[type];
+    const schema: GameObjectSchema = getGameObjectSchema(+type);
     // destructure the binary according to the schema
     const propCount =
       schema.numbers.length + schema.booleans.length + schema.strings.length;

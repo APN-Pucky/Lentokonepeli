@@ -67,6 +67,9 @@ export class PlayerInfos {
       } else if (playerInfo.controlType == EntityType.Trooper) {
         text.position.set(x, (y + 48) * 1);
       }
+      else {
+        text.text = "";
+      }
 
       text.style.fill = color;
     }

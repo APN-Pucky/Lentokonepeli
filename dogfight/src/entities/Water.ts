@@ -7,17 +7,16 @@ import { GameWorld } from "../world/world";
 import { SolidEntity } from "./SolidEntity";
 
 export class Water extends SolidEntity {
-  public type = EntityType.Water;
+  public static type = EntityType.Water;
 
   public x: number;
   public y: number;
   public width: number;
   public subType: number;
 
-  public constructor(world: GameWorld, t_x: number = 0, t_y: number = 0, t_width: number = 30000, t_subType: number = FacingDirection.Right, type = EntityType.Water, id: number = world.nextID(type), cache: Cache = world.cache,) {
-    super(id, world, -1);
-    this.type = type;
-    this.setData(cache, {
+  public constructor(world: GameWorld, t_x: number = 0, t_y: number = 0, t_width: number = 30000, t_subType: number = FacingDirection.Right,) {
+    super(world, Water, -1);
+    this.setData(world.cache, {
       x: t_x,
       y: t_y,
       width: t_width,
@@ -26,7 +25,7 @@ export class Water extends SolidEntity {
   }
 
   public getCollisionBounds(): Rectangle {
-    return new Rectangle(this.x, this.y + 5 , this.width, 100);
+    return new Rectangle(this.x, this.y + 5, this.width, 100);
   }
 
   public getState(): CacheEntry {
@@ -39,8 +38,18 @@ export class Water extends SolidEntity {
     };
   }
 
+  public static schema: GameObjectSchema = {
+    numbers: [
+      { name: "x", intType: IntType.Int16 },
+      { name: "y", intType: IntType.Int16 },
+      { name: "width", intType: IntType.Uint16 },
+      { name: "subType", intType: IntType.Uint8 }
+    ],
+    booleans: [],
+    strings: []
+  }; public static getType() { return this.type; }
+  public static getSchema() { return this.schema; }
 }
-
 export function getWaterRect(
   x: number,
   y: number,
@@ -57,13 +66,3 @@ export function getWaterRect(
   };
 }
 
-export const waterSchema: GameObjectSchema = {
-  numbers: [
-    { name: "x", intType: IntType.Int16 },
-    { name: "y", intType: IntType.Int16 },
-    { name: "width", intType: IntType.Uint16 },
-    { name: "subType", intType: IntType.Uint8 }
-  ],
-  booleans: [],
-  strings: []
-};

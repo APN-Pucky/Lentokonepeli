@@ -17,6 +17,7 @@ import { importantBuildingSchema } from "../entities/ImportantBuilding";
 import { teaminfoSchema } from "../entities/TeamInfo";
 import { clockSchema } from "../entities/Clock";
 
+/*
 export const schemaTypes = {
   [EntityType.Plane]: planeSchema,
   [EntityType.Ground]: groundSchema,
@@ -35,3 +36,4 @@ export const schemaTypes = {
   [EntityType.TeamInfo]: teaminfoSchema,
   [EntityType.Clock]: clockSchema,
 };
+*/

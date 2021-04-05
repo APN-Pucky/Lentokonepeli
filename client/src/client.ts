@@ -48,7 +48,7 @@ export class GameClient {
   public roomparams: RoomParameters = {
     id: -1,
     name: "Name",
-    map: { name: "custom", layout: [], objects: undefined },
+    map: { name: "custom", layout: "", objects: undefined },
     max_players: 16,
   };
 
@@ -389,8 +389,11 @@ export class GameClient {
           id: object.controlID
         };
       }
-      if (object.name !== undefined) {
+      if (object.name !== undefined && object.controlType != EntityType.Respawner) {
         this.playerInfo.name = object.name;
+      }
+      else {
+        this.playerInfo.name = "";
       }
       if (this.followObject.type == EntityType.Plane) {
         this.audio.playEngine(true);
@@ -419,7 +422,8 @@ export class GameClient {
     if (type == this.followObject.type && this.followObject.id == id) {
       const { x, y } = object;
       if (x !== undefined && y !== undefined) {
-        this.renderer.centerCamera(x, y);
+        this.renderer.followObject(type, id);
+        //this.renderer.centerCamera(x, y);
       }
     }
   }

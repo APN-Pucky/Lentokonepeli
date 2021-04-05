@@ -20,7 +20,7 @@ const HEALTH_TIMER_MAX = 50;
 
 
 export class Runway extends SolidEntity {
-  public type = EntityType.Runway;
+  public static type = EntityType.Runway;
 
   public x: number;
   public y: number;
@@ -42,14 +42,13 @@ export class Runway extends SolidEntity {
 
   private localhealth = HEALTH_MAX;
 
-  public constructor(world: GameWorld, team: number, x: number, y: number, direction: number, type = EntityType.Runway, id: number = world.nextID(type), cache: Cache = world.cache,) {
-    super(id, world, team);
-    this.type = type;
+  public constructor(world: GameWorld, team: number, x: number, y: number, direction: number,) {
+    super(world,Runway, team);
     this.image = [world.getImage("runway.gif"), world.getImage("runway2.gif")];
     this.imageWidth = [this.image[0].width, this.image[1].width];
     this.imageHeight = [this.image[0].height, this.image[1].height];
     this.localhealth = HEALTH_MAX;
-    this.setData(cache, {
+    this.setData(world.cache, {
       x: x,
       y: y,
       direction: direction, //FacingDirection.Right,
@@ -265,16 +264,18 @@ export class Runway extends SolidEntity {
   public static getImageHeight(world: GameWorld, i: number): number {
     return Runway.getImage(world, i).height;
   }
-}
 
-export const runwaySchema: GameObjectSchema = {
-  numbers: [
-    { name: "x", intType: IntType.Int16 },
-    { name: "y", intType: IntType.Int16 },
-    { name: "direction", intType: IntType.Uint8 },
-    { name: "team", intType: IntType.Uint8 },
-    { name: "health", intType: IntType.Uint8 }
-  ],
-  booleans: [],
-  strings: []
-};
+  public static schema: GameObjectSchema = {
+    numbers: [
+      { name: "x", intType: IntType.Int16 },
+      { name: "y", intType: IntType.Int16 },
+      { name: "direction", intType: IntType.Uint8 },
+      { name: "team", intType: IntType.Uint8 },
+      { name: "health", intType: IntType.Uint8 }
+    ],
+    booleans: [],
+    strings: []
+  };
+public static getType() { return this.type; }
+  public static getSchema() { return this.schema; }
+}

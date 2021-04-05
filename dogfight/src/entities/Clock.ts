@@ -15,14 +15,13 @@ export enum ClockColor {
 
 
 export class Clock extends Entity implements Ticking {
-  public type = EntityType.Clock;
+  public static type = EntityType.Clock;
   public x: number;
   public y: number;
   public time: number;
 
-  public constructor(world: GameWorld, type = EntityType.Clock, id: number = world.nextID(type), cache: Cache = world.cache,) {
-    super(id, world);
-    this.type = type;
+  public constructor(world: GameWorld) {
+    super(world,Clock);
     this.setTime(0);
   }
 
@@ -42,13 +41,14 @@ export class Clock extends Entity implements Ticking {
       time: this.time,
     };
   }
-}
 
-export const clockSchema: GameObjectSchema = {
-  numbers: [
-    { name: "time", intType: IntType.Uint8 }
-  ],
-  booleans: [],
-  strings: []
-};
+  public static schema: GameObjectSchema = {
+    numbers: [
+      { name: "time", intType: IntType.Uint8 }
+    ],
+    booleans: [],
+    strings: []
+  };  public static getType() { return this.type; }
+  public static getSchema() { return this.schema; }
+}
 

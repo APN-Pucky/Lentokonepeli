@@ -8,13 +8,15 @@ import { Runway } from "./Runway";
 import { Team } from "../constants";
 import { Cache, CacheEntry } from "../network/cache";
 import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
+import { EntityStatic } from "../entityfactory";
 
 export abstract class SolidEntity extends Entity {
   public team: number = -1;
 
   //TODO this constructor just resembles SolidEntity.java but does not use team variable, since not all entities have a cached team (atm)
-  public constructor(id: number, world: GameWorld, team: Team) {
-    super(id, world);
+  public constructor(world: GameWorld, es: EntityStatic, team: Team) {
+    super(world, es);
+    //this.team 
     //this.setTeam(world.cache, team);
   }
   public abstract getCollisionBounds(): Rectangle;

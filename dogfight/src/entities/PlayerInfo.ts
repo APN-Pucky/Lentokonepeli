@@ -8,16 +8,19 @@ import { Ownable } from "../ownable";
 import { Man } from "./Man";
 import { GameObjectSchema, IntType } from "../network/types";
 import { Player } from "../network/player";
+import { PlayerInfos } from "../../../client/src/render/entities/playerInfos";
+import { RespawnType } from "./Respawner";
 
 export enum PlayerStatus {
   Playing,
   Takeoff,
-  Spectating
+  Respawning,
+  Spectating,
 }
 
 export class PlayerInfo extends Entity {
 
-  public type = EntityType.Player;
+  public static type = EntityType.Player;
   public name: string;
   public team: Team;
   public controlType: EntityType;
@@ -43,6 +46,9 @@ export class PlayerInfo extends Entity {
   private localammo = this.ammoMax;
   private localbombs = this.bombsMax;
 
+
+  private nextRespawnType: RespawnType = RespawnType.Normal;
+
   private firstTeamKillTime;
   //Stats
   private frags = 0;
@@ -60,16 +66,15 @@ export class PlayerInfo extends Entity {
     .map(() => new Array(2)
       .fill(0));
 
-  public constructor(world: GameWorld, pi: Player, type = EntityType.Player, id: number = world.nextID(type), cache: Cache = world.cache,) {
-    super(id, world);
-    this.type = type;
+  public constructor(world: GameWorld, pi: Player) {
+    super(world, PlayerInfo);
     this.player = pi;
     this.name = "Player_" + this.id;
     this.controlType = EntityType.None;
     this.controlID = 0;
     this.team = Team.Spectator;
-    this.setStatus(cache, PlayerStatus.Takeoff);
-    this.setPing(cache, 0);
+    this.setStatus(world.cache, PlayerStatus.Takeoff);
+    this.setPing(world.cache, 0);
 
     // initialize player input to all false.
     this.inputState = {};
@@ -158,6 +163,14 @@ export class PlayerInfo extends Entity {
   ): void {
     this.set(cache, "controlType", controlType);
     this.set(cache, "controlID", controlID);
+  }
+
+  public getNextRespawnType() {
+    return this.nextRespawnType;
+  }
+
+  public setNextRespawnType(n) {
+    this.nextRespawnType = n;
   }
 
   // STATS
@@ -252,6 +265,7 @@ export class PlayerInfo extends Entity {
   public submitTeamKill(p: Ownable, p2: Ownable): void {
     this.adjustFrags(-1);
     this.adjustScore(-8, p);
+    this.nextRespawnType = RespawnType.TeamKill;
     if ((p2 instanceof Plane)) {
       // sumbit message kill_plane
     }
@@ -287,9 +301,9 @@ export class PlayerInfo extends Entity {
   public submitSuicide(paramOwnable: Ownable): void {
     this.adjustScore(-5, paramOwnable);
     //this.toolkit.submit(new TypedSubmission("suicide", 1, getOwnableStatsType(paramOwnable), getPlayer().getUserId()));
-    //if (this.nextRespawnType == 0) {
-    //  this.nextRespawnType = 1;
-    //}
+    if (this.nextRespawnType == RespawnType.Normal) {
+      this.nextRespawnType = RespawnType.Suicide;
+    }
     //this.toolkit.submit(new SuicideRankingSubmission(getPlayer().getUserId()));
   }
 
@@ -319,24 +333,25 @@ export class PlayerInfo extends Entity {
       precision: this.precision,
     };
   }
-}
 
-export const playerSchema: GameObjectSchema = {
-  numbers: [
-    { name: "team", intType: IntType.Uint8 },
-    { name: "controlType", intType: IntType.Uint8 },
-    { name: "controlID", intType: IntType.Uint16 },
-    { name: "ping", intType: IntType.Uint16 },
-    { name: "status", intType: IntType.Uint8 },
-    { name: "fuel", intType: IntType.Uint8 },
-    { name: "ammo", intType: IntType.Uint8 },
-    { name: "health", intType: IntType.Uint8 },
-    { name: "bombs", intType: IntType.Uint8 },
-    { name: "frags", intType: IntType.Int16 },
-    { name: "score", intType: IntType.Int16 },
-    { name: "deaths", intType: IntType.Int16 },
-    { name: "precision", intType: IntType.Uint8 },
-  ],
-  booleans: [],
-  strings: ["name"]
-};
+  public static schema: GameObjectSchema = {
+    numbers: [
+      { name: "team", intType: IntType.Uint8 },
+      { name: "controlType", intType: IntType.Uint8 },
+      { name: "controlID", intType: IntType.Uint16 },
+      { name: "ping", intType: IntType.Uint16 },
+      { name: "status", intType: IntType.Uint8 },
+      { name: "fuel", intType: IntType.Uint8 },
+      { name: "ammo", intType: IntType.Uint8 },
+      { name: "health", intType: IntType.Uint8 },
+      { name: "bombs", intType: IntType.Uint8 },
+      { name: "frags", intType: IntType.Int16 },
+      { name: "score", intType: IntType.Int16 },
+      { name: "deaths", intType: IntType.Int16 },
+      { name: "precision", intType: IntType.Uint8 },
+    ],
+    booleans: [],
+    strings: ["name"]
+  }; public static getType() { return this.type; }
+  public static getSchema() { return this.schema; }
+}

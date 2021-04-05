@@ -89,7 +89,7 @@ export function doTakeoff(world: GameWorld, takeoff: TakeoffEntry): void {
         ? Math.round(ROTATION_DIRECTIONS / 2)
         : 0;
     plane.setDirection(world.cache, direction);
-    world.planes.push(plane);
+    world.push(plane);
     // assign plane to player
     player.setControl(world.cache, plane.type, plane.id);
     player.setStatus(world.cache, PlayerStatus.Playing);

@@ -21,7 +21,7 @@ export const bombGlobals = {
 
 export class Bomb extends OwnableSolidEntity {
 
-  public type = EntityType.Bomb;
+  public static type = EntityType.Bomb;
   public age: number;
   public localX: number;
   public localY: number;
@@ -49,17 +49,14 @@ export class Bomb extends OwnableSolidEntity {
     direction: number,
     speed: number,
     origin: OwnableSolidEntity = null,
-    type = EntityType.Bomb,
-    id: number = world.nextID(type),
-    cache: Cache = world.cache,) {
+  ) {
 
-    super(id, world, origin == null ? -1 : origin.getTeam());
-    this.type = type;
+    super(world, Bomb, origin == null ? -1 : origin.getTeam());
     //this.radians = directionToRadians(direction);
-    this.setDirection(cache, direction);
+    this.setDirection(world.cache, direction);
     //this.localX = x * SCALE_FACTOR;
     //this.localY = y * SCALE_FACTOR;
-    this.setSpeed(cache, speed * SCALE_FACTOR); // needs radians to be set
+    this.setSpeed(world.cache, speed * SCALE_FACTOR); // needs radians to be set
     this.image = world.getImage(this.filename);
     this.width = this.image.width;
     this.height = this.image.height;
@@ -71,13 +68,13 @@ export class Bomb extends OwnableSolidEntity {
       x - Math.cos(this.radians) * this.width / 2 - Math.sin(this.radians) * this.height / 2,
       y - Math.sin(this.radians) * this.width / 2 + Math.cos(this.radians) * this.height / 2);
     */
-    this.setPos(cache,
+    this.setPos(world.cache,
       x,
       y);
 
 
 
-    this.setData(cache, {
+    this.setData(world.cache, {
       age: 0,
       x: x,
       y: y,
@@ -196,18 +193,19 @@ export class Bomb extends OwnableSolidEntity {
       direction: radiansToDirection(this.radians)
     };
   }
-}
 
-export const bombSchema: GameObjectSchema = {
-  numbers: [
-    { name: "x", intType: IntType.Int16 },
-    { name: "y", intType: IntType.Int16 },
-    { name: "age", intType: IntType.Uint16 },
-    { name: "direction", intType: IntType.Uint8 }
-  ],
-  booleans: [],
-  strings: []
-};
+  public static schema: GameObjectSchema = {
+    numbers: [
+      { name: "x", intType: IntType.Int16 },
+      { name: "y", intType: IntType.Int16 },
+      { name: "age", intType: IntType.Uint16 },
+      { name: "direction", intType: IntType.Uint8 }
+    ],
+    booleans: [],
+    strings: []
+  }; public static getType() { return this.type; }
+  public static getSchema() { return this.schema; }
+}
 export function getBombRect(
   x: number,
   y: number,

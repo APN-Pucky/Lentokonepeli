@@ -13,7 +13,7 @@ const HEALTH_MAX = 350;
 const HEALTH_TIMER_MAX = 50;
 
 export class ImportantBuilding extends SolidEntity {
-  public type = EntityType.ImportantBuilding;
+  public static type = EntityType.ImportantBuilding;
 
   public x: number;
   public y: number;
@@ -29,9 +29,8 @@ export class ImportantBuilding extends SolidEntity {
 
   private localhealth = HEALTH_MAX;
 
-  public constructor(world: GameWorld, team: number = 0, buildingType: number = 0, x: number = 0, y: number = 0, type: EntityType = EntityType.ImportantBuilding, id: number = world.nextID(type), cache: Cache = world.cache) {
-    super(id, world, team);
-    this.type = type;
+  public constructor(world: GameWorld, team: number = 0, buildingType: number = 0, x: number = 0, y: number = 0,) {
+    super(world,ImportantBuilding, team);
     this.image = [world.getImage("headquarter_germans.gif"), world.getImage("headquarter_raf.gif")];
     this.imageWidth = [this.image[0].width, this.image[1].width];
     this.imageHeight = [this.image[0].height, this.image[1].height];
@@ -77,7 +76,6 @@ export class ImportantBuilding extends SolidEntity {
     if ((this.localhealth > 0) && (this.localhealth < HEALTH_MAX)) {
       this.healthTimer = ((this.healthTimer + 1) % HEALTH_TIMER_MAX);
       if (this.healthTimer == 0) {
-        console.log("healu");
         this.localhealth += 1
         if (this.localhealth * 255 % HEALTH_MAX == 0) {
           this.setHealth(this.localhealth);
@@ -169,16 +167,18 @@ export class ImportantBuilding extends SolidEntity {
   public static getImageHeight(world: GameWorld, i: number): number {
     return ImportantBuilding.getImage(world, i).height;
   }
-}
 
-export const importantBuildingSchema: GameObjectSchema = {
-  numbers: [
-    { name: "x", intType: IntType.Int16 },
-    { name: "y", intType: IntType.Int16 },
-    { name: "buildingType", intType: IntType.Uint8 },
-    { name: "health", intType: IntType.Uint8 },
-    { name: "team", intType: IntType.Uint8 }
-  ],
-  booleans: [],
-  strings: []
-};
+  public static schema: GameObjectSchema = {
+    numbers: [
+      { name: "x", intType: IntType.Int16 },
+      { name: "y", intType: IntType.Int16 },
+      { name: "buildingType", intType: IntType.Uint8 },
+      { name: "health", intType: IntType.Uint8 },
+      { name: "team", intType: IntType.Uint8 }
+    ],
+    booleans: [],
+    strings: []
+  };  public static getType() { return this.type; }
+  public static getSchema() { return this.schema; }
+
+}

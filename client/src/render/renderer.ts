@@ -19,6 +19,7 @@ import { TeamChooserUI } from "./entities/teamChooserUI";
 import { ClientMode } from "../types";
 import { TakeoffSelectUI } from "./entities/takeoffSelectUI";
 import { PlaneSprite } from "./sprites/plane";
+import { RespawnerSprite } from "./sprites/respawner";
 import { PlayerInfos } from "./entities/playerInfos";
 import { ExplosionSprite } from "./sprites/explosion";
 import { BulletSprite } from "./sprites/bullet";
@@ -31,6 +32,8 @@ import { ClockSprite } from "./sprites/clock";
 import { Clock } from "./entities/clock";
 import { ChatArea } from "./entities/chatarea";
 import { ChatField } from "./entities/chatfield";
+import { NoneSprite } from "./sprites/none";
+import { Followable, isFollowable } from "../../../dogfight/src/entities/Followable";
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
@@ -42,7 +45,7 @@ export class GameRenderer {
   private spriteSheet: PIXI.Spritesheet;
 
   /** A JS container of all Game Objects and their Srite Objects */
-  private sprites = {};
+  public sprites = {};
 
   private pixiApp: PIXI.Application;
 
@@ -235,8 +238,10 @@ export class GameRenderer {
         return new BombSprite(this.spriteSheet);
       case EntityType.Plane:
         return new PlaneSprite(this.spriteSheet);
+      case EntityType.Respawner:
+        return new RespawnerSprite(this.spriteSheet);
       case EntityType.Clock:
-        return new ClockSprite(this.spriteSheet);
+        return new NoneSprite(this.spriteSheet);
       default:
         console.log(
           "ERROR: Failed to create undefined object sprite:",
@@ -302,6 +307,14 @@ export class GameRenderer {
     const newY = Math.round(-(local.y * this.worldContainer.scale.y) + mouse.y);
     this.debug.zoom(factor);
     this.setCamera(newX, newY);
+  }
+
+  public followObject(type, id) {
+    let f = this.sprites[type][id].entity
+    if (isFollowable(f)) {
+      this.centerCamera(f.getCenterX(), f.getCenterY())
+      f.followed = true;
+    }
   }
 
   /**

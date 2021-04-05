@@ -1,6 +1,10 @@
+
+import { EntityStatic } from "./entityfactory";
 import { Cache, CacheEntry } from "./network/cache";
+import { PlayerImpl } from "./network/player";
 import { GameObjectSchema } from "./network/types";
 import { GameWorld } from "./world/world";
+
 
 /**
  * Constants for each type of object in the game.
@@ -32,8 +36,11 @@ export enum EntityType {
   Coast,
   ImportantBuilding,
   TeamInfo,
+  Respawner,
   Clock,
 }// Update our variable in the object, and the cache.
+
+
 
 
 type sendableData = number | string | boolean;
@@ -50,23 +57,40 @@ export function entityHash(obj: Entity): string {
  * It also has a method to retrieve its current state.
  */
 export abstract class Entity {
-  public abstract type: EntityType;
+  //public static schema: GameObjectSchema = null;
+  //public static type: EntityType = null;
+  public type: EntityType;
   public id: number;
   public world: GameWorld;
   public removed: boolean = false;
   public changed: boolean;
 
-  public constructor(id: number, world: GameWorld) {
-    this.id = id;
+  public constructor(world: GameWorld, es: EntityStatic) {
     this.world = world;
+    //this.type = this.getTType();
+    //console.log((this.constructor as typeof Entity).name)
+    //this.type = this.getType();
+    this.type = es.type;
+    //this.type = getEntityClass((this.constructor as typeof Entity).name).getType();
+    this.id = world.nextID(this.type);
   }
+
+  /*
+  public static getSchema(): GameObjectSchema {
+    throw new Error("Missing static getGameObjectSchema() for " + this.constructor.name);
+  }
+  public static getType(): EntityType {
+    throw new Error("Missing static getType() for " + this.constructor.name);
+  }
+  */
 
   public getId() {
     return this.id;
   }
-  public getType() {
-    return this.type;
+  public getType(): EntityType {
+    return this.type;//this.type;
   }
+
   public isChanged() {
     return this.changed;
   }

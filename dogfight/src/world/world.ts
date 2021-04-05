@@ -23,10 +23,14 @@ import { Coast } from "../entities/Coast";
 import { TeamInfo } from "../entities/TeamInfo";
 import { messageCallback, Packet, PacketType } from "../network/types";
 import { Clock } from "../entities/Clock";
+import { Respawner } from "../entities/Respawner";
 import { Ticking } from "../entities/Ticking";
 import { Player, PlayerImpl } from "../network/player";
 import { loadMap, loadStringMap } from "./map";
 import { Map } from "./map";
+import { EntityClass } from "../entityfactory";
+import { PlayerInfos } from "../../../client/src/render/entities/playerInfos";
+import { getEffectiveConstraintOfTypeParameter } from "typescript";
 
 
 export enum GameMode {
@@ -50,6 +54,7 @@ export class GameWorld {
   public inputQueue: InputQueue;
   public gamemode: GameMode = GameMode.SCORE;
 
+  /*
   public players: PlayerInfo[];
   public flags: Flag[];
   public grounds: Ground[];
@@ -63,11 +68,16 @@ export class GameWorld {
   public waters: Water[];
   public explosions: Explosion[];
   public bullets: Bullet[];
-  public bombs: Bomb[];
   public teaminfos: TeamInfo[];
+  public bombs: Bomb[];
   public clocks: Clock[];
+  public respawners: Respawner[];
+  */
+  public entities: Entity[][];
+  public teaminfos: TeamInfo[];
 
   // god please forgive me for this sin
+  /*
   private objectArrays = {
     [EntityType.Player]: "players",
     [EntityType.Flag]: "flags",
@@ -85,7 +95,9 @@ export class GameWorld {
     [EntityType.Bomb]: "bombs",
     [EntityType.TeamInfo]: "teaminfos",
     [EntityType.Clock]: "clocks",
+    [EntityType.Respawner]: "respawner",
   };
+  */
 
   // Next available ID, incremented by 1.
   // Always counts up, never resets.
@@ -110,6 +122,10 @@ export class GameWorld {
       if (map.objects != undefined)
         loadMap(this, map.objects);
     }
+    for (let t of this.entities) {
+      if (t instanceof Runway || t instanceof ImportantBuilding)
+        this.teaminfos[t.getTeam()].addBuilding(t);
+    }
 
     //cont();
   }
@@ -123,6 +139,8 @@ export class GameWorld {
 
 
   public getEntities(): Entity[][] {
+    return this.entities;
+    /*
     return [
       this.planes,
       this.troopers,
@@ -140,7 +158,9 @@ export class GameWorld {
       this.explosions,
       this.teaminfos,
       this.clocks,
+      this.respawners,
     ];
+    */
   }
   public clearCache(): void {
     this.cache = {};
@@ -151,7 +171,14 @@ export class GameWorld {
     this.clearCache();
     this.takeoffQueue = [];
     this.inputQueue = {};
+    this.entities = new Array(EntityClass.length);
+    //this.cache = new Array(EntityClass.length)
+    for (let es of EntityClass) {
+      this.entities[es.type] = [];
+      this.cache[es.type] = {};
+    }
 
+    /*
     this.players = [];
     this.flags = [];
     this.grounds = [];
@@ -166,8 +193,14 @@ export class GameWorld {
     this.explosions = [];
     this.bullets = [];
     this.bombs = [];
+    this.respawners = [];
+    */
     this.teaminfos = [new TeamInfo(this, 0), new TeamInfo(this, 1)];
-    this.clocks = [new Clock(this)];
+    this.addEntity(this.teaminfos[0]);
+    this.addEntity(this.teaminfos[1]);
+    this.addEntity(new Clock(this));
+    //this.addEntity(new Respawner(this, new PlayerInfo(this, null), 0, 0));
+
 
     this.startTime = Date.now();
     //this.teaminfos[0].setScore(100);
@@ -209,8 +242,12 @@ export class GameWorld {
     return this.cache;
   }
 
+  public getPlayers(): PlayerInfo[] {
+    return (this.entities[EntityType.Player]) as PlayerInfo[];
+  }
+
   public getPlayerControlling(object: Entity): PlayerInfo {
-    for (const player of this.players) {
+    for (const player of this.getPlayers()) {
       if (player.controlID == object.id && player.controlType == object.type) {
         return player;
       }
@@ -236,7 +273,7 @@ export class GameWorld {
   }
 
   public getPlayer(pi: Player) {
-    for (let p of this.players) {
+    for (let p of this.getPlayers()) {
       if (p.player == pi) {
         return p;
       }
@@ -257,7 +294,7 @@ export class GameWorld {
     if (index < 0) {
       return undefined;
     }
-    const array = this[this.objectArrays[type]];
+    const array = this.entities[type];
     return array[index];
   }
 
@@ -271,12 +308,20 @@ export class GameWorld {
     );
     //explosion.setPlayerID(this.cache, uid);
     //explosion.setTeam(this.cache, team);
-    this.explosions.push(explosion);
+    this.entities[EntityType.Explosion].push(explosion);
+  }
+
+  public push(obj: Entity): void {
+    const arr = this.entities[obj.type];
+    arr.push(obj);
   }
 
   public addEntity(obj: Entity): void {
-    const arr = this[this.objectArrays[obj.type]];
+    const arr = this.entities[obj.type];
     arr.push(obj);
+    if (this.cache[obj.type] == undefined) {
+      this.cache[obj.type] = {};
+    }
     this.cache[obj.type][obj.id] = obj.getState();
   }
 
@@ -288,7 +333,7 @@ export class GameWorld {
     const type = obj.type;
     const id = obj.id;
 
-    const arr = this[this.objectArrays[obj.type]];
+    const arr = this.entities[obj.type];
     arr.splice(index, 1);
 
     // Create an empty update in the cache.
@@ -312,7 +357,7 @@ export class GameWorld {
     if (type === EntityType.None) {
       return index;
     }
-    const array = this[this.objectArrays[type]];
+    const array = this.entities[type];
     for (let i = 0; i < array.length; i++) {
       if (array[i].id === id) {
         index = i;
@@ -330,6 +375,23 @@ export class GameWorld {
     return id;
   }
 
+  public respawn(p: PlayerInfo) {
+    p.setStatus(p.world.cache, PlayerStatus.Takeoff);
+    p.setControl(p.world.cache, EntityType.None, 0);
+
+    /*
+    let t: TeamInfo;
+    if (p.getTeam() != -1) {
+      t = this.teaminfos[p.getTeam()];
+    }
+    else {
+      throw new Error("Error: No runway for team " + p.getTeam());
+    }
+    //let lp: PlaneChooser = new PlaneChooser(this, p, t.getBuildings(), false);
+    //*/
+
+  }
+
   public died(o: Ownable, x: number, y: number): void {
     let p = o.getPlayerInfo();
     this.diedWithoutAvatar(p, x, y);
@@ -343,9 +405,14 @@ export class GameWorld {
       }
     }
     else {
+
+      console.log(this.cache);
       // Respawn
-      p.setStatus(p.world.cache, PlayerStatus.Takeoff);
-      p.setControl(p.world.cache, EntityType.None, 0);
+      let lo = new Respawner(this, p, x, y);
+      //p.setStatus(p.world.cache, PlayerStatus.Takeoff);
+      this.addEntity(lo);
+      p.setStatus(p.world.cache, PlayerStatus.Respawning)
+      p.setControl(p.world.cache, EntityType.Respawner, lo.getId());
     }
   }
 
@@ -436,23 +503,7 @@ export class GameWorld {
   }
 
   public getState(): Cache {
-    const objects = [
-      this.players,
-      this.flags,
-      this.grounds,
-      this.coasts,
-      this.hills,
-      this.runways,
-      this.importantBuildings,
-      this.backgrounditems,
-      this.waters,
-      this.planes,
-      this.explosions,
-      this.troopers,
-      this.bombs,
-      this.bullets,
-      this.teaminfos,
-    ];
+    const objects = this.entities;
     const cache: Cache = {};
     for (const obj in objects) {
       for (const thing of objects[obj]) {

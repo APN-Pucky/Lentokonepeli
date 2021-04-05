@@ -37,7 +37,7 @@ export function moveBullet(
 }
 
 export class Bullet extends OwnableSolidEntity {
-  public type = EntityType.Bullet;
+  public static type = EntityType.Bullet;
   public age: number;
   public localX: number;
   public localY: number;
@@ -62,11 +62,8 @@ export class Bullet extends OwnableSolidEntity {
     angle: number,
     speed: number,
     origin: OwnableSolidEntity = null,
-    type = EntityType.Bullet,
-    id: number = world.nextID(type),
-    cache: Cache = world.cache,) {
-    super(id, world, origin == null ? -1 : origin.getTeam());
-    this.type = type;
+  ) {
+    super(world,Bullet, origin == null ? -1 : origin.getTeam());
     this.localX = x * SCALE_FACTOR;
     this.localY = y * SCALE_FACTOR;
     this.speed = (speed + 4) * SCALE_FACTOR * SCALE_FACTOR;
@@ -78,7 +75,7 @@ export class Bullet extends OwnableSolidEntity {
     this.clientVX = Math.round(this.vx / SCALE_FACTOR);
     this.clientVY = Math.round(this.vy / SCALE_FACTOR);
     this.origin = origin;
-    this.setData(cache, {
+    this.setData(world.cache, {
       x: x,
       y: y,
       age: 0,
@@ -195,16 +192,17 @@ export class Bullet extends OwnableSolidEntity {
       clientVY: this.clientVY
     };
   }
+  public static schema: GameObjectSchema = {
+    numbers: [
+      { name: "x", intType: IntType.Int16 },
+      { name: "y", intType: IntType.Int16 },
+      { name: "clientVX", intType: IntType.Int16 },
+      { name: "clientVY", intType: IntType.Int16 },
+      { name: "age", intType: IntType.Uint16 }
+    ],
+    booleans: [],
+    strings: []
+  };  public static getType() { return this.type; }
+  public static getSchema() { return this.schema; }
 }
-export const bulletSchema: GameObjectSchema = {
-  numbers: [
-    { name: "x", intType: IntType.Int16 },
-    { name: "y", intType: IntType.Int16 },
-    { name: "clientVX", intType: IntType.Int16 },
-    { name: "clientVY", intType: IntType.Int16 },
-    { name: "age", intType: IntType.Uint16 }
-  ],
-  booleans: [],
-  strings: []
-};
 
