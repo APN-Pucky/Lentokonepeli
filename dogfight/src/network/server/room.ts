@@ -1,7 +1,7 @@
 import { Player, PlayerImpl } from "../player";
 import { Packet, PacketType } from "../types";
 import WebSocket from "ws";
-import { rm } from "../../util";
+import { log, rm } from "../../util";
 import { WebSocketConnection } from "../session";
 import { createModifiersFromModifierFlags } from "typescript";
 import { GameWorld, } from "../../world/world";
@@ -110,7 +110,7 @@ export class RoomServer extends Server {
   public fullSync(pi: Player) {
     pi.send({ type: PacketType.FullSync, data: this.world.getState() });
     pi.send({ type: PacketType.PushText, data: { text: 7 + "\t\t" + "Hello There" } });
-    console.log("send full sync");
+    log("send full sync");
   }
 
   public getInfo(): RoomInfo {

@@ -1,6 +1,6 @@
 import { Player, PlayerImpl } from "../player";
 import { Packet, PacketType } from "../types";
-import { rm } from "../../util";
+import { log, rm } from "../../util";
 import { WebSocketConnection } from "../session";
 import { createModifiersFromModifierFlags } from "typescript";
 import { GameWorld, } from "../../world/world";
@@ -48,7 +48,7 @@ export class LobbyServer extends Server {
     let s: RoomServer;
     data["id"] = this.roomservers.length;
     this.roomservers.push(s = new RoomServer(this.img, data));
-    console.log("creatign " + data["name"])
+    log("creating " + data["name"])
   }
   public listRooms(): RoomInfo[] {
     let roominfos: RoomInfo[] = [];

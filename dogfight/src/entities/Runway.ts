@@ -7,6 +7,8 @@ import { Bullet } from "./Bullet";
 import { PlayerInfo } from "./PlayerInfo";
 import { GameWorld } from "../world/world";
 import { GameObjectSchema, IntType } from "../network/types";
+import { Followable } from "./Followable";
+import { log } from "../util";
 
 
 const RESERVE_TAKEOFF_LANDING_DELAY = 1000;
@@ -16,11 +18,14 @@ const RESERVE_TAKEOFF_TAKEOFF_DELAY = 1000;
 const TAKEOFF = 1;
 const LANDING = 1;
 const HEALTH_MAX = 1530;
-const HEALTH_TIMER_MAX = 50;
+const HEALTH_TIMER_MAX = 1; // TODO set 50
 
 
-export class Runway extends SolidEntity {
+export class Runway extends SolidEntity implements Followable {
   public static type = EntityType.Runway;
+  public followed: boolean = false;
+  public getCenterX() { return this.x + this.getImageWidth(1 - this.direction) / 2 }
+  public getCenterY() { return this.y + this.getImageHeight(1 - this.direction) / 2 }
 
   public x: number;
   public y: number;
@@ -43,7 +48,7 @@ export class Runway extends SolidEntity {
   private localhealth = HEALTH_MAX;
 
   public constructor(world: GameWorld, team: number, x: number, y: number, direction: number,) {
-    super(world,Runway, team);
+    super(world, Runway, team);
     this.image = [world.getImage("runway.gif"), world.getImage("runway2.gif")];
     this.imageWidth = [this.image[0].width, this.image[1].width];
     this.imageHeight = [this.image[0].height, this.image[1].height];
@@ -56,7 +61,7 @@ export class Runway extends SolidEntity {
       health: 255
     });
 
-    //console.log(this.getCollisionBounds());
+    //log(this.getCollisionBounds());
 
   }
 
@@ -205,7 +210,7 @@ export class Runway extends SolidEntity {
     }
     this.world.adjustScore(i, 100);
     //this.toolkit.pushText(3, "team" + getTeam() + " runway destroyed.");
-    console.log("Destroyed")
+    log("Destroyed")
     /*
     synchronized(this.playersInside)
     {
@@ -227,7 +232,7 @@ export class Runway extends SolidEntity {
 
   public addPlayerInside(pi: PlayerInfo): void {
     if (!this.isAlive()) {
-      console.log("Tryied to join dead runway");
+      log("Tried to join dead runway");
     }
     else {
       this.playersInside.push(pi);
@@ -276,6 +281,6 @@ export class Runway extends SolidEntity {
     booleans: [],
     strings: []
   };
-public static getType() { return this.type; }
+  public static getType() { return this.type; }
   public static getSchema() { return this.schema; }
 }

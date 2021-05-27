@@ -33,7 +33,7 @@ export class PlayerInfo extends Entity {
 
 
   private fuelMax = 255;
-  private healthMax = 255;
+  protected healthMax = 255;
   private ammoMax = 255;
   private bombsMax = 5;
   private teamKills = 0;

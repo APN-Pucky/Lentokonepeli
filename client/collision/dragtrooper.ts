@@ -32,7 +32,6 @@ export class dragtrooper extends TrooperSprite implements Draggable, Renderable 
     this.entity.y = newY;
     this.entity.localY = newY * SCALE_FACTOR;
     this.redraw();
-    //console.log("move?");
     this.callback();
     //;throw new Error("Method not implemented.");
   }

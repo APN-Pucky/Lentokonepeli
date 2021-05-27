@@ -24,6 +24,7 @@ import { Explosion } from "./Explosion";
 import { GameObjectSchema, IntType } from "../network/types";
 import { PlayerImpl } from "../network/player";
 import { Followable } from "./Followable";
+import { log } from "../util";
 
 // deprecated
 export const infoHUD = {
@@ -269,7 +270,7 @@ export class Plane extends OwnableSolidEntity implements Followable {
 
   public mode: PlaneMode;
 
-  public health: number;
+  //public health: number;
   public ammo: number;
   public bombs: number;
   public fuel: number;
@@ -461,7 +462,7 @@ export class Plane extends OwnableSolidEntity implements Followable {
 
   private park(paramRunway: Runway): void {
     this.localX = (paramRunway.getStartX()) * SCALE_FACTOR;
-    console.log(" sy : " + paramRunway.getStartY())
+    log(" sy : " + paramRunway.getStartY())
     this.localY = ((paramRunway.getStartY() - this.getBottomHeight())) * SCALE_FACTOR;
     if (paramRunway.getDirection() == 0) {
       this.radians = Math.PI;
@@ -503,12 +504,12 @@ export class Plane extends OwnableSolidEntity implements Followable {
     let r = new Rectangle(this.localX / SCALE_FACTOR, this.localY / SCALE_FACTOR, tmp.width, tmp.height);
     */
     let r = new Rectangle(this.localX / SCALE_FACTOR, this.localY / SCALE_FACTOR, this.width, this.height);
-    //console.log(r);
+    //log(r);
     return r;
   }
 
   public getCollisionImage(): BufferedImage {
-    //console.log("get image " + this.imagename + "_rot_" + Math.round(this.direction) + "_flip_" + this.flipped);
+    //log("get image " + this.imagename + "_rot_" + Math.round(this.direction) + "_flip_" + this.flipped);
     return this.world.getImage(this.imagename + "_rot_" + Math.round(this.direction) + "_flip_" + this.flipped);
   }
 
@@ -528,7 +529,7 @@ export class Plane extends OwnableSolidEntity implements Followable {
       this.bottomHeight = 0;
       return this.bottomHeight;
     }
-    //console.log("bottom height: " + this.bottomHeight);
+    //log("bottom height: " + this.bottomHeight);
     return this.bottomHeight;
   }
 
@@ -536,15 +537,15 @@ export class Plane extends OwnableSolidEntity implements Followable {
   // advance the plane simulation
   public tick(deltaTime: number): void {
     let cache: Cache = this.world.cache;
-    //console.log("Mode: " + this.mode + " X: " + this.x + " Y: " + this.y);
+    //log("Mode: " + this.mode + " X: " + this.x + " Y: " + this.y);
     //this.speed = 0;
     //this.setPos(cache, this.localX / 100, this.localY / 100);
     //this.setDirection(cache, (this.direction + 1) % 256);
     //this.checkCollision();
     //return;
-    //console.log("|");
+    //log("|");
     if (this.prevmode != this.mode) {
-      console.log("plane mode: " + this.mode);
+      log("plane mode: " + this.mode);
       this.prevmode = this.mode;
     }
     switch (this.mode) {
@@ -613,7 +614,7 @@ export class Plane extends OwnableSolidEntity implements Followable {
 
   private getHeightMultiplier(): number {
     let d = (this.localY / SCALE_FACTOR - (-569 + this.maxY)) / 150.0;
-    //console.log(d);
+    //log(d);
     if (d > 1.0) {
       d = 1.0;
     }
@@ -629,7 +630,7 @@ export class Plane extends OwnableSolidEntity implements Followable {
   private gravity(deltaTime: number): void {
     const tstep = deltaTime / 1000;
     const pull = GRAVITY_PULL * tstep;
-    //console.log(this.speed);
+    //log(this.speed);
 
     let d1 = (1.0 - this.speed / 150) * pull;
 
@@ -650,7 +651,7 @@ export class Plane extends OwnableSolidEntity implements Followable {
     }
 
     const d2 = GRAVITY * tstep * Math.sin(this.radians);
-    //console.log(d2);
+    //log(d2);
     this.speed += d2;
 
     if (this.speed < 0) {
@@ -687,7 +688,7 @@ export class Plane extends OwnableSolidEntity implements Followable {
     }
     const x = Math.round(this.localX / SCALE_FACTOR);
     const y = Math.round(this.localY / SCALE_FACTOR);
-    //console.log(x, " | ", y, " \/ ", this.radians, " v ", this.speed);
+    //log(x, " | ", y, " \/ ", this.radians, " v ", this.speed);
     this.setData(cache, { x, y });
     this.set(cache, "direction", radiansToDirection(this.radians));
   }
@@ -701,7 +702,7 @@ export class Plane extends OwnableSolidEntity implements Followable {
     const tstep = deltaTime / 1000;
     const turnRate = this.turnStep;
     const delta = (this.speed / SCALE_FACTOR / 4) * turnRate * tstep;
-    //console.log(tstep);
+    //log(tstep);
     switch (this.rotateStatus) {
       case PlaneRotation.Up: {
         this.radians += delta;
@@ -774,7 +775,7 @@ export class Plane extends OwnableSolidEntity implements Followable {
       this.steerUp(deltaTime);
     }
     if (this.isKeyPressed(GameKey.PLANE_MOTOR) && (this.lastMotorOn + this.motorOnDelay < Date.now()) && this.fuelCounter > 0) {
-      console.log("plane - motor toggle");
+      log("plane - motor toggle");
       this.setMotor(cache, !this.motorOn);
       this.lastMotorOn = Date.now();
     }
@@ -843,7 +844,7 @@ export class Plane extends OwnableSolidEntity implements Followable {
   private jump(cache: Cache, deltaTime: number, frag: boolean = true) {
     if (this.isKeyPressed(GameKey.PLANE_JUMP) && this.getPlayerInfo().isControlling(this)) {
       if (frag) this.fraggedBy(null);
-      console.log("plane - jump");
+      log("plane - jump");
       let localMan = new Man(
         this.world,
         this.localX / SCALE_FACTOR,
@@ -870,7 +871,7 @@ export class Plane extends OwnableSolidEntity implements Followable {
   private landed(): void {
     if (this.getPlayerInfo().isControlling(this)) {
       destroyPlane(this.world, this);
-      console.log("rm landed plane");
+      log("rm landed plane");
       this.world.removeEntity(this);
       // TODO set world.landed
 
@@ -884,8 +885,10 @@ export class Plane extends OwnableSolidEntity implements Followable {
 
   protected suicide(): void {
     if (this.getPlayerInfo().isControlling(this)) {
-      console.log("suicide - sitting");
-      //getDogfightToolkit().killed(new Man(0, 0, this.playerInfo), null, 2);
+      log("suicide - sitting");
+      let tmp: Man;
+      this.world.killed(tmp = new Man(this.world, -1000000, -10000000, this.playerInfo), null, 2); // ugly af
+      this.world.removeEntity(tmp);
       //this.world.killed(new Trooper(), null, 2);
       //this.playerInfo.removeKeyListener(this);
       this.world.died(this, this.getCenterX(), this.getCenterY());
@@ -905,7 +908,7 @@ export class Plane extends OwnableSolidEntity implements Followable {
       else {
         this.steerDown(deltaTime);
       }
-      console.log("takeoff steer");
+      log("takeoff steer");
     }
     if (this.takeoffCounter == 60 || this.takeoffCounter == 70) {
       if (this.flipped) {
@@ -914,14 +917,14 @@ export class Plane extends OwnableSolidEntity implements Followable {
       else {
         this.steerDown(deltaTime);
       }
-      console.log("takeoff jump");
+      log("takeoff jump");
       this.localY -= 100;
     }
     if (this.takeoffCounter >= 70) {
       this.setMode(PlaneMode.Flying)
       this.runway = null;
       this.takeoffCounter = 0;
-      console.log("takenoff");
+      log("takenoff");
     }
     //this.direction = radiansToDirection(this.radians);
     if (this.speed != 0) {
@@ -992,7 +995,7 @@ export class Plane extends OwnableSolidEntity implements Followable {
 
   private moveLanding(cache: Cache, deltaTime: number): void {
     const tstep = deltaTime / 1000;
-    //console.log("landing " + this.radians);
+    //log("landing " + this.radians);
     if (this.speed > 100) {
       //?
       this.speed -= 3;
@@ -1011,14 +1014,14 @@ export class Plane extends OwnableSolidEntity implements Followable {
     const x = Math.round(this.localX / SCALE_FACTOR);
     const y = Math.round(this.localY / SCALE_FACTOR);
     let col = true;//this.checkCollision();
-    console.log((this.runway.getDirection() == 1 && x <= this.runway.getStartX()), (this.runway.getDirection() == 0 && x >= this.runway.getStartX()));
-    console.log(this.runway.getDirection() == 1, x <= this.runway.getStartX(), this.runway.getDirection() == 0, x >= this.runway.getStartX());
+    log((this.runway.getDirection() == 1 && x <= this.runway.getStartX()), (this.runway.getDirection() == 0 && x >= this.runway.getStartX()));
+    log(this.runway.getDirection() == 1, x <= this.runway.getStartX(), this.runway.getDirection() == 0, x >= this.runway.getStartX());
     if (!col || (this.runway.getDirection() == 1 && x <= this.runway.getStartX()) || (this.runway.getDirection() == 0 && x >= this.runway.getStartX())) {
-      console.log("landed");
-      console.log(col)
-      console.log(x)
-      console.log(this.runway.getStartX())
-      console.log(this.runway.getDirection())
+      log("landed");
+      log(col)
+      log(x)
+      log(this.runway.getStartX())
+      log(this.runway.getDirection())
       this.landed();
     }
     this.setChanged(true);
@@ -1040,11 +1043,11 @@ export class Plane extends OwnableSolidEntity implements Followable {
       }
       // TODO check for owned by whom => ownable
       if (se.getType() == EntityType.Water) {
-        console.log("falling - sank");
+        log("falling - sank");
         this.sink();
       }
       else if (se.getType() != EntityType.Bullet && se.getType() != EntityType.Trooper) {
-        console.log("falling - exploded");
+        log("falling - exploded");
         if (se instanceof OwnableSolidEntity) {
           this.explode(se);
         }
@@ -1056,13 +1059,13 @@ export class Plane extends OwnableSolidEntity implements Followable {
     }
     if (se.getType() == EntityType.Runway) {
       let localRunway: Runway = se as Runway;
-      console.log("HHIITT - Runway");
+      log("HHIITT - Runway");
       if (this.mode != PlaneMode.Landing && this.localX / SCALE_FACTOR > localRunway.getLandableX() && this.localX / SCALE_FACTOR + this.width < localRunway.getLandableX() + localRunway.getLandableWidth() &&
         !this.motorOn &&
         this.speed < 250 + this.speedModifier &&
         ((!this.flipped && (2 * Math.PI - this.radians < 0.8975979010256552 || 2 * Math.PI - this.radians > 5.385587406153931)) ||
           this.flipped && (2 * Math.PI - this.radians < 4.039190554615448 && 2 * Math.PI - this.radians > 2.243994752564138))) {
-        console.log("motorOn  = " + this.motorOn);
+        log("motorOn  = " + this.motorOn);
         if (this.flipped) {
           this.radians = Math.PI;
         }
@@ -1071,19 +1074,19 @@ export class Plane extends OwnableSolidEntity implements Followable {
         }
         //this.direction = radiansToDirection(this.radians);
         this.localY = (localRunway.getLandableY() - this.getBottomHeight()) * SCALE_FACTOR;
-        console.log("HHIITT - PrLanding!!!");
+        log("HHIITT - PrLanding!!!");
         if (localRunway.getTeam() == this.getTeam() && ((localRunway.getDirection() == 1 && this.radians == Math.PI) || (localRunway.getDirection() == 0 && this.radians == 0)) && localRunway.reserveFor(2)) {
           this.runway = localRunway;
           //this.mode = PlaneMode.Landing;
           this.setMode(PlaneMode.Landing);
-          console.log("HHIITT - Landing!!!");
-          console.log("mode: " + this.mode);
+          log("HHIITT - Landing!!!");
+          log("mode: " + this.mode);
         }
         this.setPos(this.world.cache, Math.round(this.localX / 100), Math.round(this.localY / 100));
         this.set(this.world.cache, "direction", radiansToDirection(this.radians));
         return;
       }
-      console.log("crashed " + this.x + " landable" + localRunway.getLandableX());
+      log("crashed " + this.x + " landable" + localRunway.getLandableX());
       localRunway.planeCrash();
       //this.fraggedBy(null);
       //this.explode(null);
@@ -1094,27 +1097,27 @@ export class Plane extends OwnableSolidEntity implements Followable {
         if (this.getPlayerInfo().getHealth() <= 0) {
           this.fraggedBy(se as Ownable);
           this.explode(se as Ownable);
-          console.log("explosion kill");
+          log("explosion kill");
         }
       }
       else if (se.getPlayerInfo().getId() != this.getPlayerInfo().getId()) {
         if (se instanceof Bullet) {
           let b = se as Bullet;
-          console.log("before = " + this.getPlayerInfo().getHealth());
+          log("before = " + this.getPlayerInfo().getHealth());
           this.getPlayerInfo().setHealth(this.getPlayerInfo().getHealth() - Math.round(30 * b.getDamageFactor()));
-          console.log("after = " + this.getPlayerInfo().getHealth());
+          log("after = " + this.getPlayerInfo().getHealth());
           //this.health -= 30 * b.getDamageFactor();
           if (this.getPlayerInfo().getHealth() <= 0) {
             this.fraggedBy(b);
             this.setMode(PlaneMode.Falling)
-            console.log("bullet kill");
+            log("bullet kill");
           }
         }
         else if (se instanceof Bomb) {
           let b = se as Bomb;
           this.fraggedBy(b);
           this.explode(b);
-          console.log("bomb kill");
+          log("bomb kill");
         }
         else if (se.getType() != EntityType.Trooper) {
           if (se instanceof Plane) {
@@ -1129,13 +1132,13 @@ export class Plane extends OwnableSolidEntity implements Followable {
               if (this.getPlayerInfo().getHealth() <= 0) {
                 this.fraggedBy(se);
                 this.setMode(PlaneMode.Falling)
-                console.log("dodge kill");
+                log("dodge kill");
               }
               this.setChanged(true);
             }
           }
           else {
-            console.log("ownable hit kill");
+            log("ownable hit kill");
             this.fraggedBy(se);
             this.explode(se);
           }
@@ -1145,7 +1148,7 @@ export class Plane extends OwnableSolidEntity implements Followable {
     else if (se.getType() == EntityType.Water) {
       this.fraggedBy(null);
       this.sink();
-      console.log("plane - sank");
+      log("plane - sank");
     }
     //else if (se.getType() == EntityType.Ground) {
     else {//if (se.getType() == EntityType.Ground) {
@@ -1153,10 +1156,10 @@ export class Plane extends OwnableSolidEntity implements Followable {
       //  //this.fraggedBy(null);
       //}
       if (se.getType() == EntityType.Ground) {
-        console.log("plane - ground");
+        log("plane - ground");
         //return;
       }
-      console.log("plane - obj " + se + " m=" + this.mode);
+      log("plane - obj " + se + " m=" + this.mode);
       //if (this.mode != PlaneMode.Falling) 
       {
         this.fraggedBy(null);

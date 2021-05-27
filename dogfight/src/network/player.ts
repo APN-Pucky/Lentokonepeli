@@ -19,7 +19,7 @@ export class PlayerImpl implements Player {
   private spectator: boolean;
   private connection: SessionConnection;
   private ping: number;
-  private name: string;
+  protected name: string;
 
   public constructor(ps: SessionConnection = null, isSpectator: boolean = false) {
     this.spectator = isSpectator;

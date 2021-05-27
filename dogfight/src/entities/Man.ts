@@ -17,6 +17,7 @@ import { Plane } from "./Plane";
 import { BufferedImage } from "../BufferedImage";
 import { GameObjectSchema, IntType } from "../network/types";
 import { Followable } from "./Followable";
+import { log } from "../util";
 
 
 
@@ -234,7 +235,8 @@ export class Man extends OwnableSolidEntity implements Followable {
           this.shoot();
         }
         else if (this.isKeyPressed(GameKey.MAN_SUICIDE)) {
-          this.world.createExplosion(this.x + this.image.width / 2, this.y + this.image.height, this)
+          log("x", this.x, "y", this.y)
+          this.world.createExplosion(this.x + this.image[0].width / 2, this.y + this.image[0].height, this)
           this.fraggedBy(null);
           this.removeSelf();
         }
@@ -291,7 +293,7 @@ export class Man extends OwnableSolidEntity implements Followable {
     }
     let j = this.localX / 100 + this.width / 2;
     let m = this.localY / 100 - 10 + this.height;
-    console.log("bullet shot");
+    log("bullet shot");
     const b = new Bullet(
       this.world,
       j,
@@ -392,7 +394,7 @@ export class Man extends OwnableSolidEntity implements Followable {
       if (this.vy < this.speedPerPixel * 1.5) {
         this.setState(this.world.cache, TrooperState.Standing);
         this.localY = (se.getCollisionBounds().y - this.image[0].height) * 100;
-        console.log("landed - ground ");
+        log("landed - ground ");
         this.set(this.world.cache, "y", Math.round(this.localY / SCALE_FACTOR));
       }
       else {
@@ -402,7 +404,7 @@ export class Man extends OwnableSolidEntity implements Followable {
     }
     else if (se.getType() != EntityType.Ground || (this.state != TrooperState.Standing && this.state != TrooperState.Walking_LEFT && this.state != TrooperState.Walking_RIGHT)) {
       if (se.getType() == EntityType.Runway) {
-        console.log("landed - runway");
+        log("landed - runway");
         if ((this.state == TrooperState.Standing) || (this.state == TrooperState.Walking_LEFT) || (this.state == TrooperState.Walking_RIGHT)) {
           if (se.getTeam() == this.getTeam()) {
             this.respawn(se as Runway);
@@ -419,7 +421,7 @@ export class Man extends OwnableSolidEntity implements Followable {
 
       }
       else if (se.getType() == EntityType.BackgroundItem) {
-        console.log("landed - tower");
+        log("landed - tower");
         if ((this.state == TrooperState.Standing) || (this.state == TrooperState.Walking_LEFT) || (this.state == TrooperState.Walking_RIGHT)) {
           this.x = this.lastX;
         }
@@ -433,26 +435,26 @@ export class Man extends OwnableSolidEntity implements Followable {
         if (!(b.getPlayerInfo().getId() == this.getPlayerInfo().getId())) {
           this.fraggedBy(b);
           this.removeSelf();
-          console.log("Man in Bullet");
+          log("Man in Bullet");
         }
       }
       else if (se.getType() == EntityType.Bomb || se.getType() == EntityType.Explosion) {
         let b = se as Bomb;
         this.fraggedBy(b);
         this.removeSelf();
-        console.log("Man in Bomb")
+        log("Man in Bomb")
       }
       else if (se instanceof Plane) {
         if (Date.now() >= this.invulnerabilityTimer + this.invulnerabilityTime) {
           this.fraggedBy(se as Plane);
           this.removeSelf()
-          console.log("Man in Plane")
+          log("Man in Plane")
         }
       }
       else if (se.getType() == EntityType.Water) {  //|| se.getType() == 23) { // TODO what is 23 ?!?!
         this.fraggedBy(null);
         this.removeSelf();
-        console.log("Man in Water")
+        log("Man in Water")
       }
     }
   }
@@ -466,14 +468,14 @@ export class Man extends OwnableSolidEntity implements Followable {
 
   public fraggedBy(o: Ownable): void {
     if (this.getPlayerInfo().isControlling(this)) {
-      console.log("fragged - self")
+      log("fragged - self")
       this.world.killed(this, o, 2);
     }
   }
 
   public removeSelf(): void {
     if (this.getPlayerInfo().isControlling(this)) {
-      console.log("rm - self")
+      log("rm - self")
       this.world.removeEntity(this);
       let r = this.getCollisionBounds();
       this.world.died(this, this.getCenterX(), this.getCenterY());

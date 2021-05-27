@@ -4,6 +4,7 @@ import { PlayerInfo, PlayerStatus } from "../entities/PlayerInfo";
 import { EntityType } from "../entity";
 import { Runway } from "../entities/Runway";
 import { FacingDirection, ROTATION_DIRECTIONS } from "../constants";
+import { log } from "../util";
 
 export interface TakeoffEntry {
   playerID: number;
@@ -61,7 +62,7 @@ export function doTakeoff(world: GameWorld, takeoff: TakeoffEntry): void {
   }
 
   if (runway.reserveFor(1)) {
-    console.log("reservation done");
+    log("reservation done");
     // create plane
     const plane = new Plane(
       world,

@@ -47,7 +47,6 @@ export function onDragMove(object: Draggable): void {
 
 export function onKeyDown(object: Rotateable, event: KeyboardEvent): void {
   if (object.selected) {
-    // console.log(object);
     switch (event.key) {
       case "ArrowRight": {
         object.setDirection(object.getDirection() + 1);

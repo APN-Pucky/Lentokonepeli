@@ -11,11 +11,12 @@ import { SolidEntity } from "./SolidEntity";
 import { Ticking } from "./Ticking";
 import { Followable } from "./Followable";
 
-export const WAIT_TIMES = [4000, 8000, 10000];
+export const WAIT_TIMES = [4000, 8000, 10000, 0];
 export enum RespawnType {
   Normal,
   Suicide,
-  TeamKill
+  TeamKill,
+  Bot
 }
 
 export class Respawner extends Entity implements Ticking, Followable {

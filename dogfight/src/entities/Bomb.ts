@@ -12,6 +12,7 @@ import { Runway } from "./Runway";
 import { Plane } from "./Plane";
 import { OwnableSolidEntity } from "./OwnableSolidEntity";
 import { GameObjectSchema, IntType } from "../network/types";
+import { log } from "../util";
 
 export const bombGlobals = {
   gravity: 425,
@@ -110,7 +111,7 @@ export class Bomb extends OwnableSolidEntity {
   }
 
   public hit(se: SolidEntity): void {
-    console.log("bomb - hit");
+    log("bomb - hit");
     if (se == null) {
       this.getPlayerInfo().submitBomb(this, false, false);
       this.world.removeEntity(this);
@@ -145,7 +146,7 @@ export class Bomb extends OwnableSolidEntity {
 
   public move(cache: Cache, deltaTime: number): void {
     // move the bomb...
-    //console.log(this.x, this.y, this.xSpeed);
+    //log(this.x, this.y, this.xSpeed);
     const tstep = deltaTime / 1000;
     const xDelta = tstep * 1; // 0.01 * 100 tps in original
     const yDelta = tstep * 1000 / 3; // 3.33 * 100 tps in original
@@ -176,12 +177,12 @@ export class Bomb extends OwnableSolidEntity {
   }
 
   public setPos(cache: Cache, x: number, y: number): void {
-    // console.log(x, y);
+    // log(x, y);
     this.localX = x * SCALE_FACTOR;
     this.localY = y * SCALE_FACTOR;
-    // console.log(this.localX / 100, this.localY / 100);
+    // log(this.localX / 100, this.localY / 100);
     this.setData(cache, { x, y });
-    // console.log(this.x, this.y);
+    // log(this.x, this.y);
   }
 
   public getState(): CacheEntry {

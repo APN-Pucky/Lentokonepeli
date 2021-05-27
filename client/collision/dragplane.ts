@@ -29,9 +29,7 @@ export class dragplane extends PlaneSprite implements Draggable, Renderable {
     this.entity.x = newX;
     this.entity.y = newY;
     this.redraw();
-    //console.log("move?");
     this.callback();
-    //;throw new Error("Method not implemented.");
   }
   public setCollisionCallback(callback: () => void): void {
     this.callback = callback;

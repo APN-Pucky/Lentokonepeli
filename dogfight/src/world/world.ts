@@ -14,6 +14,8 @@ import { Explosion } from "../entities/Explosion";
 import { Entity, EntityType } from "../entity";
 import { Team } from "../constants";
 import { Plane, teamPlanes } from "../entities/Plane";
+import { ReinforceBot } from "../entities/bots/RLBot";
+import { HardcodedBot } from "../entities/bots/HardcodedBot";
 import { InputQueue, InputKey } from "../input";
 import { processInputs } from "./input";
 import { processTakeoffs, TakeoffEntry } from "./takeoff";
@@ -31,6 +33,7 @@ import { Map } from "./map";
 import { EntityClass } from "../entityfactory";
 import { PlayerInfos } from "../../../client/src/render/entities/playerInfos";
 import { getEffectiveConstraintOfTypeParameter } from "typescript";
+import { log } from "../util";
 
 
 export enum GameMode {
@@ -125,6 +128,26 @@ export class GameWorld {
     for (let t of this.entities) {
       if (t instanceof Runway || t instanceof ImportantBuilding)
         this.teaminfos[t.getTeam()].addBuilding(t);
+    }
+
+
+    let ti = 0
+    while (ti < 0) {
+
+      const player = new ReinforceBot(this);
+      player.set(this.cache, "team", Team.Centrals);
+      this.addEntity(player);
+
+      const player2 = new ReinforceBot(this);
+      player2.set(this.cache, "team", Team.Allies);
+      this.addEntity(player2);
+
+
+      //const player = new HardcodedBot(this);
+      //player.set(this.cache, "team", Team.Allies);
+      //this.addEntity(player);
+
+      ti++;
     }
 
     //cont();
@@ -308,7 +331,9 @@ export class GameWorld {
     );
     //explosion.setPlayerID(this.cache, uid);
     //explosion.setTeam(this.cache, team);
-    this.entities[EntityType.Explosion].push(explosion);
+    log("explosion creation ", x, y);
+    this.addEntity(explosion);
+    //this.entities[EntityType.Explosion].push(explosion);
   }
 
   public push(obj: Entity): void {
@@ -406,7 +431,6 @@ export class GameWorld {
     }
     else {
 
-      console.log(this.cache);
       // Respawn
       let lo = new Respawner(this, p, x, y);
       //p.setStatus(p.world.cache, PlayerStatus.Takeoff);
