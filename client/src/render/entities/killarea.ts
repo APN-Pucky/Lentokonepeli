@@ -99,6 +99,7 @@ export class KillArea {
   };
 
   public parseChatMessage(str: string) {
+    if (this.container.children.length > 6) this.rm(this.container.children[0]);
     let elems: string[] = str.split("\t");
     if (+elems[0] == 4) {
       this.line = new PIXI.Container();
@@ -163,12 +164,26 @@ export class KillArea {
       this.container.addChild(this.line);
       const tl = this.line;
       setTimeout(() => {
-        this.container.removeChild(tl);
-        for (let c of this.container.children) {
-          c.y -= tl.height;
+        this.rm(tl);
+        /*
+        if (this.container.children.includes(tl)) {
+          this.container.removeChild(tl);
+          for (let c of this.container.children) {
+            c.y -= tl.height;
+          }
         }
+        */
       }, 8000);
 
     }
   }
+  public rm(tl): void {
+    if (this.container.children.includes(tl)) {
+      this.container.removeChild(tl);
+      for (let c of this.container.children) {
+        c.y -= tl.height;
+      }
+    }
+  }
 }
+
