@@ -1,1 +1,3 @@
 libxi-dev
+build-essential
+libgl1-mesa-dev
