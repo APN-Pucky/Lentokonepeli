@@ -2,7 +2,7 @@
 import * as json from "../../dist/assets/images/images.json";
 import { BufferedImage } from './BufferedImage';
 //const { canvas, loadImage } = require('canvas');;
-import jimp from 'jimp';
+import jimp from 'jimp/es';
 
 //const image = await loadImage("./dist/assets/images/images.png");
 //const gm = require('gm');
