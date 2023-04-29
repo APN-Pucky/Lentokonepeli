@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "A modern remake of Lentokonepeli/Dogfight",
   "main": "index.js",
+  "engines": {
+    "node": "14.x"
+  },
   "scripts": {
     "watch": "watch 'npm run build' ./client ./dogfight",
     "test": "jest",
