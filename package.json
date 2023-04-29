@@ -54,6 +54,7 @@
     "js-cookie": "^2.2.1",
     "node-addon-api": "^3.0.2",
     "node-gles": "0.0.17",
+    "node-gyp": "^7.1.0",
     "nodemon": "^2.0.7",
     "parcel": "1.12.3",
     "pixi.js": "^5.0.4",
