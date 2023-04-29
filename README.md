@@ -1,3 +1,5 @@
+Try it out here: http://lentokonepeli.herokuapp.com/
+
 # UPDATE 2020-10-28
 ## WE HAVE THE ORIGINAL SOURCE CODE!
 Yes, you read that right. We have the original source code as of October 28th, 2020.
