@@ -55,7 +55,7 @@ function clamp(number, min, max): number {
 export default Vue.extend({
   data() {
     return {
-      rooms: [{ id: 0, name: "default1", map: { name: "desert", layout: maps["desert"], objects: undefined }, max_players: 16 }],
+      rooms: [{ id: 0, name: "default1", map: { name: "london", layout: maps["london"], objects: undefined }, max_players: 16 }],
       players: [],
     };
   },

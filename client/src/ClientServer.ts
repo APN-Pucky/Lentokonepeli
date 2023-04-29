@@ -36,7 +36,7 @@ export class ClientServer {
     this.serverMsg = callback;
     ClientState.connection = ConnectionState.OPEN;
 
-    this.world = new GameWorld(img, callback,{ name: "desert", layout: maps["desert"], objects: undefined });
+    this.world = new GameWorld(img, callback,{ name: "default1", layout: maps["london"], objects: undefined });
     //loadMap(this.world, MAP_CLASSIC_2);
     setInterval((): void => {
       this.loop();

@@ -135,7 +135,9 @@ export class GameClient {
 
   public createRoom(): void {
     this.network.send({ type: PacketType.CreateRoom, data: { params: this.roomparams } })
+    //ListRoom
     console.log("sent");
+    this.network.send({ type: PacketType.ListRooms });
   }
 
   public onAnimationFrame(): void {

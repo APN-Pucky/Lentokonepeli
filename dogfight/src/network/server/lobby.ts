@@ -17,7 +17,7 @@ export class LobbyServer extends Server {
   public constructor(img) {
     super(img);
     this.roomservers = [];
-    this.createRoom({ id: 0, name: "default1", map: { name: "desert", layout: maps["desert"], objects: undefined }, max_players: 16 })
+    this.createRoom({ id: 0, name: "default1", map: { name: "london", layout: maps["london"], objects: undefined }, max_players: 16 })
   }
   public packetRecieved(pi: PlayerImpl, packet: Packet) {
     switch (packet.type) {
