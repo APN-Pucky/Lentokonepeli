@@ -40,6 +40,7 @@ import {
 } from "../../../../dogfight/src/entities/PlayerInfo";
 import { Localizer } from "../../localization/localizer";
 import { RoomInfo } from "../../../../dogfight/src/network/server/room";
+import { maps } from "../../../../dogfight/src/world/map";
 const flags = {
   [Team.Centrals]: "germanflag_small.gif",
   [Team.Allies]: "raf_flag_small.gif",
@@ -54,15 +55,15 @@ function clamp(number, min, max): number {
 export default Vue.extend({
   data() {
     return {
-      rooms: [{ id: 0, name: "X", map: "EK" }],
+      rooms: [{ id: 0, name: "default1", map: { name: "desert", layout: maps["desert"], objects: undefined }, max_players: 16 }],
       players: [],
     };
   },
   computed: {
     lang() {
       return {
-        name: Localizer.get("name"),
         id: Localizer.get("id"),
+        name: Localizer.get("name"),
         map: Localizer.get("map"),
         players: Localizer.get("players"),
       };

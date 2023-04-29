@@ -4,7 +4,7 @@ import { PlayerInfo } from "../../dogfight/src/entities/PlayerInfo";
 import { TeamOption } from "./teamSelector";
 import { Team } from "../../dogfight/src/constants";
 import { requestTakeoff } from "../../dogfight/src/world/takeoff";
-import { loadMap } from "../../dogfight/src/world/map";
+import { loadMap, maps } from "../../dogfight/src/world/map";
 import { MAP_CLASSIC_2 } from "../../dogfight/src/maps/classic2";
 import { isNameValid } from "../../dogfight/src/validation";
 import { ClientState, ConnectionState } from "./clientState";
@@ -36,8 +36,8 @@ export class ClientServer {
     this.serverMsg = callback;
     ClientState.connection = ConnectionState.OPEN;
 
-    this.world = new GameWorld(img, callback);
-    loadMap(this.world, MAP_CLASSIC_2);
+    this.world = new GameWorld(img, callback,{ name: "desert", layout: maps["desert"], objects: undefined });
+    //loadMap(this.world, MAP_CLASSIC_2);
     setInterval((): void => {
       this.loop();
     }, 1000 / 100);
