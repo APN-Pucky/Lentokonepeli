@@ -1,4 +1,4 @@
-Try it out here: http://lentokonepeli.herokuapp.com/
+Try it out here: http://lentokonepeli.herokuapp.com/ (single-player https://apn-pucky.github.io/Lentokonepeli/)
 
 # UPDATE 2020-10-28
 ## WE HAVE THE ORIGINAL SOURCE CODE!
