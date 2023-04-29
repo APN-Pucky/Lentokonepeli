@@ -1,6 +1,7 @@
 {
   "name": "Lentokonepeli",
   "description": "Lentokonepeli Revived",
+  "stack": "heroku-22",
   "repository": "https://github.com/APN-Pucky/Lentokonepeli",
   "logo": "https://cdn.rawgit.com/heroku/node-js-getting-started/master/public/node.svg",
   "keywords": [
