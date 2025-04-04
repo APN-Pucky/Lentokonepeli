@@ -54,7 +54,7 @@
     "gm": "",
     "howler": "^2.1.3",
     "jimp": "0.16.1",
-    "js-cookie": "^2.2.1",
+    "js-cookie": "^3.0.5",
     "node-addon-api": "^3.0.2",
     "node-gles": "0.0.17",
     "nodemon": "^2.0.7",
